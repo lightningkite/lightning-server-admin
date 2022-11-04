@@ -1,5 +1,5 @@
 // Change the prefix (react-starter) of these keys to avoid collisions with other projects running on localhost
 export enum LocalStorageKey {
-  USER_TOKEN = "my-app-userToken",
-  BACKEND_URL = "my-app-backendURL"
+  USER_TOKEN = "lightning-admin-userToken",
+  BACKEND_URL = "lightning-admin-backendURL"
 }

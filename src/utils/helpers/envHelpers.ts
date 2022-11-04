@@ -1,6 +1,5 @@
 export enum DeploymentType {
   LOCAL = "local",
-  DEV = "dev",
   STAGING = "staging",
   PRODUCTION = "production"
 }

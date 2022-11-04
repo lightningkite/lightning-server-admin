@@ -11,10 +11,6 @@ export interface URLOption {
 
 export const backendURLOptions: URLOption[] = [
   {
-    label: "Dev",
-    url: "https://dev.example.com/api"
-  },
-  {
     label: "Stage",
     url: "https://stage.example.com/api"
   },
