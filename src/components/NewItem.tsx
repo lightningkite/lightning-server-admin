@@ -50,7 +50,7 @@ export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
         <DialogTitle>Create New {modelName}</DialogTitle>
 
         <DialogContent>
-          <ModelForm schema={schema} onSubmit={handleSubmit} />
+          <ModelForm schema={schema} onSubmit={handleSubmit} type="create" />
         </DialogContent>
       </Dialog>
     </>

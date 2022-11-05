@@ -84,7 +84,12 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
 
       <Card>
         <CardContent>
-          <ModelForm schema={schema} initialValues={item} onSubmit={onSubmit} />
+          <ModelForm
+            schema={schema}
+            initialValues={item}
+            onSubmit={onSubmit}
+            type="save"
+          />
         </CardContent>
       </Card>
     </Container>

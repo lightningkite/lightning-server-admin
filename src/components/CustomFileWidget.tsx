@@ -1,4 +1,4 @@
-import {Button, Stack} from "@mui/material"
+import {Button, Stack, Typography} from "@mui/material"
 import {WidgetProps} from "@rjsf/utils"
 import React, {FC, useEffect} from "react"
 
@@ -29,7 +29,7 @@ export const CustomFileWidget: FC<WidgetProps> = (props) => {
 
   return (
     <div>
-      <p>{props.label}</p>
+      <Typography mb={1}>{props.label}</Typography>
       {(() => {
         if (isUploading) {
           return <p>Uploading...</p>
