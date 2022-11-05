@@ -1,5 +1,6 @@
 import {FormikInputDemo} from "pages/FormikInputDemo"
 import {Home} from "pages/Home"
+import {ModelDetail} from "pages/ModelDetail"
 import {ModelIndex} from "pages/ModelIndex"
 import {UserDetail} from "pages/UserDetail"
 import {UserIndex} from "pages/UserIndex"
@@ -15,7 +16,8 @@ const AuthRoutes: FC = () => {
         <Route path="/users/:userId" element={<UserDetail />} />
         <Route path="/input-demo" element={<FormikInputDemo />} />
 
-        <Route path="/models/:modelSlug" element={<ModelIndex />} />
+        <Route path="/models/:endpointName" element={<ModelIndex />} />
+        <Route path="/models/:endpointName/:modelId" element={<ModelDetail />} />
 
         {/* If page doesn't exist, redirect to home */}
         <Route path="*" element={<Navigate to="/" replace />} />

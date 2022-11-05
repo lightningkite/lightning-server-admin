@@ -1,7 +1,8 @@
 import {ThemeProvider} from "@mui/material"
 import {LocalizationProvider} from "@mui/x-date-pickers"
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs"
-import {Api, ModelSchema, RequesterSession, User} from "api/sdk"
+import {RJSFSchema} from "@rjsf/utils"
+import {Api, RequesterSession, User} from "api/sdk"
 import {useSessionManager} from "api/useSessionManager"
 import ErrorAlert from "components/ErrorAlert"
 import Loading from "components/Loading"
@@ -22,7 +23,7 @@ export const AuthContext = createContext({
   refreshCurrentUser: (): Promise<void> => {
     throw new Error("Used refreshCurrentUser outside of AuthContext")
   },
-  modelSchemas: {} as ModelSchema[]
+  schemas: [] as RJSFSchema[]
 })
 
 // UnauthContext is available when the user is not authenticated (login screen)
@@ -41,7 +42,7 @@ const App: FC = () => {
     useSessionManager()
 
   const [currentUser, setCurrentUser] = useState<User | null>()
-  const [modelSchemas, setModelSchemas] = useState<ModelSchema[] | null>()
+  const [schemas, setModelSchemas] = useState<RJSFSchema[] | null>()
 
   const isLoggedIn = !!session
 
@@ -61,7 +62,7 @@ const App: FC = () => {
     session?.adminEditor.getModelSchema().then(setModelSchemas)
   }, [isLoggedIn])
 
-  if (isLoggedIn && (currentUser === undefined || modelSchemas === undefined)) {
+  if (isLoggedIn && (currentUser === undefined || schemas === undefined)) {
     return <Loading />
   }
 
@@ -69,7 +70,7 @@ const App: FC = () => {
     return <ErrorAlert>Error loading current user</ErrorAlert>
   }
 
-  if (modelSchemas === null) {
+  if (schemas === null) {
     return <ErrorAlert>Error loading model schemas</ErrorAlert>
   }
 
@@ -84,7 +85,7 @@ const App: FC = () => {
                 logout,
                 currentUser: currentUser as User,
                 refreshCurrentUser,
-                modelSchemas: modelSchemas as ModelSchema[]
+                schemas: schemas as RJSFSchema[]
               }}
             >
               <MainLayout>

@@ -1,8 +1,9 @@
 import {faker} from "@faker-js/faker"
 import {mockRestEndpointFunctions} from "@lightningkite/lightning-server-simplified"
+import {RJSFSchema} from "@rjsf/utils"
 import {LocalStorageKey} from "utils/constants"
 import {generateMockDatastore} from "./mockDatastore"
-import {Api, ModelSchema, Product, SSOAuthSubmission, User} from "./sdk"
+import {Api, Product, SSOAuthSubmission, User} from "./sdk"
 
 let myUser: User | null = null
 
@@ -28,8 +29,8 @@ export class MockApi implements Api {
   )
 
   readonly adminEditor = {
-    getModelSchemas: async (requesterToken: string): Promise<ModelSchema[]> => {
-      return this.mockDatastore.modelSchemas
+    getSchemas: async (requesterToken: string): Promise<RJSFSchema[]> => {
+      return this.mockDatastore.schemas
     }
   }
 

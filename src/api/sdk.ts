@@ -7,12 +7,12 @@ import {
   EntryChange,
   GroupAggregateQuery,
   GroupCountQuery,
-  HasId,
   MassModification,
   Modification,
   Path,
   Query
 } from "@lightningkite/lightning-server-simplified"
+import {RJSFSchema} from "@rjsf/utils"
 
 export interface User {
   _id: string
@@ -37,20 +37,6 @@ export interface SSOAuthSubmission {
   clientKey: string
 }
 
-export interface ModelSchema {
-  modelName: string
-  slug: string
-  schema: string
-}
-
-export interface JSONSchema<T extends HasId = HasId> {
-  $id: string
-  $schema: string
-  title: string
-  type: string
-  properties: Record<keyof T, unknown>
-}
-
 export interface Api {
   readonly auth: {
     emailLoginLink(input: string): Promise<void>
@@ -60,7 +46,7 @@ export interface Api {
   }
 
   readonly adminEditor: {
-    getModelSchemas(requesterToken: string): Promise<ModelSchema[]>
+    getSchemas(requesterToken: string): Promise<RJSFSchema[]>
   }
 
   readonly user: {
@@ -247,8 +233,8 @@ export class RequesterSession {
     api: this.api,
     requesterToken: this.requesterToken,
 
-    getModelSchema(): Promise<ModelSchema[]> {
-      return this.api.adminEditor.getModelSchemas(this.requesterToken)
+    getModelSchema(): Promise<RJSFSchema[]> {
+      return this.api.adminEditor.getSchemas(this.requesterToken)
     }
   }
 
@@ -494,7 +480,7 @@ export class LiveApi implements Api {
     httpUrl: this.httpUrl,
     socketUrl: this.socketUrl,
     extraHeaders: this.extraHeaders,
-    getModelSchemas(requesterToken: string): Promise<ModelSchema[]> {
+    getSchemas(requesterToken: string): Promise<RJSFSchema[]> {
       return apiCall(`${this.httpUrl}/admin-editor/models-schema`, undefined, {
         method: "GET",
         headers: {

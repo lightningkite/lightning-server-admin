@@ -11,7 +11,9 @@ const navItems: Array<{label: string; to: string}> = [
 ]
 
 const MainLayout: FC<{children: ReactNode}> = ({children}) => {
-  const {modelSchemas} = useContext(AuthContext)
+  const {schemas} = useContext(AuthContext)
+
+  console.log({schemas})
 
   return (
     <Stack direction="row" minHeight="100vh">
@@ -50,11 +52,12 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
         <Divider sx={{m: 2}} />
 
         <Stack spacing={1}>
-          {modelSchemas.map(({modelName, slug}) => (
+          {schemas.map((schema) => (
             <Button
-              key={slug}
+              key={schema.endpointName}
               component={NavLink}
-              to={`/models/${slug}`}
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              to={`/models/${schema.endpointName ?? ""}`}
               sx={{
                 justifyContent: "start",
                 "&.active": {
@@ -63,7 +66,7 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
                 }
               }}
             >
-              {modelName}
+              {schema.title}
             </Button>
           ))}
         </Stack>

@@ -1,18 +1,19 @@
-import {generateModelSchemas} from "./mocks/modelSchemas"
+import {RJSFSchema} from "@rjsf/utils"
+import {generateSchemas} from "./mocks/modelSchemas"
 import {generateProducts} from "./mocks/products"
 import {generateUsers} from "./mocks/users"
-import {ModelSchema, Product, User} from "./sdk"
+import {Product, User} from "./sdk"
 
 export interface MockDatastore {
   users: User[]
   products: Product[]
-  modelSchemas: ModelSchema[]
+  schemas: RJSFSchema[]
 }
 
 export const generateMockDatastore = (): MockDatastore => {
   const users = generateUsers(25)
-  const modelSchemas = generateModelSchemas()
+  const schemas = generateSchemas()
   const products = generateProducts(100)
 
-  return {users, modelSchemas, products}
+  return {users, schemas, products}
 }
