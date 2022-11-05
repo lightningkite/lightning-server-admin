@@ -26,6 +26,33 @@ export function generateSchemas(): LKSchema[] {
           minimum: 0
         }
       }
+    },
+    {
+      $id: "https://example.com/product.schema.json",
+      $schema: "http://json-schema.org/schema#",
+      title: "User",
+      type: "object",
+      searchFields: ["name", "email"],
+      tableColumns: ["name", "email", "phone"],
+      endpointName: "user",
+      titleFields: ["name"],
+      properties: {
+        name: {
+          type: "string"
+        },
+        email: {
+          type: "string"
+        },
+        phone: {
+          type: "string"
+        },
+        birthday: {
+          type: "string"
+        },
+        profilePic: {
+          type: "string"
+        }
+      }
     }
   ]
 }
