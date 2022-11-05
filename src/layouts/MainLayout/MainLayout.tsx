@@ -1,9 +1,9 @@
 import {Box, Button, Divider, Stack} from "@mui/material"
-import React, {FC, ReactNode} from "react"
+import {AuthContext} from "App"
+import React, {FC, ReactNode, useContext} from "react"
 import {NavLink} from "react-router-dom"
 import MyUserMenu from "./MyUserMenu"
 
-// Define the items that will appear in the sidebar navigation
 const navItems: Array<{label: string; to: string}> = [
   {label: "Home", to: "/"},
   {label: "Users", to: "/users"},
@@ -11,6 +11,8 @@ const navItems: Array<{label: string; to: string}> = [
 ]
 
 const MainLayout: FC<{children: ReactNode}> = ({children}) => {
+  const {modelSchemas} = useContext(AuthContext)
+
   return (
     <Stack direction="row" minHeight="100vh">
       <Box
@@ -41,6 +43,27 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
               }}
             >
               {label}
+            </Button>
+          ))}
+        </Stack>
+
+        <Divider sx={{m: 2}} />
+
+        <Stack spacing={1}>
+          {modelSchemas.map(({modelName, slug}) => (
+            <Button
+              key={slug}
+              component={NavLink}
+              to={`/models/${slug}`}
+              sx={{
+                justifyContent: "start",
+                "&.active": {
+                  bgcolor: "primary.main",
+                  color: "white"
+                }
+              }}
+            >
+              {modelName}
             </Button>
           ))}
         </Stack>

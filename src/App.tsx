@@ -1,7 +1,7 @@
 import {ThemeProvider} from "@mui/material"
 import {LocalizationProvider} from "@mui/x-date-pickers"
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs"
-import {Api, RequesterSession, User} from "api/sdk"
+import {Api, ModelSchema, RequesterSession, User} from "api/sdk"
 import {useSessionManager} from "api/useSessionManager"
 import ErrorAlert from "components/ErrorAlert"
 import Loading from "components/Loading"
@@ -21,7 +21,8 @@ export const AuthContext = createContext({
   currentUser: {} as User,
   refreshCurrentUser: (): Promise<void> => {
     throw new Error("Used refreshCurrentUser outside of AuthContext")
-  }
+  },
+  modelSchemas: {} as ModelSchema[]
 })
 
 // UnauthContext is available when the user is not authenticated (login screen)
@@ -40,6 +41,7 @@ const App: FC = () => {
     useSessionManager()
 
   const [currentUser, setCurrentUser] = useState<User | null>()
+  const [modelSchemas, setModelSchemas] = useState<ModelSchema[] | null>()
 
   const isLoggedIn = !!session
 
@@ -55,9 +57,11 @@ const App: FC = () => {
 
   useEffect(() => {
     refreshCurrentUser()
+
+    session?.adminEditor.getModelSchema().then(setModelSchemas)
   }, [isLoggedIn])
 
-  if (isLoggedIn && currentUser === undefined) {
+  if (isLoggedIn && (currentUser === undefined || modelSchemas === undefined)) {
     return <Loading />
   }
 
@@ -65,13 +69,23 @@ const App: FC = () => {
     return <ErrorAlert>Error loading current user</ErrorAlert>
   }
 
+  if (modelSchemas === null) {
+    return <ErrorAlert>Error loading model schemas</ErrorAlert>
+  }
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
-          {session && currentUser ? (
+          {session ? (
             <AuthContext.Provider
-              value={{session, logout, currentUser, refreshCurrentUser}}
+              value={{
+                session,
+                logout,
+                currentUser: currentUser as User,
+                refreshCurrentUser,
+                modelSchemas: modelSchemas as ModelSchema[]
+              }}
             >
               <MainLayout>
                 <AuthRoutes />

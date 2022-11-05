@@ -90,7 +90,7 @@ const EnterIdentifier: FC<EnterIdentifierProps> = (props) => {
   return (
     <>
       <Typography variant="h1" textAlign="center">
-        React App Starter
+        Admin Editor
       </Typography>
       <Typography variant="subtitle1" lineHeight={1.2} mt={3}>
         Enter your email or phone number, and we&apos;ll send you a code to sign
