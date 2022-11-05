@@ -5,9 +5,11 @@ import {
 } from "@lightningkite/lightning-server-simplified"
 import {Button, Card, CardContent, Container} from "@mui/material"
 import Form from "@rjsf/mui"
+import {RegistryWidgetsType} from "@rjsf/utils"
 import validator from "@rjsf/validator-ajv8"
 import {RequesterSession} from "api/sdk"
 import {AuthContext} from "App"
+import {CustomFileWidget} from "components/CustomFileWidget"
 import ErrorAlert from "components/ErrorAlert"
 import Loading from "components/Loading"
 import PageHeader from "components/PageHeader"
@@ -52,10 +54,12 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
 
   const handleSubmit = (data: T) => {
     const modification = makeObjectModification(item, data)
-    endpoint
-      .modify(modelId, modification)
-      .then(() => setItem({...item, ...data}))
-      .catch(() => alert("Failed to save"))
+
+    modification &&
+      endpoint
+        .modify(modelId, modification)
+        .then(() => setItem({...item, ...data}))
+        .catch(() => alert("Failed to save"))
   }
 
   const handleDelete = () => {
@@ -68,6 +72,10 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
   const itemTitle = schema.titleFields
     .map((field) => item[field as keyof T])
     .join(" ")
+
+  const customWidgets: RegistryWidgetsType = {
+    FileWidget: CustomFileWidget
+  }
 
   return (
     <Container maxWidth="md">
@@ -91,6 +99,7 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
             validator={validator}
             onSubmit={(e) => handleSubmit(e.formData)}
             onError={log("errors")}
+            widgets={customWidgets}
           />
         </CardContent>
       </Card>

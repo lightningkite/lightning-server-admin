@@ -1,1 +1,0 @@
-export {UserDetail} from "./UserDetail"

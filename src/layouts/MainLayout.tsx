@@ -1,14 +1,7 @@
-import {Box, Button, Divider, Stack} from "@mui/material"
+import {Box, Button, Divider, Stack, Typography} from "@mui/material"
 import {AuthContext} from "App"
 import React, {FC, ReactNode, useContext} from "react"
 import {NavLink} from "react-router-dom"
-import MyUserMenu from "./MyUserMenu"
-
-const navItems: Array<{label: string; to: string}> = [
-  {label: "Home", to: "/"},
-  {label: "Users", to: "/users"},
-  {label: "Formik Input Demo", to: "/input-demo"}
-]
 
 const MainLayout: FC<{children: ReactNode}> = ({children}) => {
   const {schemas} = useContext(AuthContext)
@@ -26,30 +19,29 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
           boxShadow: "0 3px 6px rgba(0,0,0,0.16)"
         }}
       >
-        <MyUserMenu />
+        <Typography variant="h5" sx={{pt: 2}}>
+          React Admin
+        </Typography>
 
-        <Divider sx={{m: 2}} />
+        <Divider sx={{my: 2}} />
 
-        <Stack spacing={1}>
-          {navItems.map(({label, to}) => (
-            <Button
-              key={to}
-              component={NavLink}
-              to={to}
-              sx={{
-                justifyContent: "start",
-                "&.active": {
-                  bgcolor: "primary.main",
-                  color: "white"
-                }
-              }}
-            >
-              {label}
-            </Button>
-          ))}
-        </Stack>
+        <Button
+          component={NavLink}
+          fullWidth
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          to={"/"}
+          sx={{
+            justifyContent: "start",
+            "&.active": {
+              bgcolor: "primary.main",
+              color: "white"
+            }
+          }}
+        >
+          Home
+        </Button>
 
-        <Divider sx={{m: 2}} />
+        <Divider sx={{my: 2}} />
 
         <Stack spacing={1}>
           {schemas.map((schema) => (

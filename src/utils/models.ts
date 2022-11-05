@@ -6,4 +6,5 @@ export interface LKSchema extends RJSFSchema {
   tableColumns: string[]
   endpointName: string
   titleFields: string[]
+  properties: Record<string, RJSFSchema>
 }
