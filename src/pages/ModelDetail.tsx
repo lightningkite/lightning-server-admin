@@ -48,21 +48,20 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
     return <Loading />
   }
 
-  const modelName = schema.title ?? ""
-  const itemTitle = (schema.titleFields as (keyof T)[])
-    .map((field) => item[field])
+  const itemTitle = schema.titleFields
+    .map((field) => item[field as keyof T])
     .join(" ")
 
   return (
     <Container maxWidth="md">
       <PageHeader
         breadcrumbs={[
-          [modelName, `/models/${endpointName}`],
+          [schema.title, `/models/${endpointName}`],
           [itemTitle, ""]
         ]}
         title={itemTitle}
       >
-        <Button color="error">Delete {schema.modelName}</Button>
+        <Button color="error">Delete {schema.title}</Button>
       </PageHeader>
 
       <Card>

@@ -1,7 +1,6 @@
 import {ThemeProvider} from "@mui/material"
 import {LocalizationProvider} from "@mui/x-date-pickers"
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs"
-import {RJSFSchema} from "@rjsf/utils"
 import {Api, RequesterSession, User} from "api/sdk"
 import {useSessionManager} from "api/useSessionManager"
 import ErrorAlert from "components/ErrorAlert"
@@ -11,6 +10,7 @@ import UnauthLayout from "layouts/UnauthLayout"
 import React, {createContext, FC, useEffect, useState} from "react"
 import {BrowserRouter} from "react-router-dom"
 import {AuthRoutes, UnauthRoutes} from "routers"
+import {LKSchema} from "utils/models"
 import {theme} from "./theme"
 
 // AuthContext is available when the user is authenticated
@@ -23,7 +23,7 @@ export const AuthContext = createContext({
   refreshCurrentUser: (): Promise<void> => {
     throw new Error("Used refreshCurrentUser outside of AuthContext")
   },
-  schemas: [] as RJSFSchema[]
+  schemas: [] as LKSchema[]
 })
 
 // UnauthContext is available when the user is not authenticated (login screen)
@@ -42,7 +42,7 @@ const App: FC = () => {
     useSessionManager()
 
   const [currentUser, setCurrentUser] = useState<User | null>()
-  const [schemas, setModelSchemas] = useState<RJSFSchema[] | null>()
+  const [schemas, setModelSchemas] = useState<LKSchema[] | null>()
 
   const isLoggedIn = !!session
 
@@ -85,7 +85,7 @@ const App: FC = () => {
                 logout,
                 currentUser: currentUser as User,
                 refreshCurrentUser,
-                schemas: schemas as RJSFSchema[]
+                schemas: schemas as LKSchema[]
               }}
             >
               <MainLayout>

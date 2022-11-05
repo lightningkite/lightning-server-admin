@@ -12,7 +12,7 @@ import {
   Path,
   Query
 } from "@lightningkite/lightning-server-simplified"
-import {RJSFSchema} from "@rjsf/utils"
+import {LKSchema} from "utils/models"
 
 export interface User {
   _id: string
@@ -46,7 +46,7 @@ export interface Api {
   }
 
   readonly adminEditor: {
-    getSchemas(requesterToken: string): Promise<RJSFSchema[]>
+    getSchemas(requesterToken: string): Promise<LKSchema[]>
   }
 
   readonly user: {
@@ -233,7 +233,7 @@ export class RequesterSession {
     api: this.api,
     requesterToken: this.requesterToken,
 
-    getModelSchema(): Promise<RJSFSchema[]> {
+    getModelSchema(): Promise<LKSchema[]> {
       return this.api.adminEditor.getSchemas(this.requesterToken)
     }
   }
@@ -480,7 +480,7 @@ export class LiveApi implements Api {
     httpUrl: this.httpUrl,
     socketUrl: this.socketUrl,
     extraHeaders: this.extraHeaders,
-    getSchemas(requesterToken: string): Promise<RJSFSchema[]> {
+    getSchemas(requesterToken: string): Promise<LKSchema[]> {
       return apiCall(`${this.httpUrl}/admin-editor/models-schema`, undefined, {
         method: "GET",
         headers: {

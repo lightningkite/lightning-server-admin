@@ -57,7 +57,7 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
               key={schema.endpointName}
               component={NavLink}
               // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              to={`/models/${schema.endpointName ?? ""}`}
+              to={`/models/${schema.endpointName}`}
               sx={{
                 justifyContent: "start",
                 "&.active": {

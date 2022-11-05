@@ -1,6 +1,6 @@
-import {RJSFSchema} from "@rjsf/utils"
+import {LKSchema} from "utils/models"
 
-export function generateSchemas(): RJSFSchema[] {
+export function generateSchemas(): LKSchema[] {
   return [
     {
       $id: "https://example.com/product.schema.json",

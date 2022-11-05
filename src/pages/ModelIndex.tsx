@@ -23,12 +23,10 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
     return <ErrorAlert>Model schema not found - {endpointName}</ErrorAlert>
   }
 
-  const modelName = schema.title ?? ""
-
   return (
     <Container maxWidth="md">
-      <PageHeader title={`${modelName} List`}>
-        <Button>Add {modelName}</Button>
+      <PageHeader title={`${schema.title} List`}>
+        <Button>Add {schema.title}</Button>
       </PageHeader>
 
       <RestDataTable<T>
@@ -39,7 +37,7 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
         }
         onRowClick={(model) => navigate(`/models/${endpointName}/${model._id}`)}
         searchFields={schema.searchFields as (keyof T)[]}
-        columns={(schema.tableColumns as string[]).map((key) => ({
+        columns={schema.tableColumns.map((key) => ({
           field: key,
           headerName: lowerCamelCaseToTitleCase(key),
           flex: 1
