@@ -6,6 +6,8 @@ export function generateProducts(total: number): Product[] {
     _id: faker.datatype.uuid(),
     title: faker.commerce.productName(),
     description: faker.commerce.productDescription(),
-    price: faker.datatype.number()
+    price: faker.datatype.number(),
+    createdAt: faker.date.past().toISOString(),
+    modifiedAt: faker.date.past().toISOString()
   }))
 }

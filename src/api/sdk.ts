@@ -18,9 +18,9 @@ export interface User {
   _id: string
   name: string
   email: string
-  phone: string
-  birthday: string
-  profilePic: string
+  phone?: string
+  birthday?: string
+  profilePic?: string
   createdAt: string
   modifiedAt: string
 }
@@ -30,6 +30,8 @@ export interface Product {
   title: string
   description: string
   price: number
+  createdAt: string
+  modifiedAt: string
 }
 
 export interface SSOAuthSubmission {

@@ -7,7 +7,7 @@ export function generateUsers(total: number): User[] {
     name: faker.name.fullName(),
     email: faker.internet.email(),
     phone: faker.phone.number(),
-    birthday: faker.date.past().toISOString(),
+    birthday: faker.date.past().toISOString().split("T")[0],
     profilePic: faker.image.avatar(),
     createdAt: faker.date.past().toISOString(),
     modifiedAt: faker.date.past().toISOString()

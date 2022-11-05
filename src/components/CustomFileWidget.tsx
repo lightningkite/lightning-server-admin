@@ -4,7 +4,7 @@ import React, {FC, useEffect} from "react"
 
 export const CustomFileWidget: FC<WidgetProps> = (props) => {
   const [file, setFile] = React.useState<File | null>(null)
-  const [showSelector, setShowSelector] = React.useState(false)
+  const [showSelector, setShowSelector] = React.useState(!props.value)
   const [isUploading, setIsUploading] = React.useState(false)
 
   const handleUpload = async () => {
@@ -38,9 +38,11 @@ export const CustomFileWidget: FC<WidgetProps> = (props) => {
         if (showSelector) {
           return (
             <>
-              <Button onClick={() => setShowSelector(false)} sx={{mr: 2}}>
-                Cancel
-              </Button>
+              {props.value && (
+                <Button onClick={() => setShowSelector(false)} sx={{mr: 2}}>
+                  Cancel
+                </Button>
+              )}
               <input
                 type="file"
                 onChange={(e) => setFile(e.target.files?.item(0) ?? null)}

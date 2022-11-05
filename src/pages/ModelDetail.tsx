@@ -4,19 +4,14 @@ import {
   SessionRestEndpoint
 } from "@lightningkite/lightning-server-simplified"
 import {Button, Card, CardContent, Container} from "@mui/material"
-import Form from "@rjsf/mui"
-import {RegistryWidgetsType} from "@rjsf/utils"
-import validator from "@rjsf/validator-ajv8"
 import {RequesterSession} from "api/sdk"
 import {AuthContext} from "App"
-import {CustomFileWidget} from "components/CustomFileWidget"
 import ErrorAlert from "components/ErrorAlert"
 import Loading from "components/Loading"
+import {ModelForm} from "components/ModelForm"
 import PageHeader from "components/PageHeader"
 import React, {ReactElement, useContext, useEffect} from "react"
 import {useNavigate, useParams} from "react-router-dom"
-
-const log = (type: unknown) => console.log.bind(console, type)
 
 export function ModelDetail<T extends HasId = HasId>(): ReactElement {
   const {endpointName, modelId} = useParams()
@@ -52,7 +47,7 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
     return <Loading />
   }
 
-  const handleSubmit = (data: T) => {
+  const onSubmit = (data: T) => {
     const modification = makeObjectModification(item, data)
 
     modification &&
@@ -73,10 +68,6 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
     .map((field) => item[field as keyof T])
     .join(" ")
 
-  const customWidgets: RegistryWidgetsType = {
-    FileWidget: CustomFileWidget
-  }
-
   return (
     <Container maxWidth="md">
       <PageHeader
@@ -93,14 +84,7 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
 
       <Card>
         <CardContent>
-          <Form
-            schema={schema}
-            formData={item}
-            validator={validator}
-            onSubmit={(e) => handleSubmit(e.formData)}
-            onError={log("errors")}
-            widgets={customWidgets}
-          />
+          <ModelForm schema={schema} initialValues={item} onSubmit={onSubmit} />
         </CardContent>
       </Card>
     </Container>
