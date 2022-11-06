@@ -1,18 +1,14 @@
 import {Button, Stack, Typography} from "@mui/material"
 import {WidgetProps} from "@rjsf/utils"
-import {AuthContext} from "App"
-import React, {FC, useContext, useState} from "react"
-import {useParams} from "react-router-dom"
+import React, {FC, useState} from "react"
 import {uploadFile} from "utils/helpers/uploads"
+import {useCurrentSchema} from "utils/hooks/useCurrentSchema"
 
 export const CustomFileWidget: FC<WidgetProps> = (props) => {
-  const {endpointName} = useParams()
-  const {schemas} = useContext(AuthContext)
+  const {schema} = useCurrentSchema()
 
   const [showSelector, setShowSelector] = useState(!props.value)
   const [isUploading, setIsUploading] = useState(false)
-
-  const schema = schemas.find((it) => it.endpointName === endpointName)
 
   const handleUpload = async (file: File) => {
     if (!file) {

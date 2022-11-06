@@ -1,28 +1,22 @@
 import {
   HasId,
-  makeObjectModification,
-  SessionRestEndpoint
+  makeObjectModification
 } from "@lightningkite/lightning-server-simplified"
 import {Button, Card, CardContent, Container} from "@mui/material"
-import {RequesterSession} from "api/sdk"
-import {AuthContext} from "App"
 import ErrorAlert from "components/ErrorAlert"
 import Loading from "components/Loading"
 import {ModelForm} from "components/ModelForm"
 import PageHeader from "components/PageHeader"
-import React, {ReactElement, useContext, useEffect} from "react"
+import React, {ReactElement, useEffect} from "react"
 import {useNavigate, useParams} from "react-router-dom"
+import {useCurrentSchema} from "utils/hooks/useCurrentSchema"
 
 export function ModelDetail<T extends HasId = HasId>(): ReactElement {
   const {endpointName, modelId} = useParams()
-  const {session, schemas} = useContext(AuthContext)
   const navigate = useNavigate()
+  const {endpoint, schema} = useCurrentSchema<T>()
 
   const [item, setItem] = React.useState<T | null>()
-
-  const endpoint = session[
-    endpointName as keyof RequesterSession
-  ] as unknown as SessionRestEndpoint<T>
 
   useEffect(() => {
     if (endpointName && modelId) {
@@ -32,8 +26,6 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
         .catch(() => setItem(null))
     }
   }, [endpointName, modelId])
-
-  const schema = schemas.find((it) => it.endpointName === endpointName)
 
   if (!schema || !endpointName) {
     return <ErrorAlert>Model schema not found - {endpointName}</ErrorAlert>
