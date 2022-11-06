@@ -1,31 +1,44 @@
 import {Button, Stack, Typography} from "@mui/material"
 import {WidgetProps} from "@rjsf/utils"
-import React, {FC, useEffect} from "react"
+import {AuthContext} from "App"
+import React, {FC, useContext, useState} from "react"
+import {useParams} from "react-router-dom"
+import {uploadFile} from "utils/helpers/uploads"
 
 export const CustomFileWidget: FC<WidgetProps> = (props) => {
-  const [file, setFile] = React.useState<File | null>(null)
-  const [showSelector, setShowSelector] = React.useState(!props.value)
-  const [isUploading, setIsUploading] = React.useState(false)
+  const {endpointName} = useParams()
+  const {schemas} = useContext(AuthContext)
 
-  const handleUpload = async () => {
+  const [showSelector, setShowSelector] = useState(!props.value)
+  const [isUploading, setIsUploading] = useState(false)
+
+  const schema = schemas.find((it) => it.endpointName === endpointName)
+
+  const handleUpload = async (file: File) => {
     if (!file) {
       return
     }
 
     setIsUploading(true)
 
-    // TODO: Upload file to server
-    await console.log("TODO upload file:", file.name)
+    try {
+      if (!schema?.uploadEarlyEndpoint) {
+        throw new Error("No upload early endpoint present in schema")
+      }
 
-    setTimeout(() => {
-      setShowSelector(false)
-      setIsUploading(false)
-    }, 1000)
+      const fileURL = await uploadFile(file, schema?.uploadEarlyEndpoint).catch(
+        () => {
+          throw new Error("Failed to upload file")
+        }
+      )
+      props.onChange(fileURL)
+    } catch (e) {
+      alert((e as Error).message || "Error uploading file")
+    }
+
+    setShowSelector(false)
+    setIsUploading(false)
   }
-
-  useEffect(() => {
-    handleUpload()
-  }, [file])
 
   return (
     <div>
@@ -45,7 +58,10 @@ export const CustomFileWidget: FC<WidgetProps> = (props) => {
               )}
               <input
                 type="file"
-                onChange={(e) => setFile(e.target.files?.item(0) ?? null)}
+                onChange={(e) => {
+                  const file = e.target.files?.item(0) ?? null
+                  file && handleUpload(file)
+                }}
               />
             </>
           )

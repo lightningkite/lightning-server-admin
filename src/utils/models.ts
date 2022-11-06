@@ -7,4 +7,5 @@ export interface LKSchema extends RJSFSchema {
   endpointName: string
   titleFields: string[]
   properties: Record<string, RJSFSchema>
+  uploadEarlyEndpoint?: string
 }
