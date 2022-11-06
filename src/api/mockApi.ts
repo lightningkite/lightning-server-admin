@@ -3,7 +3,7 @@ import {mockRestEndpointFunctions} from "@lightningkite/lightning-server-simplif
 import {LocalStorageKey} from "utils/constants"
 import {LKSchema} from "utils/models"
 import {generateMockDatastore} from "./mockDatastore"
-import {Api, Product, SSOAuthSubmission, User} from "./sdk"
+import {Api, Level, Product, ServerHealth, SSOAuthSubmission, User} from "./sdk"
 
 let myUser: User | null = null
 
@@ -56,6 +56,43 @@ export class MockApi implements Api {
     getSelf: (requesterToken: string): Promise<User> => {
       if (!myUser) return Promise.reject()
       return Promise.resolve(myUser)
+    }
+  }
+
+  async getServerHealth(requesterToken: string): Promise<ServerHealth> {
+    return {
+      serverId: "mock-server-id",
+      version: "0.0.0",
+      loadAverageCpu: 80,
+      memory: {
+        maxMem: 321,
+        totalMemory: 512,
+        freeMemory: 128,
+        systemAllocated: 256,
+        memUsagePercent: 50
+      },
+      features: {
+        authentication: {
+          level: Level.OK,
+          checkedAt: faker.date.recent().toISOString(),
+          additionalMessage: null
+        },
+        database: {
+          level: Level.OK,
+          checkedAt: faker.date.recent().toISOString(),
+          additionalMessage: null
+        },
+        fluxCapacitor: {
+          level: Level.WARNING,
+          checkedAt: faker.date.recent().toISOString(),
+          additionalMessage: "Flux capacitor is not calibrated"
+        },
+        unnecessaryMicroservice: {
+          level: Level.ERROR,
+          checkedAt: faker.date.recent().toISOString(),
+          additionalMessage: "Offline"
+        }
+      }
     }
   }
 }

@@ -39,6 +39,35 @@ export interface SSOAuthSubmission {
   clientKey: string
 }
 
+export interface ServerHealth {
+  serverId: string
+  version: string
+  memory: Memory
+  features: Record<string, HealthStatus>
+  loadAverageCpu: number
+}
+
+export interface Memory {
+  maxMem: number
+  totalMemory: number
+  freeMemory: number
+  systemAllocated: number
+  memUsagePercent: number
+}
+
+export interface HealthStatus {
+  level: Level
+  checkedAt: string
+  additionalMessage: string | null | undefined
+}
+
+export enum Level {
+  OK = "OK",
+  WARNING = "WARNING",
+  URGENT = "URGENT",
+  ERROR = "ERROR"
+}
+
 export interface Api {
   readonly auth: {
     emailLoginLink(input: string): Promise<void>
@@ -208,6 +237,8 @@ export interface Api {
       files?: Record<Path<GroupAggregateQuery<Product>>, File>
     ): Promise<Record<string, number | null | undefined>>
   }
+
+  getServerHealth(requesterToken: string): Promise<ServerHealth>
 }
 
 export class RequesterSession {
@@ -438,6 +469,10 @@ export class RequesterSession {
     ): Promise<Record<string, number | null | undefined>> {
       return this.api.product.groupAggregate(input, this.requesterToken, files)
     }
+  }
+
+  getServerHealth(): Promise<ServerHealth> {
+    return this.api.getServerHealth(this.requesterToken)
   }
 }
 
@@ -1019,5 +1054,14 @@ export class LiveApi implements Api {
         files
       ).then((x) => x.json())
     }
+  }
+
+  getServerHealth(requesterToken: string): Promise<ServerHealth> {
+    return apiCall(`${this.httpUrl}/help/health`, undefined, {
+      method: "GET",
+      headers: requesterToken
+        ? {...this.extraHeaders, Authorization: `Bearer ${requesterToken}`}
+        : this.extraHeaders
+    }).then((x) => x.json())
   }
 }

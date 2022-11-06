@@ -1,6 +1,6 @@
-import {Home} from "pages/Home"
 import {ModelDetail} from "pages/ModelDetail"
 import {ModelIndex} from "pages/ModelIndex"
+import {ServerInformation} from "pages/ServerInformation"
 import React, {FC} from "react"
 import {Navigate, Route, Routes} from "react-router-dom"
 
@@ -8,7 +8,7 @@ const AuthRoutes: FC = () => {
   return (
     <Routes>
       <Route>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<ServerInformation />} />
 
         <Route path="/models/:endpointName" element={<ModelIndex />} />
         <Route

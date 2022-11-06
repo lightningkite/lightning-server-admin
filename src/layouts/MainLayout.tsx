@@ -38,7 +38,7 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
             }
           }}
         >
-          Home
+          Server Information
         </Button>
 
         <Divider sx={{my: 2}} />
