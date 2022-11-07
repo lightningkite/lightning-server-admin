@@ -10,6 +10,7 @@ import UnauthLayout from "layouts/UnauthLayout"
 import React, {createContext, FC, useEffect, useState} from "react"
 import {BrowserRouter} from "react-router-dom"
 import {AuthRoutes, UnauthRoutes} from "routers"
+import {LocalStorageKey} from "utils/constants"
 import {LKSchema} from "utils/models"
 import {theme} from "./theme"
 
@@ -28,7 +29,7 @@ export const AuthContext = createContext({
 
 // UnauthContext is available when the user is not authenticated (login screen)
 export const UnauthContext = createContext({
-  api: {} as Api,
+  api: null as Api | null,
   authenticate: (userToken: string): void => {
     throw new Error("Used authenticate outside of UnauthenticatedContext")
   },
@@ -59,7 +60,27 @@ const App: FC = () => {
   useEffect(() => {
     refreshCurrentUser()
 
-    session?.adminEditor.getModelSchema().then(setModelSchemas)
+    if (!session) {
+      return
+    }
+
+    // Add current backend URL to local storage options if it's not already there
+    const backendUrlOptions: string[] =
+      JSON.parse(
+        localStorage.getItem(LocalStorageKey.BACKEND_URL_OPTIONS) ?? "[]"
+      ) || []
+
+    const backendURL = localStorage.getItem(LocalStorageKey.BACKEND_URL) ?? ""
+
+    if (!backendUrlOptions.includes(backendURL)) {
+      backendUrlOptions.push(backendURL)
+      localStorage.setItem(
+        LocalStorageKey.BACKEND_URL_OPTIONS,
+        JSON.stringify(backendUrlOptions)
+      )
+    }
+
+    session.adminEditor.getModelSchema().then(setModelSchemas)
   }, [isLoggedIn])
 
   if (isLoggedIn && (currentUser === undefined || schemas === undefined)) {
@@ -78,7 +99,7 @@ const App: FC = () => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
-          {session ? (
+          {session && api ? (
             <AuthContext.Provider
               value={{
                 session,

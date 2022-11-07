@@ -1,7 +1,11 @@
+import {useThrottle} from "@lightningkite/mui-lightning-components"
 import {LoadingButton} from "@mui/lab"
 import {
   Alert,
+  Autocomplete,
   FormControlLabel,
+  InputAdornment,
+  MenuItem,
   Radio,
   RadioGroup,
   Stack,
@@ -10,6 +14,12 @@ import {
 } from "@mui/material"
 import {UnauthContext} from "App"
 import React, {FC, useContext, useEffect, useState} from "react"
+import {LocalStorageKey} from "utils/constants"
+
+const backendOptions: string[] =
+  JSON.parse(
+    localStorage.getItem(LocalStorageKey.BACKEND_URL_OPTIONS) ?? "[]"
+  ) ?? []
 
 export type IdentifierType = "email" | "sms"
 
@@ -22,11 +32,20 @@ export interface EnterIdentifierProps {
 const EnterIdentifier: FC<EnterIdentifierProps> = (props) => {
   const {identifier, setIdentifier, setTempUUID} = props
 
-  const {api} = useContext(UnauthContext)
+  const {api, changeBackendURL} = useContext(UnauthContext)
 
   const [error, setError] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [identifierType, setIdentifierType] = useState<IdentifierType>("email")
+  const [backendURL, setBackendURL] = useState(
+    localStorage.getItem(LocalStorageKey.BACKEND_URL) ?? ""
+  )
+
+  const throttledBackendURL = useThrottle(backendURL, 100)
+
+  useEffect(() => {
+    changeBackendURL(throttledBackendURL)
+  }, [throttledBackendURL])
 
   useEffect(() => {
     // Remove whitespace and convert to lowercase
@@ -76,6 +95,16 @@ const EnterIdentifier: FC<EnterIdentifierProps> = (props) => {
         setError("Phone number must be at least 10 digits")
         return
       }
+    }
+
+    if (!backendURL) {
+      setError("Please enter a server URL")
+      return
+    }
+
+    if (!api) {
+      setError("API is not initialized")
+      return
     }
 
     setSubmitting(true)
@@ -132,6 +161,47 @@ const EnterIdentifier: FC<EnterIdentifierProps> = (props) => {
           fullWidth
         />
 
+        <Autocomplete
+          disablePortal
+          options={backendOptions}
+          fullWidth
+          disableClearable
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Server URL"
+              type="url"
+              placeholder="api.example.com"
+              InputProps={{
+                ...params.InputProps,
+                startAdornment: (
+                  <InputAdornment position="start">https://</InputAdornment>
+                )
+              }}
+            />
+          )}
+        />
+
+        {/* <TextField
+          label="Server URL"
+          select={backendOptions.length > 0}
+          value={backendURL}
+          onChange={(e) => setBackendURL(e.target.value)}
+          type="url"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">https://</InputAdornment>
+            )
+          }}
+          fullWidth
+        >
+          {backendOptions.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </TextField> */}
+
         {!!error && <Alert severity="error">{error}</Alert>}
 
         <LoadingButton
@@ -140,6 +210,7 @@ const EnterIdentifier: FC<EnterIdentifierProps> = (props) => {
           fullWidth
           loading={submitting}
           onClick={sendCodeToUser}
+          disabled={!api || !backendURL || !identifier}
         >
           Send Code
         </LoadingButton>

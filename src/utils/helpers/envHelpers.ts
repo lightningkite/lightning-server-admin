@@ -5,15 +5,11 @@ export enum DeploymentType {
 }
 
 // Load environment variables
-export const envBackendHTTP = process.env
-  .REACT_APP_BACKEND_HTTP_URL as DeploymentType
 export const envDeploymentType = process.env.REACT_APP_DEPLOYMENT_TYPE
 
 const consoleFormat = "color:red; font-size: 20px"
 
 // Verify environment variables
-if (!envBackendHTTP)
-  console.log("%cREACT_APP_BACKEND_HTTP_URL is not set", consoleFormat)
 if (!envDeploymentType)
   console.log("%cREACT_APP_DEPLOYMENT_TYPE is not set", consoleFormat)
 if (

@@ -53,8 +53,14 @@ const EnterCode: FC<EnterCodeProps> = (props) => {
         fullWidth
         ref={submitCodeButton}
         onClick={() => {
+          if (!api) {
+            setError("API not initialized")
+            return
+          }
+
           setSubmitting(true)
           setError("")
+
           api.auth
             .submitSSO({
               value: code,
