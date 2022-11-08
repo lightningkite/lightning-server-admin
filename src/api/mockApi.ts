@@ -1,8 +1,14 @@
 import {faker} from "@faker-js/faker"
 import {
+  AggregateQuery,
   Condition,
+  EntryChange,
+  GroupAggregateQuery,
+  GroupCountQuery,
   HasId,
+  MassModification,
   mockRestEndpointFunctions,
+  Modification,
   Query,
   SessionRestEndpoint
 } from "@lightningkite/lightning-server-simplified"
@@ -70,13 +76,6 @@ export class MockApi implements GenericAPI {
   //   "product"
   // )
 
-  getRestEndpoint<T extends HasId>(
-    endpointName: string,
-    requesterToken: string
-  ): SessionRestEndpoint<T> {
-    throw new Error("Method not implemented.")
-  }
-
   readonly adaptEndpoint = <T extends HasId>(
     endpointName: string,
     restFunctionName: keyof ReturnType<typeof mockRestEndpointFunctions<T>>,
@@ -100,20 +99,147 @@ export class MockApi implements GenericAPI {
     }
   }
 
-  readonly serverModel = {
-    query: <T extends HasId>(
-      endpointName: string,
-      input: Query<T>,
-      requesterToken: string
-    ): Promise<Array<T>> => {
-      return this.adaptEndpoint<T>(endpointName, "query", input, requesterToken)
-    },
-    count: <T extends HasId>(
-      endpointName: string,
-      input: Condition<T>,
-      requesterToken: string
-    ): Promise<number> => {
-      return this.adaptEndpoint<T>(endpointName, "count", input, requesterToken)
+  getRestEndpoint<T extends HasId>(
+    endpointName: string,
+    requesterToken: string
+  ): SessionRestEndpoint<T> {
+    return {
+      query: <T extends HasId>(input: Query<T>): Promise<Array<T>> => {
+        return this.adaptEndpoint<T>(
+          endpointName,
+          "query",
+          input,
+          requesterToken
+        )
+      },
+      detail: <T extends HasId>(id: string): Promise<T> => {
+        return this.adaptEndpoint<T>(endpointName, "detail", id, requesterToken)
+      },
+      insertBulk: <T extends HasId>(input: Array<T>): Promise<Array<T>> => {
+        return this.adaptEndpoint<T>(
+          endpointName,
+          "insertBulk",
+          input,
+          requesterToken
+        )
+      },
+      insert: <T extends HasId>(input: T): Promise<T> => {
+        return this.adaptEndpoint<T>(
+          endpointName,
+          "insert",
+          input,
+          requesterToken
+        )
+      },
+      upsert: <T extends HasId>(id: string, input: T): Promise<T> => {
+        return this.adaptEndpoint<T>(
+          endpointName,
+          "upsert",
+          id,
+          input,
+          requesterToken
+        )
+      },
+      bulkReplace: <T extends HasId>(input: Array<T>): Promise<Array<T>> => {
+        return this.adaptEndpoint<T>(
+          endpointName,
+          "bulkReplace",
+          input,
+          requesterToken
+        )
+      },
+      replace: <T extends HasId>(id: string, input: T): Promise<T> => {
+        return this.adaptEndpoint<T>(
+          endpointName,
+          "replace",
+          id,
+          input,
+          requesterToken
+        )
+      },
+      bulkModify: <T extends HasId>(
+        input: MassModification<T>
+      ): Promise<number> => {
+        return this.adaptEndpoint<T>(
+          endpointName,
+          "bulkModify",
+          input,
+          requesterToken
+        )
+      },
+      modifyWithDiff: <T extends HasId>(
+        id: string,
+        input: Modification<T>
+      ): Promise<EntryChange<T>> => {
+        return this.adaptEndpoint<T>(
+          endpointName,
+          "modifyWithDiff",
+          id,
+          input,
+          requesterToken
+        )
+      },
+      modify: <T extends HasId>(
+        id: string,
+        input: Modification<T>
+      ): Promise<T> => {
+        return this.adaptEndpoint<T>(
+          endpointName,
+          "modify",
+          id,
+          input,
+          requesterToken
+        )
+      },
+      bulkDelete: <T extends HasId>(input: Condition<T>): Promise<number> => {
+        return this.adaptEndpoint<T>(
+          endpointName,
+          "bulkDelete",
+          input,
+          requesterToken
+        )
+      },
+      delete: <T extends HasId>(id: string): Promise<void> => {
+        return this.adaptEndpoint<T>(endpointName, "delete", id, requesterToken)
+      },
+      count: <T extends HasId>(input: Condition<T>): Promise<number> => {
+        return this.adaptEndpoint<T>(
+          endpointName,
+          "count",
+          input,
+          requesterToken
+        )
+      },
+      groupCount: <T extends HasId>(
+        input: GroupCountQuery<T>
+      ): Promise<Record<string, number>> => {
+        return this.adaptEndpoint<T>(
+          endpointName,
+          "groupCount",
+          input,
+          requesterToken
+        )
+      },
+      aggregate: <T extends HasId>(
+        input: AggregateQuery<T>
+      ): Promise<number> => {
+        return this.adaptEndpoint<T>(
+          endpointName,
+          "aggregate",
+          input,
+          requesterToken
+        )
+      },
+      groupAggregate: <T extends HasId>(
+        input: GroupAggregateQuery<T>
+      ): Promise<Record<string, number>> => {
+        return this.adaptEndpoint<T>(
+          endpointName,
+          "groupAggregate",
+          input,
+          requesterToken
+        )
+      }
     }
   }
 
