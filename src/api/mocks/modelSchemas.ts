@@ -7,7 +7,7 @@ export function generateSchemas(): LKSchema[] {
       $schema: "http://json-schema.org/schema#",
       title: "User",
       type: "object",
-      searchFields: ["name", "email"],
+      searchFields: ["name", "email", "phone"],
       tableColumns: ["name", "email", "phone"],
       endpointName: "user",
       titleFields: ["name"],

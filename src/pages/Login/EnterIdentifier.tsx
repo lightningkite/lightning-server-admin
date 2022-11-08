@@ -5,7 +5,6 @@ import {
   Autocomplete,
   FormControlLabel,
   InputAdornment,
-  MenuItem,
   Radio,
   RadioGroup,
   Stack,
@@ -166,6 +165,9 @@ const EnterIdentifier: FC<EnterIdentifierProps> = (props) => {
           options={backendOptions}
           fullWidth
           disableClearable
+          freeSolo
+          value={backendURL}
+          onChange={(_, value) => setBackendURL(value)}
           renderInput={(params) => (
             <TextField
               {...params}

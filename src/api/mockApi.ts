@@ -77,15 +77,15 @@ export class MockApi implements Api {
           checkedAt: faker.date.recent().toISOString(),
           additionalMessage: null
         },
-        database: {
-          level: Level.OK,
-          checkedAt: faker.date.recent().toISOString(),
-          additionalMessage: null
-        },
         fluxCapacitor: {
           level: Level.WARNING,
           checkedAt: faker.date.recent().toISOString(),
           additionalMessage: "Flux capacitor is not calibrated"
+        },
+        database: {
+          level: Level.OK,
+          checkedAt: faker.date.recent().toISOString(),
+          additionalMessage: null
         },
         unnecessaryMicroservice: {
           level: Level.ERROR,

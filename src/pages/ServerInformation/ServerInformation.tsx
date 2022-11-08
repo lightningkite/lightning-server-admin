@@ -1,19 +1,12 @@
-import {Button, Container} from "@mui/material"
-import {AuthContext} from "App"
+import {Container} from "@mui/material"
 import PageHeader from "components/PageHeader"
-import React, {FC, useContext} from "react"
+import React, {FC} from "react"
 import {ServerHealthDisplay} from "./ServerHealthDisplay"
 
 export const ServerInformation: FC = () => {
-  const {logout} = useContext(AuthContext)
-
   return (
     <Container maxWidth="md">
-      <PageHeader title="Server Information">
-        <Button onClick={logout} variant="contained">
-          Sign Out
-        </Button>
-      </PageHeader>
+      <PageHeader title="Server Information" />
 
       <ServerHealthDisplay />
     </Container>

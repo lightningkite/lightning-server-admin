@@ -1,10 +1,19 @@
-import {Box, Button, Divider, Stack, Typography} from "@mui/material"
+import {HoverHelp} from "@lightningkite/mui-lightning-components"
+import {Logout} from "@mui/icons-material"
+import {
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  Stack,
+  Typography
+} from "@mui/material"
 import {AuthContext} from "App"
 import React, {FC, ReactNode, useContext} from "react"
 import {NavLink} from "react-router-dom"
 
 const MainLayout: FC<{children: ReactNode}> = ({children}) => {
-  const {schemas} = useContext(AuthContext)
+  const {schemas, logout} = useContext(AuthContext)
 
   console.log({schemas})
 
@@ -19,16 +28,26 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
           boxShadow: "0 3px 6px rgba(0,0,0,0.16)"
         }}
       >
-        <Typography variant="h5" sx={{pt: 2}}>
-          React Admin
-        </Typography>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="apart"
+          sx={{pt: 2}}
+        >
+          <Typography variant="h5">React Admin</Typography>
+
+          <HoverHelp description="Log out" enableWrapper sx={{ml: "auto"}}>
+            <IconButton onClick={logout}>
+              <Logout />
+            </IconButton>
+          </HoverHelp>
+        </Stack>
 
         <Divider sx={{my: 2}} />
 
         <Button
           component={NavLink}
           fullWidth
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           to={"/"}
           sx={{
             justifyContent: "start",
