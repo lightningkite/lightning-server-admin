@@ -1,8 +1,4 @@
-import {
-  HasId,
-  SessionRestEndpoint
-} from "@lightningkite/lightning-server-simplified"
-import {RequesterSession} from "api/sdk"
+import {HasId} from "@lightningkite/lightning-server-simplified"
 import {AuthContext} from "App"
 import {useContext} from "react"
 import {useParams} from "react-router-dom"
@@ -23,9 +19,11 @@ export const useCurrentSchema = <T extends HasId>() => {
     )
   }
 
-  const endpoint = session[
-    endpointName as keyof RequesterSession
-  ] as unknown as SessionRestEndpoint<T>
+  // const endpoint = session[
+  //   endpointName as keyof GenericRequesterSession
+  // ] as unknown as SessionRestEndpoint<T>
+
+  const endpoint = session.getRestEndpoint<T>(endpointName)
 
   const schema = schemas.find((it) => it.endpointName === endpointName)
 

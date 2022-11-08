@@ -1,7 +1,7 @@
 import {useState} from "react"
 import {LocalStorageKey} from "utils/constants"
+import {GenericAPI, GenericLiveApi, GenericRequesterSession} from "./genericSdk"
 import {MockApi} from "./mockApi"
-import {Api, LiveApi, RequesterSession} from "./sdk"
 
 export const backendURLOptions: string[] =
   JSON.parse(
@@ -9,13 +9,13 @@ export const backendURLOptions: string[] =
   ) ?? []
 
 export const useSessionManager = (): {
-  api: Api | null
+  api: GenericAPI | null
   changeBackendURL: (backendURL: string) => void
-  session: RequesterSession | null
+  session: GenericRequesterSession | null
   authenticate: (userToken: string) => void
   logout: () => void
 } => {
-  const [api, setApi] = useState<Api | null>(() => {
+  const [api, setApi] = useState<GenericAPI | null>(() => {
     const localStorageBackendURL = localStorage.getItem(
       LocalStorageKey.BACKEND_URL
     )
@@ -33,15 +33,15 @@ export const useSessionManager = (): {
 
     if (initialBackendURL === "mock") return new MockApi()
 
-    return new LiveApi(initialBackendURL)
+    return new GenericLiveApi(initialBackendURL)
   })
 
   // Null if not logged in, a session if logged in
-  const [session, setSession] = useState<RequesterSession | null>(() => {
+  const [session, setSession] = useState<GenericRequesterSession | null>(() => {
     const token = localStorage.getItem(LocalStorageKey.USER_TOKEN)
 
     if (token && api) {
-      return new RequesterSession(api, token)
+      return new GenericRequesterSession(api, token)
     }
 
     return null
@@ -52,7 +52,7 @@ export const useSessionManager = (): {
       throw new Error("No API")
     }
 
-    setSession(new RequesterSession(api, userToken))
+    setSession(new GenericRequesterSession(api, userToken))
     localStorage.setItem(LocalStorageKey.USER_TOKEN, userToken)
   }
 
@@ -66,7 +66,7 @@ export const useSessionManager = (): {
     if (backendURL === "mock") {
       setApi(new MockApi())
     } else {
-      setApi(new LiveApi(backendURL))
+      setApi(new GenericLiveApi(backendURL))
     }
   }
 

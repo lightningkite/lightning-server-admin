@@ -2,7 +2,6 @@ import {CheckCircle, Error, Report, Warning} from "@mui/icons-material"
 import {
   Alert,
   AlertTitle,
-  Box,
   Card,
   CardContent,
   List,
@@ -12,7 +11,7 @@ import {
   Stack,
   Typography
 } from "@mui/material"
-import {Level, ServerHealth} from "api/sdk"
+import {Level, ServerHealth} from "api/genericSdk"
 import {AuthContext} from "App"
 import Loading from "components/Loading"
 import React, {FC, ReactNode, useContext, useEffect, useState} from "react"

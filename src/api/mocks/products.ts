@@ -1,5 +1,5 @@
 import {faker} from "@faker-js/faker"
-import {Product} from "api/sdk"
+import {Product} from "api/mockApi"
 
 export function generateProducts(total: number): Product[] {
   return Array.from({length: total}, () => ({

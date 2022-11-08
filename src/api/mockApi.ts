@@ -1,13 +1,45 @@
 import {faker} from "@faker-js/faker"
-import {mockRestEndpointFunctions} from "@lightningkite/lightning-server-simplified"
+import {
+  Condition,
+  HasId,
+  mockRestEndpointFunctions,
+  Query,
+  SessionRestEndpoint
+} from "@lightningkite/lightning-server-simplified"
 import {LocalStorageKey} from "utils/constants"
 import {LKSchema} from "utils/models"
+import {GenericAPI, Level, ServerHealth, SSOAuthSubmission} from "./genericSdk"
 import {generateMockDatastore} from "./mockDatastore"
-import {Api, Level, Product, ServerHealth, SSOAuthSubmission, User} from "./sdk"
+
+export interface User {
+  _id: string
+  name: string
+  email: string
+  phone?: string
+  birthday?: string
+  profilePic?: string
+  createdAt: string
+  modifiedAt: string
+}
+
+export interface Product {
+  _id: string
+  title: string
+  description: string
+  price: number
+  createdAt: string
+  modifiedAt: string
+}
 
 let myUser: User | null = null
 
-export class MockApi implements Api {
+export class MockApi implements GenericAPI {
+  mockProductEndpointFunctions: ReturnType<
+    typeof mockRestEndpointFunctions<Product>
+  >
+
+  mockUserEndpointFunctions: ReturnType<typeof mockRestEndpointFunctions<User>>
+
   public constructor(
     public httpUrl: string = "mock",
     public socketUrl: string = httpUrl,
@@ -16,17 +48,74 @@ export class MockApi implements Api {
     if (localStorage.getItem(LocalStorageKey.USER_TOKEN)) {
       myUser = faker.helpers.arrayElement(this.mockDatastore.users)
     }
+
+    this.mockProductEndpointFunctions = mockRestEndpointFunctions<Product>(
+      this.mockDatastore.products,
+      "product"
+    )
+
+    this.mockUserEndpointFunctions = mockRestEndpointFunctions<User>(
+      this.mockDatastore.users,
+      "user"
+    )
   }
 
-  readonly user = mockRestEndpointFunctions<User>(
-    this.mockDatastore.users,
-    "user"
-  )
+  // readonly user = mockRestEndpointFunctions<User>(
+  //   this.mockDatastore.users,
+  //   "user"
+  // )
 
-  readonly product = mockRestEndpointFunctions<Product>(
-    this.mockDatastore.products,
-    "product"
-  )
+  // readonly product = mockRestEndpointFunctions<Product>(
+  //   this.mockDatastore.products,
+  //   "product"
+  // )
+
+  getRestEndpoint<T extends HasId>(
+    endpointName: string,
+    requesterToken: string
+  ): SessionRestEndpoint<T> {
+    throw new Error("Method not implemented.")
+  }
+
+  readonly adaptEndpoint = <T extends HasId>(
+    endpointName: string,
+    restFunctionName: keyof ReturnType<typeof mockRestEndpointFunctions<T>>,
+    ...args: any[]
+  ): Promise<any> => {
+    switch (endpointName) {
+      case "user":
+        return this.mockUserEndpointFunctions[restFunctionName](
+          args[0],
+          args[1],
+          args[2]
+        )
+      case "product":
+        return this.mockProductEndpointFunctions[restFunctionName](
+          args[0],
+          args[1],
+          args[2]
+        )
+      default:
+        throw new Error("Unknown endpoint: " + endpointName)
+    }
+  }
+
+  readonly serverModel = {
+    query: <T extends HasId>(
+      endpointName: string,
+      input: Query<T>,
+      requesterToken: string
+    ): Promise<Array<T>> => {
+      return this.adaptEndpoint<T>(endpointName, "query", input, requesterToken)
+    },
+    count: <T extends HasId>(
+      endpointName: string,
+      input: Condition<T>,
+      requesterToken: string
+    ): Promise<number> => {
+      return this.adaptEndpoint<T>(endpointName, "count", input, requesterToken)
+    }
+  }
 
   readonly adminEditor = {
     getSchemas: async (requesterToken: string): Promise<LKSchema[]> => {

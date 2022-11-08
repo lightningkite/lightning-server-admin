@@ -1,7 +1,7 @@
 import {ThemeProvider} from "@mui/material"
 import {LocalizationProvider} from "@mui/x-date-pickers"
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs"
-import {Api, RequesterSession, User} from "api/sdk"
+import {GenericAPI, GenericRequesterSession, User} from "api/genericSdk"
 import {useSessionManager} from "api/useSessionManager"
 import ErrorAlert from "components/ErrorAlert"
 import Loading from "components/Loading"
@@ -16,7 +16,7 @@ import {theme} from "./theme"
 
 // AuthContext is available when the user is authenticated
 export const AuthContext = createContext({
-  session: {} as RequesterSession,
+  session: {} as GenericRequesterSession,
   logout: (): void => {
     throw new Error("Used logout outside of AuthContext")
   },
@@ -29,7 +29,7 @@ export const AuthContext = createContext({
 
 // UnauthContext is available when the user is not authenticated (login screen)
 export const UnauthContext = createContext({
-  api: null as Api | null,
+  api: null as GenericAPI | null,
   authenticate: (userToken: string): void => {
     throw new Error("Used authenticate outside of UnauthenticatedContext")
   },
