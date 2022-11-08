@@ -1,7 +1,12 @@
 import {Button, ThemeProvider} from "@mui/material"
 import {LocalizationProvider} from "@mui/x-date-pickers"
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs"
-import {GenericAPI, GenericRequesterSession, User} from "api/genericSdk"
+import {
+  GenericAPI,
+  GenericRequesterSession,
+  SchemaSet,
+  User
+} from "api/genericSdk"
 import {useSessionManager} from "api/useSessionManager"
 import ErrorAlert from "components/ErrorAlert"
 import Loading from "components/Loading"
@@ -11,7 +16,6 @@ import React, {createContext, FC, useEffect, useState} from "react"
 import {BrowserRouter} from "react-router-dom"
 import {AuthRoutes, UnauthRoutes} from "routers"
 import {LocalStorageKey} from "utils/constants"
-import {LKSchema} from "utils/models"
 import {theme} from "./theme"
 
 // AuthContext is available when the user is authenticated
@@ -24,7 +28,7 @@ export const AuthContext = createContext({
   refreshCurrentUser: (): Promise<void> => {
     throw new Error("Used refreshCurrentUser outside of AuthContext")
   },
-  schemas: [] as LKSchema[]
+  schemaSets: [] as SchemaSet[]
 })
 
 // UnauthContext is available when the user is not authenticated (login screen)
@@ -43,7 +47,7 @@ const App: FC = () => {
     useSessionManager()
 
   const [currentUser, setCurrentUser] = useState<User | null>()
-  const [schemas, setModelSchemas] = useState<LKSchema[] | null>()
+  const [schemas, setSchemas] = useState<SchemaSet[] | null>()
 
   const isLoggedIn = !!session
 
@@ -82,8 +86,8 @@ const App: FC = () => {
 
     session.adminEditor
       .getModelSchema()
-      .then(setModelSchemas)
-      .catch(() => setModelSchemas(null))
+      .then(setSchemas)
+      .catch(() => setSchemas(null))
   }, [isLoggedIn])
 
   if (isLoggedIn && (currentUser === undefined || schemas === undefined)) {
@@ -129,7 +133,7 @@ const App: FC = () => {
                 logout,
                 currentUser: currentUser as User,
                 refreshCurrentUser,
-                schemas: schemas as LKSchema[]
+                schemaSets: schemas as SchemaSet[]
               }}
             >
               <MainLayout>

@@ -166,7 +166,7 @@ const EnterIdentifier: FC<EnterIdentifierProps> = (props) => {
           disableClearable
           freeSolo
           value={backendURL}
-          onChange={(_, value) => setBackendURL(value)}
+          onInputChange={(_, value) => setBackendURL(value)}
           renderInput={(params) => (
             <TextField
               {...params}

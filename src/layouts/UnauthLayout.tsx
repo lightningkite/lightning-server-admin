@@ -8,7 +8,9 @@ const UnauthLayout: FC<{children: ReactNode}> = ({children}) => {
       justifyContent="space-evenly"
       sx={{
         height: "100vh",
-        bgcolor: "primary.main"
+        bgcolor: "primary.main",
+        background: (theme) =>
+          `linear-gradient(${theme.palette.primary.main}, ${theme.palette.primary.dark})`
       }}
     >
       <Container maxWidth="xs">

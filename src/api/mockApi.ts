@@ -13,8 +13,13 @@ import {
   SessionRestEndpoint
 } from "@lightningkite/lightning-server-simplified"
 import {LocalStorageKey} from "utils/constants"
-import {LKSchema} from "utils/models"
-import {GenericAPI, Level, ServerHealth, SSOAuthSubmission} from "./genericSdk"
+import {
+  GenericAPI,
+  Level,
+  SchemaSet,
+  ServerHealth,
+  SSOAuthSubmission
+} from "./genericSdk"
 import {generateMockDatastore} from "./mockDatastore"
 
 export interface User {
@@ -33,6 +38,15 @@ export interface Product {
   title: string
   description: string
   price: number
+  tags: string[]
+  createdAt: string
+  modifiedAt: string
+}
+
+export interface Tag {
+  _id: string
+  name: string
+  description: string
   createdAt: string
   modifiedAt: string
 }
@@ -45,6 +59,8 @@ export class MockApi implements GenericAPI {
   >
 
   mockUserEndpointFunctions: ReturnType<typeof mockRestEndpointFunctions<User>>
+
+  mockTagEndpointFunctions: ReturnType<typeof mockRestEndpointFunctions<Tag>>
 
   public constructor(
     public httpUrl: string = "mock",
@@ -64,17 +80,12 @@ export class MockApi implements GenericAPI {
       this.mockDatastore.users,
       "user"
     )
+
+    this.mockTagEndpointFunctions = mockRestEndpointFunctions<Tag>(
+      this.mockDatastore.tags,
+      "tag"
+    )
   }
-
-  // readonly user = mockRestEndpointFunctions<User>(
-  //   this.mockDatastore.users,
-  //   "user"
-  // )
-
-  // readonly product = mockRestEndpointFunctions<Product>(
-  //   this.mockDatastore.products,
-  //   "product"
-  // )
 
   readonly adaptEndpoint = <T extends HasId>(
     endpointName: string,
@@ -90,6 +101,12 @@ export class MockApi implements GenericAPI {
         )
       case "product":
         return this.mockProductEndpointFunctions[restFunctionName](
+          args[0],
+          args[1],
+          args[2]
+        )
+      case "tag":
+        return this.mockTagEndpointFunctions[restFunctionName](
           args[0],
           args[1],
           args[2]
@@ -244,7 +261,7 @@ export class MockApi implements GenericAPI {
   }
 
   readonly adminEditor = {
-    getSchemas: async (requesterToken: string): Promise<LKSchema[]> => {
+    getSchemas: async (requesterToken: string): Promise<SchemaSet[]> => {
       return this.mockDatastore.schemas
     }
   }

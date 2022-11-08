@@ -5,7 +5,7 @@ import {useParams} from "react-router-dom"
 
 export const useCurrentSchema = <T extends HasId>() => {
   const {endpointName} = useParams()
-  const {session, schemas} = useContext(AuthContext)
+  const {session, schemaSets: schemas} = useContext(AuthContext)
 
   if (!session || !schemas) {
     throw new Error(
@@ -19,17 +19,15 @@ export const useCurrentSchema = <T extends HasId>() => {
     )
   }
 
-  // const endpoint = session[
-  //   endpointName as keyof GenericRequesterSession
-  // ] as unknown as SessionRestEndpoint<T>
-
   const endpoint = session.getRestEndpoint<T>(endpointName)
 
-  const schema = schemas.find((it) => it.endpointName === endpointName)
+  const schemaSet = schemas.find(
+    (it) => it.jsonSchema.endpointName === endpointName
+  )
 
-  if (!schema) {
+  if (!schemaSet) {
     throw new Error(`No schema found for endpoint ${endpointName}`)
   }
 
-  return {endpoint, schema}
+  return {endpoint, schemaSet}
 }

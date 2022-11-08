@@ -14,7 +14,7 @@ import {useCurrentSchema} from "utils/hooks/useCurrentSchema"
 export function ModelDetail<T extends HasId = HasId>(): ReactElement {
   const {endpointName, modelId} = useParams()
   const navigate = useNavigate()
-  const {endpoint, schema} = useCurrentSchema<T>()
+  const {endpoint, schemaSet} = useCurrentSchema<T>()
 
   const [item, setItem] = React.useState<T | null>()
 
@@ -27,7 +27,7 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
     }
   }, [endpointName, modelId])
 
-  if (!schema || !endpointName) {
+  if (!schemaSet || !endpointName) {
     return <ErrorAlert>Model schema not found - {endpointName}</ErrorAlert>
   }
 
@@ -56,7 +56,7 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
       .catch(() => alert("Failed to delete"))
   }
 
-  const itemTitle = schema.titleFields
+  const itemTitle = schemaSet.jsonSchema.titleFields
     .map((field) => item[field as keyof T])
     .join(" ")
 
@@ -64,20 +64,20 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
     <Container maxWidth="md">
       <PageHeader
         breadcrumbs={[
-          [schema.title, `/models/${endpointName}`],
+          [schemaSet.jsonSchema.title, `/models/${endpointName}`],
           [itemTitle, ""]
         ]}
         title={itemTitle}
       >
         <Button color="error" onClick={handleDelete}>
-          Delete {schema.title}
+          Delete
         </Button>
       </PageHeader>
 
       <Card>
         <CardContent>
           <ModelForm
-            schema={schema}
+            schemaSet={schemaSet}
             initialValues={item}
             onSubmit={onSubmit}
             type="save"

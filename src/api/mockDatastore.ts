@@ -1,19 +1,22 @@
-import {LKSchema} from "utils/models"
-import {Product, User} from "./mockApi"
-import {generateSchemas} from "./mocks/modelSchemas"
+import {SchemaSet} from "./genericSdk"
+import {Product, Tag, User} from "./mockApi"
 import {generateProducts} from "./mocks/products"
+import {generateSchemas} from "./mocks/schemas"
+import {generateTags} from "./mocks/tags"
 import {generateUsers} from "./mocks/users"
 
 export interface MockDatastore {
   users: User[]
   products: Product[]
-  schemas: LKSchema[]
+  tags: Tag[]
+  schemas: SchemaSet[]
 }
 
 export const generateMockDatastore = (): MockDatastore => {
   const users = generateUsers(25)
   const schemas = generateSchemas()
-  const products = generateProducts(100)
+  const tags = generateTags(3)
+  const products = generateProducts(100, tags)
 
-  return {users, schemas, products}
+  return {users, schemas, products, tags}
 }

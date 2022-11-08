@@ -5,7 +5,9 @@ import {uploadFile} from "utils/helpers/uploads"
 import {useCurrentSchema} from "utils/hooks/useCurrentSchema"
 
 export const CustomFileWidget: FC<WidgetProps> = (props) => {
-  const {schema} = useCurrentSchema()
+  const {
+    schemaSet: {jsonSchema}
+  } = useCurrentSchema()
 
   const [showSelector, setShowSelector] = useState(!props.value)
   const [isUploading, setIsUploading] = useState(false)
@@ -18,15 +20,16 @@ export const CustomFileWidget: FC<WidgetProps> = (props) => {
     setIsUploading(true)
 
     try {
-      if (!schema?.uploadEarlyEndpoint) {
+      if (!jsonSchema.uploadEarlyEndpoint) {
         throw new Error("No upload early endpoint present in schema")
       }
 
-      const fileURL = await uploadFile(file, schema?.uploadEarlyEndpoint).catch(
-        () => {
-          throw new Error("Failed to upload file")
-        }
-      )
+      const fileURL = await uploadFile(
+        file,
+        jsonSchema.uploadEarlyEndpoint
+      ).catch(() => {
+        throw new Error("Failed to upload file")
+      })
       props.onChange(fileURL)
     } catch (e) {
       alert((e as Error).message || "Error uploading file")

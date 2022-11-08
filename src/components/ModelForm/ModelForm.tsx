@@ -2,23 +2,25 @@ import {areValuesSame} from "@lightningkite/lightning-server-simplified"
 import {Form} from "@rjsf/mui"
 import {RegistryWidgetsType} from "@rjsf/utils"
 import validator from "@rjsf/validator-ajv8"
+import {SchemaSet} from "api/genericSdk"
 import {CustomFileWidget} from "components/CustomFileWidget"
+import {ReferenceWidget} from "components/ReferenceWidget"
 import React, {ReactElement, useState} from "react"
-import {LKSchema} from "utils/models"
 import {v4 as uuidv4} from "uuid"
 
 export interface ModelFormProps<T> {
-  schema: LKSchema
+  schemaSet: SchemaSet
   initialValues?: Partial<T>
   onSubmit: (data: T) => void
   type: "create" | "save"
 }
 
 export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
-  const {schema, onSubmit, initialValues, type} = props
+  const {schemaSet, onSubmit, initialValues, type} = props
 
   const customWidgets: RegistryWidgetsType = {
-    FileWidget: CustomFileWidget
+    FileWidget: CustomFileWidget,
+    ReferenceWidget
   }
 
   const [currentValues, setCurrentValues] = useState<Partial<T>>(
@@ -27,7 +29,7 @@ export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
 
   return (
     <Form
-      schema={schema}
+      schema={schemaSet.jsonSchema}
       formData={{
         _id: uuidv4(),
         createdAt: new Date().toISOString(),
@@ -47,9 +49,9 @@ export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
             disabled:
               initialValues && areValuesSame(initialValues, currentValues)
           },
-          norender: false,
           submitText: type === "create" ? "Create" : "Save"
-        }
+        },
+        ...schemaSet.uiSchema
       }}
     />
   )

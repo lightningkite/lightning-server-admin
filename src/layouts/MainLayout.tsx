@@ -13,9 +13,7 @@ import React, {FC, ReactNode, useContext} from "react"
 import {NavLink} from "react-router-dom"
 
 const MainLayout: FC<{children: ReactNode}> = ({children}) => {
-  const {schemas, logout} = useContext(AuthContext)
-
-  console.log({schemas})
+  const {schemaSets, logout} = useContext(AuthContext)
 
   return (
     <Stack direction="row" minHeight="100vh">
@@ -63,12 +61,12 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
         <Divider sx={{my: 2}} />
 
         <Stack spacing={1}>
-          {schemas.map((schema) => (
+          {schemaSets.map((schemaSet) => (
             <Button
-              key={schema.endpointName}
+              key={schemaSet.jsonSchema.endpointName}
               component={NavLink}
               // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              to={`/models/${schema.endpointName}`}
+              to={`/models/${schemaSet.jsonSchema.endpointName}`}
               sx={{
                 justifyContent: "start",
                 "&.active": {
@@ -77,7 +75,7 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
                 }
               }}
             >
-              {schema.title}
+              {schemaSet.jsonSchema.title}
             </Button>
           ))}
         </Stack>

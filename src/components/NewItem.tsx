@@ -10,7 +10,7 @@ export interface NewItemProps {
 
 export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
   const {onCreate} = props
-  const {endpoint, schema} = useCurrentSchema<T>()
+  const {endpoint, schemaSet} = useCurrentSchema<T>()
 
   const [showDialog, setShowDialog] = useState(false)
 
@@ -32,13 +32,17 @@ export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
 
   return (
     <>
-      <Button onClick={handleOpen}>Add {schema.title}</Button>
+      <Button onClick={handleOpen}>Add {schemaSet.jsonSchema.title}</Button>
 
       <Dialog open={showDialog} onClose={handleClose}>
-        <DialogTitle>Create New {schema.title}</DialogTitle>
+        <DialogTitle>Create New {schemaSet.jsonSchema.title}</DialogTitle>
 
         <DialogContent>
-          <ModelForm schema={schema} onSubmit={handleSubmit} type="create" />
+          <ModelForm
+            schemaSet={schemaSet}
+            onSubmit={handleSubmit}
+            type="create"
+          />
         </DialogContent>
       </Dialog>
     </>

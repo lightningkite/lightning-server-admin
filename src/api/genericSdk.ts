@@ -11,6 +11,7 @@ import {
   Query,
   SessionRestEndpoint
 } from "@lightningkite/lightning-server-simplified"
+import {UiSchema} from "@rjsf/utils"
 import {LKSchema} from "utils/models"
 
 export interface User extends HasId {
@@ -51,6 +52,11 @@ export interface HealthStatus {
   additionalMessage: string | null | undefined
 }
 
+export interface SchemaSet {
+  jsonSchema: LKSchema
+  uiSchema: UiSchema | null | undefined
+}
+
 export interface GenericAPI {
   readonly auth: {
     emailLoginLink(input: string): Promise<void>
@@ -60,7 +66,7 @@ export interface GenericAPI {
   }
 
   readonly adminEditor: {
-    getSchemas(requesterToken: string): Promise<LKSchema[]>
+    getSchemas(requesterToken: string): Promise<SchemaSet[]>
   }
 
   getServerHealth(requesterToken: string): Promise<ServerHealth>
@@ -96,7 +102,7 @@ export class GenericRequesterSession {
     api: this.api,
     requesterToken: this.requesterToken,
 
-    getModelSchema(): Promise<LKSchema[]> {
+    getModelSchema(): Promise<SchemaSet[]> {
       return this.api.adminEditor.getSchemas(this.requesterToken)
     }
   }
@@ -156,7 +162,7 @@ export class GenericLiveApi implements GenericAPI {
     httpUrl: this.httpUrl,
     socketUrl: this.socketUrl,
     extraHeaders: this.extraHeaders,
-    getSchemas(requesterToken: string): Promise<LKSchema[]> {
+    getSchemas(requesterToken: string): Promise<SchemaSet[]> {
       return apiCall(`${this.httpUrl}/admin-editor/models-schema`, undefined, {
         method: "GET",
         headers: {
