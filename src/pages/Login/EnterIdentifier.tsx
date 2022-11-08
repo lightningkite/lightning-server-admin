@@ -161,7 +161,6 @@ const EnterIdentifier: FC<EnterIdentifierProps> = (props) => {
         />
 
         <Autocomplete
-          disablePortal
           options={backendOptions}
           fullWidth
           disableClearable
@@ -183,26 +182,6 @@ const EnterIdentifier: FC<EnterIdentifierProps> = (props) => {
             />
           )}
         />
-
-        {/* <TextField
-          label="Server URL"
-          select={backendOptions.length > 0}
-          value={backendURL}
-          onChange={(e) => setBackendURL(e.target.value)}
-          type="url"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">https://</InputAdornment>
-            )
-          }}
-          fullWidth
-        >
-          {backendOptions.map((option) => (
-            <MenuItem key={option} value={option}>
-              {option}
-            </MenuItem>
-          ))}
-        </TextField> */}
 
         {!!error && <Alert severity="error">{error}</Alert>}
 

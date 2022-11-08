@@ -1,4 +1,4 @@
-import {ThemeProvider} from "@mui/material"
+import {Button, ThemeProvider} from "@mui/material"
 import {LocalizationProvider} from "@mui/x-date-pickers"
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs"
 import {GenericAPI, GenericRequesterSession, User} from "api/genericSdk"
@@ -80,7 +80,10 @@ const App: FC = () => {
       )
     }
 
-    session.adminEditor.getModelSchema().then(setModelSchemas)
+    session.adminEditor
+      .getModelSchema()
+      .then(setModelSchemas)
+      .catch(() => setModelSchemas(null))
   }, [isLoggedIn])
 
   if (isLoggedIn && (currentUser === undefined || schemas === undefined)) {
@@ -88,11 +91,31 @@ const App: FC = () => {
   }
 
   if (currentUser === null) {
-    return <ErrorAlert>Error loading current user</ErrorAlert>
+    return (
+      <ErrorAlert
+        action={
+          <Button color="inherit" size="small" onClick={logout}>
+            Log Out
+          </Button>
+        }
+      >
+        Error loading current user
+      </ErrorAlert>
+    )
   }
 
   if (schemas === null) {
-    return <ErrorAlert>Error loading model schemas</ErrorAlert>
+    return (
+      <ErrorAlert
+        action={
+          <Button color="inherit" size="small" onClick={logout}>
+            Log Out
+          </Button>
+        }
+      >
+        Error loading model schemas
+      </ErrorAlert>
+    )
   }
 
   return (
