@@ -84,6 +84,7 @@ export function generateSchemas(): SchemaSet[] {
             minimum: 0
           },
           tags: {
+            title: "Tags",
             type: "array",
             items: {
               type: "string"

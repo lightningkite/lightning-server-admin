@@ -1,10 +1,10 @@
 import {HasId} from "@lightningkite/lightning-server-simplified"
 import {RestAutocompleteInput} from "@lightningkite/mui-lightning-components"
-import {Typography} from "@mui/material"
+import {Box, Typography} from "@mui/material"
 import {WidgetProps} from "@rjsf/utils"
 import {AuthContext} from "App"
 import React, {ReactElement, useContext, useEffect, useState} from "react"
-import ErrorAlert from "./ErrorAlert"
+import ErrorAlert from "../ErrorAlert"
 
 export function ReferenceWidget<T extends HasId = HasId>(
   props: WidgetProps
@@ -40,38 +40,30 @@ export function ReferenceWidget<T extends HasId = HasId>(
     item && props.onChange(item._id)
   }, [item])
 
+  if (error) {
+    return <ErrorAlert>Failed to get item</ErrorAlert>
+  }
+
+  if (item === undefined) {
+    return <p>Loading...</p>
+  }
+
+  if (schemaSet === undefined) {
+    return <ErrorAlert>Unable to find item schema</ErrorAlert>
+  }
+
   return (
-    <div>
-      <Typography mb={1}>{props.label}</Typography>
-      {(() => {
-        if (error) {
-          return <ErrorAlert>Failed to get item</ErrorAlert>
-        }
-
-        if (item === undefined) {
-          return <p>Loading...</p>
-        }
-
-        if (schemaSet === undefined) {
-          return <ErrorAlert>Unable to find item schema</ErrorAlert>
-        }
-
-        return (
-          <RestAutocompleteInput
-            value={item}
-            onChange={setItem}
-            restEndpoint={endpoint}
-            getOptionLabel={(item) =>
-              schemaSet.jsonSchema.titleFields
-                .map((field) => item[field as keyof T])
-                .join(" ")
-            }
-            searchProperties={
-              schemaSet.jsonSchema.titleFields as Array<keyof T>
-            }
-          />
-        )
-      })()}
-    </div>
+    <RestAutocompleteInput
+      label={props.label}
+      value={item}
+      onChange={setItem}
+      restEndpoint={endpoint}
+      getOptionLabel={(item) =>
+        schemaSet.jsonSchema.titleFields
+          .map((field) => item[field as keyof T])
+          .join(" ")
+      }
+      searchProperties={schemaSet.jsonSchema.titleFields as Array<keyof T>}
+    />
   )
 }

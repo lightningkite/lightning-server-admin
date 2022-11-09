@@ -1,12 +1,13 @@
 import {areValuesSame} from "@lightningkite/lightning-server-simplified"
+import {FormProps} from "@rjsf/core"
 import {Form} from "@rjsf/mui"
-import {RegistryWidgetsType} from "@rjsf/utils"
 import validator from "@rjsf/validator-ajv8"
 import {SchemaSet} from "api/genericSdk"
-import {CustomFileWidget} from "components/CustomFileWidget"
-import {ReferenceWidget} from "components/ReferenceWidget"
+import {CustomFileWidget} from "components/ModelForm/CustomFileWidget"
+import {ReferenceWidget} from "components/ModelForm/ReferenceWidget"
 import React, {ReactElement, useState} from "react"
 import {v4 as uuidv4} from "uuid"
+import {CustomArrayFieldTemplate} from "./CustomArrayFieldTemplate"
 
 export interface ModelFormProps<T> {
   schemaSet: SchemaSet
@@ -18,9 +19,13 @@ export interface ModelFormProps<T> {
 export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
   const {schemaSet, onSubmit, initialValues, type} = props
 
-  const customWidgets: RegistryWidgetsType = {
+  const customWidgets: FormProps["widgets"] = {
     FileWidget: CustomFileWidget,
     ReferenceWidget
+  }
+
+  const customTemplates: FormProps["templates"] = {
+    ArrayFieldTemplate: CustomArrayFieldTemplate
   }
 
   const [currentValues, setCurrentValues] = useState<Partial<T>>(
@@ -40,6 +45,7 @@ export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
       onSubmit={(e) => onSubmit(e.formData)}
       onChange={(e) => setCurrentValues(e.formData)}
       widgets={customWidgets}
+      templates={customTemplates}
       uiSchema={{
         _id: {"ui:disabled": true},
         createdAt: {"ui:disabled": true},
