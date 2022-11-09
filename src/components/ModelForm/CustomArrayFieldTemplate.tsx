@@ -1,15 +1,12 @@
-import {HasId} from "@lightningkite/lightning-server-simplified"
-import {Add, Delete} from "@mui/icons-material"
+import {Add, ArrowDownward, ArrowUpward, Delete} from "@mui/icons-material"
 import {Box, Button, IconButton, Stack, Typography} from "@mui/material"
 import {ArrayFieldTemplateProps} from "@rjsf/utils"
 import React, {ReactElement} from "react"
 
-export function CustomArrayFieldTemplate<T extends HasId = HasId>(
+export function CustomArrayFieldTemplate(
   props: ArrayFieldTemplateProps
 ): ReactElement {
   const {items, onAddClick, canAdd, title} = props
-
-  console.log(props)
 
   return (
     <Box mb={2}>
@@ -24,9 +21,24 @@ export function CustomArrayFieldTemplate<T extends HasId = HasId>(
               direction="row"
               alignItems="center"
               key={item.key}
-              spacing={2}
+              spacing={1}
             >
               {item.children}
+
+              <IconButton
+                disabled={!item.hasMoveUp}
+                onClick={item.onReorderClick(item.index, item.index - 1)}
+              >
+                <ArrowUpward />
+              </IconButton>
+
+              <IconButton
+                disabled={!item.hasMoveDown}
+                onClick={item.onReorderClick(item.index, item.index + 1)}
+              >
+                <ArrowDownward />
+              </IconButton>
+
               {item.hasRemove && (
                 <IconButton onClick={item.onDropIndexClick(item.index)}>
                   <Delete />
