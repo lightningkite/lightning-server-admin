@@ -39,6 +39,21 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
           flex: 1
         }))}
         dependencies={[refreshTrigger]}
+        multiselectActions={[
+          {
+            label: "Delete",
+            action: (ids) => {
+              const result = confirm(
+                `Are you sure you want to delete ${ids.length} items?`
+              )
+              result &&
+                endpoint
+                  .bulkDelete({_id: {Inside: ids}})
+                  .then(() => setRefreshTrigger((prev) => prev + 1))
+                  .catch(() => alert("Failed to delete items"))
+            }
+          }
+        ]}
       />
     </Container>
   )

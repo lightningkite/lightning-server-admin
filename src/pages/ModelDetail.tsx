@@ -50,10 +50,12 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
   }
 
   const handleDelete = () => {
-    endpoint
-      .delete(modelId)
-      .then(() => navigate(`/models/${endpointName}`))
-      .catch(() => alert("Failed to delete"))
+    const result = confirm(`Are you sure you want to delete this item?`)
+    result &&
+      endpoint
+        .delete(modelId)
+        .then(() => navigate(`/models/${endpointName}`))
+        .catch(() => alert("Failed to delete"))
   }
 
   const itemTitle = schemaSet.jsonSchema.titleFields

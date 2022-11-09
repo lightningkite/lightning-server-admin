@@ -56,13 +56,38 @@ export const ServerHealthDisplay: FC = () => {
     <>
       {featuresNotOK.length > 0 && (
         <Alert severity="error" sx={{mb: 3}} variant="filled">
-          <AlertTitle>Server Status Errors</AlertTitle>
-          Some features listed below are reporting errors. Contact Lightning
+          <AlertTitle>Site Status</AlertTitle>
+          Some services listed below are reporting anomalies. Contact Lightning
           Kite for additional information.
         </Alert>
       )}
 
-      <Stack direction="row" gap={2} mb={2} flexWrap={"wrap"}>
+      <Card sx={{mb: 2}}>
+        <CardContent>
+          <Typography variant="h6" fontWeight="bold" color="primary.main">
+            Site Status
+          </Typography>
+          <List>
+            {Object.entries(serverHealth.features).map(([key, value]) => (
+              <ListItem key={key}>
+                <ListItemIcon>{StatusLevelIcons[value.level]}</ListItemIcon>
+                <ListItemText
+                  primary={lowerCamelCaseToTitleCase(key)}
+                  secondary={`${new Date(value.checkedAt).toLocaleString()} – ${
+                    value.level
+                  } ${
+                    value.additionalMessage
+                      ? " – " + value.additionalMessage
+                      : ""
+                  }`}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </CardContent>
+      </Card>
+
+      <Stack direction="row" gap={2} flexWrap={"wrap"}>
         <Card sx={{flexGrow: 1, minWidth: 200}}>
           <CardContent>
             <Typography variant="h6" fontWeight="bold" color="primary.main">
@@ -132,31 +157,6 @@ export const ServerHealthDisplay: FC = () => {
           </CardContent>
         </Card>
       </Stack>
-
-      <Card>
-        <CardContent>
-          <Typography variant="h6" fontWeight="bold" color="primary.main">
-            Server Status
-          </Typography>
-          <List>
-            {Object.entries(serverHealth.features).map(([key, value]) => (
-              <ListItem key={key}>
-                <ListItemIcon>{StatusLevelIcons[value.level]}</ListItemIcon>
-                <ListItemText
-                  primary={lowerCamelCaseToTitleCase(key)}
-                  secondary={`${new Date(value.checkedAt).toLocaleString()} – ${
-                    value.level
-                  } ${
-                    value.additionalMessage
-                      ? " – " + value.additionalMessage
-                      : ""
-                  }`}
-                />
-              </ListItem>
-            ))}
-          </List>
-        </CardContent>
-      </Card>
     </>
   )
 }
