@@ -12,8 +12,6 @@ export function ReferenceWidget<T extends HasId = HasId>(
   const {uiSchema} = props
   const {session, schemaSets: schemas} = useContext(AuthContext)
 
-  console.log("uiSchema?.ui:options", uiSchema?.["ui:options"])
-
   const endpointName = (uiSchema?.["ui:options"]?.reference as string) ?? ""
   const schemaSet = schemas.find(
     (s) => s.jsonSchema.endpointName === endpointName
@@ -21,14 +19,21 @@ export function ReferenceWidget<T extends HasId = HasId>(
   const endpoint = session.getRestEndpoint<T>(endpointName)
 
   const [item, setItem] = useState<T | null>()
+  const [error, setError] = useState(false)
 
   useEffect(() => {
+    if (props.value === undefined || props.value === null) {
+      setItem(null)
+      return
+    }
+
     setItem(undefined)
+    setError(false)
 
     endpoint
       .detail(props.value)
-      .then(setItem)
-      .catch(() => setItem(null))
+      .then((r) => setItem(r ?? null))
+      .catch(() => setError(true))
   }, [props.value])
 
   useEffect(() => {
@@ -39,12 +44,12 @@ export function ReferenceWidget<T extends HasId = HasId>(
     <div>
       <Typography mb={1}>{props.label}</Typography>
       {(() => {
-        if (props.value && item === undefined) {
-          return <p>Loading...</p>
+        if (error) {
+          return <ErrorAlert>Failed to get item</ErrorAlert>
         }
 
-        if (props.value && item === null) {
-          return <ErrorAlert>Failed to get item</ErrorAlert>
+        if (item === undefined) {
+          return <p>Loading...</p>
         }
 
         if (schemaSet === undefined) {
@@ -53,7 +58,7 @@ export function ReferenceWidget<T extends HasId = HasId>(
 
         return (
           <RestAutocompleteInput
-            value={item ?? null}
+            value={item}
             onChange={setItem}
             restEndpoint={endpoint}
             getOptionLabel={(item) =>

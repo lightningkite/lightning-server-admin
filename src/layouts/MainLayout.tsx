@@ -32,7 +32,7 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
           justifyContent="apart"
           sx={{pt: 2}}
         >
-          <Typography variant="h5">React Admin</Typography>
+          <Typography variant="h5">Admin Editor</Typography>
 
           <HoverHelp description="Log out" enableWrapper sx={{ml: "auto"}}>
             <IconButton onClick={logout}>
