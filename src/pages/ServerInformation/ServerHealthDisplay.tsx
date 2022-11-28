@@ -15,7 +15,7 @@ import {Level, ServerHealth} from "api/genericSdk"
 import {AuthContext} from "App"
 import Loading from "components/Loading"
 import React, {FC, ReactNode, useContext, useEffect, useState} from "react"
-import {lowerCamelCaseToTitleCase} from "utils/helpers/miscHelpers"
+import {camelCaseToTitle} from "utils/helpers/miscHelpers"
 
 const StatusLevelIcons: Record<Level, ReactNode> = {
   [Level.OK]: <CheckCircle color="success" />,
@@ -79,7 +79,7 @@ export const ServerHealthDisplay: FC = () => {
               <ListItem key={key}>
                 <ListItemIcon>{StatusLevelIcons[value.level]}</ListItemIcon>
                 <ListItemText
-                  primary={lowerCamelCaseToTitleCase(key)}
+                  primary={camelCaseToTitle(key)}
                   secondary={`${new Date(value.checkedAt).toLocaleString()} – ${
                     value.level
                   } ${

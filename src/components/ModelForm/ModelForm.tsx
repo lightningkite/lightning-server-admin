@@ -47,9 +47,9 @@ export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
       widgets={customWidgets}
       templates={customTemplates}
       uiSchema={{
-        _id: {"ui:disabled": true},
-        createdAt: {"ui:disabled": true},
-        modifiedAt: {"ui:disabled": true},
+        // _id: {"ui:disabled": true},
+        // createdAt: {"ui:disabled": true},
+        // modifiedAt: {"ui:disabled": true},
         "ui:submitButtonOptions": {
           props: {
             disabled:

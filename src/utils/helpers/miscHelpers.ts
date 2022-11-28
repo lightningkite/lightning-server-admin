@@ -1,4 +1,4 @@
-export const lowerCamelCaseToTitleCase = (str: string) => {
+export const camelCaseToTitle = (str: string) => {
   return str
     .replace(/([A-Z])/g, " $1")
     .replace(/^./, (str) => str.toUpperCase())

@@ -6,7 +6,7 @@ import {NewItem} from "components/NewItem"
 import PageHeader from "components/PageHeader"
 import React, {ReactElement, useState} from "react"
 import {useNavigate, useParams} from "react-router-dom"
-import {lowerCamelCaseToTitleCase} from "utils/helpers/miscHelpers"
+import {camelCaseToTitle} from "utils/helpers/miscHelpers"
 import {useCurrentSchema} from "utils/hooks/useCurrentSchema"
 
 export function ModelIndex<T extends HasId = HasId>(): ReactElement {
@@ -35,7 +35,7 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
         searchFields={jsonSchema.searchFields as (keyof T)[]}
         columns={jsonSchema.tableColumns.map((key) => ({
           field: key,
-          headerName: lowerCamelCaseToTitleCase(key),
+          headerName: camelCaseToTitle(key),
           flex: 1
         }))}
         dependencies={[refreshTrigger]}
