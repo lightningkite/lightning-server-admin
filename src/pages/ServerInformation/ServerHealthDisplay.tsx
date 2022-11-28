@@ -24,6 +24,13 @@ const StatusLevelIcons: Record<Level, ReactNode> = {
   [Level.ERROR]: <Report color="error" />
 }
 
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return bytes.toFixed(0) + " B"
+  else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB"
+  else if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + " MB"
+  else return (bytes / 1073741824).toFixed(1) + " GB"
+}
+
 export const ServerHealthDisplay: FC = () => {
   const {session} = useContext(AuthContext)
 
@@ -126,25 +133,25 @@ export const ServerHealthDisplay: FC = () => {
               <ListItem>
                 <ListItemText
                   primary="Max"
-                  secondary={`${serverHealth.memory.maxMem} MB`}
+                  secondary={formatBytes(serverHealth.memory.maxMem)}
                 />
               </ListItem>
               <ListItem>
                 <ListItemText
                   primary="Total"
-                  secondary={`${serverHealth.memory.totalMemory} MB`}
+                  secondary={formatBytes(serverHealth.memory.totalMemory)}
                 />
               </ListItem>
               <ListItem>
                 <ListItemText
                   primary="Free"
-                  secondary={`${serverHealth.memory.freeMemory} MB`}
+                  secondary={formatBytes(serverHealth.memory.freeMemory)}
                 />
               </ListItem>
               <ListItem>
                 <ListItemText
                   primary="System Allocated"
-                  secondary={`${serverHealth.memory.systemAllocated} MB`}
+                  secondary={formatBytes(serverHealth.memory.systemAllocated)}
                 />
               </ListItem>
               <ListItem>

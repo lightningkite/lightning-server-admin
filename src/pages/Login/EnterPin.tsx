@@ -3,39 +3,38 @@ import {Alert, Button, TextField, Typography} from "@mui/material"
 import {UnauthContext} from "App"
 import React, {createRef, FC, useContext, useEffect, useState} from "react"
 
-export interface EnterCodeProps {
-  tempUUID: string
-  identifier: string
+export interface EnterPinProps {
+  email: string
 }
 
-const EnterCode: FC<EnterCodeProps> = (props) => {
-  const {identifier, tempUUID} = props
+const EnterPin: FC<EnterPinProps> = (props) => {
+  const {email} = props
 
   const {api, authenticate} = useContext(UnauthContext)
-  const submitCodeButton = createRef<HTMLButtonElement>()
+  const submitPinButton = createRef<HTMLButtonElement>()
 
-  // The 7-digit code sent to the user
-  const [code, setCode] = useState("")
+  // The 6-digit pin sent to the user
+  const [pin, setPin] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState("")
 
   useEffect(() => {
-    if (code.length === 7) {
-      submitCodeButton.current?.focus()
+    if (pin.length === 6) {
+      submitPinButton.current?.focus()
     }
-  }, [code])
+  }, [pin])
 
   return (
     <>
-      <Typography variant="h1">Code Sent!</Typography>
+      <Typography variant="h1">Pin Sent!</Typography>
       <Typography variant="subtitle1" mt={3} lineHeight={1.2}>
-        Enter the 7-digit code that has been sent to &quot;
-        {identifier}&quot;
+        Enter the 6-digit pin that has been sent to &quot;
+        {email}&quot;
       </Typography>
 
       <TextField
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
+        value={pin}
+        onChange={(e) => setPin(e.target.value)}
         fullWidth
         sx={{my: 2}}
       />
@@ -49,27 +48,28 @@ const EnterCode: FC<EnterCodeProps> = (props) => {
       <LoadingButton
         loading={submitting}
         variant="contained"
-        disabled={code.length < 7}
+        disabled={pin.length < 6}
         fullWidth
-        ref={submitCodeButton}
+        ref={submitPinButton}
         onClick={() => {
-          if (!api) {
-            setError("API not initialized")
-            return
-          }
-
           setSubmitting(true)
           setError("")
 
+          if (!api) {
+            setError("API not set")
+            setSubmitting(false)
+            return
+          }
+
           api.auth
-            .submitSSO({
-              value: code,
-              clientKey: tempUUID
+            .emailPINLogin({
+              email,
+              pin
             })
             .then((token) => {
               authenticate(token)
             })
-            .catch(() => setError("Failed to sign-in using the code"))
+            .catch(() => setError("Failed to sign-in using the pin"))
             .finally(() => setSubmitting(false))
         }}
       >
@@ -83,4 +83,4 @@ const EnterCode: FC<EnterCodeProps> = (props) => {
   )
 }
 
-export default EnterCode
+export default EnterPin

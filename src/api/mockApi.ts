@@ -14,11 +14,11 @@ import {
 } from "@lightningkite/lightning-server-simplified"
 import {LocalStorageKey} from "utils/constants"
 import {
+  EmailPinLogin,
   GenericAPI,
   Level,
   SchemaSet,
-  ServerHealth,
-  SSOAuthSubmission
+  ServerHealth
 } from "./genericSdk"
 import {generateMockDatastore} from "./mockDatastore"
 
@@ -267,27 +267,24 @@ export class MockApi implements GenericAPI {
   }
 
   readonly auth = {
-    emailLoginLink: async (email: string): Promise<void> => {
+    refreshToken: async (): Promise<string> => {
+      return "mock-refresh-token"
+    },
+    getSelf: (_userToken: string): Promise<User> => {
+      if (!myUser) return Promise.reject()
+      return Promise.resolve(myUser)
+    },
+    emailLoginLink: async (_email: string): Promise<void> => {
       localStorage.setItem(LocalStorageKey.USER_TOKEN, "mock-user-token")
       myUser = faker.helpers.arrayElement(this.mockDatastore.users)
       alert(
         "You are using the mock API and will not receive an email. Refresh the page to log in."
       )
     },
-    loginSSO: async (input: string): Promise<string> => {
+    emailPINLogin: async (_input: EmailPinLogin): Promise<string> => {
       localStorage.setItem(LocalStorageKey.USER_TOKEN, "mock-user-token")
       myUser = faker.helpers.arrayElement(this.mockDatastore.users)
-      alert(
-        "You are using the mock API and will not receive an email or text. Enter any code to log in."
-      )
       return "mock-sso-uuid"
-    },
-    submitSSO: async (input: SSOAuthSubmission): Promise<string> => {
-      return "mock-user-token"
-    },
-    getSelf: (requesterToken: string): Promise<User> => {
-      if (!myUser) return Promise.reject()
-      return Promise.resolve(myUser)
     }
   }
 
@@ -297,11 +294,11 @@ export class MockApi implements GenericAPI {
       version: "0.0.0",
       loadAverageCpu: 80,
       memory: {
-        maxMem: 321,
-        totalMemory: 512,
-        freeMemory: 128,
-        systemAllocated: 256,
-        memUsagePercent: 50
+        maxMem: 883884032,
+        totalMemory: 59195392,
+        freeMemory: 25636256,
+        systemAllocated: 33559136,
+        memUsagePercent: 6.69,
       },
       features: {
         authentication: {
