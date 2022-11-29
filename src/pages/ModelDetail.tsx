@@ -14,7 +14,7 @@ import {useCurrentSchema} from "utils/hooks/useCurrentSchema"
 export function ModelDetail<T extends HasId = HasId>(): ReactElement {
   const {endpointName, modelId} = useParams()
   const navigate = useNavigate()
-  const {endpoint, schemaSet} = useCurrentSchema<T>()
+  const {endpoint, modelSchema} = useCurrentSchema<T>()
 
   const [item, setItem] = React.useState<T | null>()
 
@@ -27,7 +27,7 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
     }
   }, [endpointName, modelId])
 
-  if (!schemaSet || !endpointName) {
+  if (!endpointName) {
     return <ErrorAlert>Model schema not found - {endpointName}</ErrorAlert>
   }
 
@@ -58,15 +58,15 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
         .catch(() => alert("Failed to delete"))
   }
 
-  const itemTitle = schemaSet.jsonSchema.titleFields
-    .map((field) => item[field as keyof T])
+  const itemTitle = modelSchema.titleFields
+    .map((field) => item[field])
     .join(" ")
 
   return (
     <Container maxWidth="md">
       <PageHeader
         breadcrumbs={[
-          [schemaSet.jsonSchema.title, `/models/${endpointName}`],
+          [modelSchema.title, `/models/${endpointName}`],
           [itemTitle, ""]
         ]}
         title={itemTitle}
@@ -79,7 +79,7 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
       <Card>
         <CardContent>
           <ModelForm
-            schemaSet={schemaSet}
+            endpointName={endpointName}
             initialValues={item}
             onSubmit={onSubmit}
             type="save"

@@ -1,13 +1,11 @@
 import {Button, Stack, Typography} from "@mui/material"
 import {WidgetProps} from "@rjsf/utils"
-import React, {FC, useState} from "react"
+import {AuthContext} from "App"
+import React, {FC, useContext, useState} from "react"
 import {uploadFile} from "utils/helpers/uploads"
-import {useCurrentSchema} from "utils/hooks/useCurrentSchema"
 
 export const CustomFileWidget: FC<WidgetProps> = (props) => {
-  const {
-    schemaSet: {jsonSchema}
-  } = useCurrentSchema()
+  const {lkSchema} = useContext(AuthContext)
 
   const [showSelector, setShowSelector] = useState(!props.value)
   const [isUploading, setIsUploading] = useState(false)
@@ -20,13 +18,13 @@ export const CustomFileWidget: FC<WidgetProps> = (props) => {
     setIsUploading(true)
 
     try {
-      if (!jsonSchema.uploadEarlyEndpoint) {
+      if (!lkSchema.uploadEarlyEndpoint) {
         throw new Error("No upload early endpoint present in schema")
       }
 
       const fileURL = await uploadFile(
         file,
-        jsonSchema.uploadEarlyEndpoint
+        lkSchema.uploadEarlyEndpoint
       ).catch(() => {
         throw new Error("Failed to upload file")
       })

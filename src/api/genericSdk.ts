@@ -11,8 +11,50 @@ import {
   Query,
   SessionRestEndpoint
 } from "@lightningkite/lightning-server-simplified"
-import {UiSchema} from "@rjsf/utils"
-import {LKSchema} from "utils/models"
+import {RJSFSchema} from "@rjsf/utils"
+
+export interface LKSchema {
+  uploadEarlyEndpoint?: string
+  definitions: RJSFSchema["$defs"]
+  endpoints: EndpointSchema[]
+  models: Record<string, LKModelSchema<any>>
+}
+
+export interface LKModelSchema<T> extends RJSFSchema {
+  title: string
+  permissions: null
+  searchFields: Array<keyof T>
+  tableColumns: Array<keyof T>
+  titleFields: Array<keyof T>
+  properties: Record<string, RJSFSchema>
+}
+
+export interface EndpointSchema {
+  group: string
+  method: HTTPVerb
+  path: string
+  routes: Record<string, RJSFSchema>
+  input: RJSFSchema
+  output: RJSFSchema
+}
+
+export interface PermissionsSchema {
+  create: null
+  read: null
+  readMask: null
+  update: null
+  updateRestrictions: null
+  delete: null
+  maxQueryTimeMs: null
+}
+
+export enum HTTPVerb {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  DELETE = "DELETE",
+  PATCH = "PATCH"
+}
 
 export interface User extends HasId {
   email: string
@@ -53,11 +95,6 @@ export interface HealthStatus {
   additionalMessage: string | null | undefined
 }
 
-export interface SchemaSet {
-  jsonSchema: LKSchema
-  uiSchema: UiSchema | null | undefined
-}
-
 export interface GenericAPI {
   readonly auth: {
     refreshToken(userToken: string): Promise<string>
@@ -66,9 +103,7 @@ export interface GenericAPI {
     emailPINLogin(input: EmailPinLogin): Promise<string>
   }
 
-  readonly adminEditor: {
-    getSchemas(userToken: string): Promise<SchemaSet[]>
-  }
+  getSchema(userToken: string): Promise<LKSchema>
 
   getServerHealth(userToken: string): Promise<ServerHealth>
 
@@ -96,13 +131,8 @@ export class GenericRequesterSession {
     }
   }
 
-  readonly adminEditor = {
-    api: this.api,
-    userToken: this.userToken,
-
-    getModelSchema(): Promise<SchemaSet[]> {
-      return this.api.adminEditor.getSchemas(this.userToken)
-    }
+  getSchema(): Promise<LKSchema> {
+    return this.api.getSchema(this.userToken)
   }
 
   getServerHealth(): Promise<ServerHealth> {
@@ -155,19 +185,14 @@ export class GenericLiveApi implements GenericAPI {
     }
   }
 
-  readonly adminEditor = {
-    httpUrl: this.httpUrl,
-    socketUrl: this.socketUrl,
-    extraHeaders: this.extraHeaders,
-    getSchemas(userToken: string): Promise<SchemaSet[]> {
-      return apiCall(`${this.httpUrl}/admin-editor/models-schema`, undefined, {
-        method: "GET",
-        headers: {
-          ...this.extraHeaders,
-          Authorization: `Bearer ${userToken}`
-        }
-      }).then((x) => x.json())
-    }
+  getSchema(userToken: string): Promise<LKSchema> {
+    return apiCall(`${this.httpUrl}/admin-editor/models-schema`, undefined, {
+      method: "GET",
+      headers: {
+        ...this.extraHeaders,
+        Authorization: `Bearer ${userToken}`
+      }
+    }).then((x) => x.json())
   }
 
   getServerHealth(userToken: string): Promise<ServerHealth> {

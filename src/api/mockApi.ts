@@ -17,7 +17,7 @@ import {
   EmailPinLogin,
   GenericAPI,
   Level,
-  SchemaSet,
+  LKSchema,
   ServerHealth
 } from "./genericSdk"
 import {generateMockDatastore} from "./mockDatastore"
@@ -260,10 +260,8 @@ export class MockApi implements GenericAPI {
     }
   }
 
-  readonly adminEditor = {
-    getSchemas: async (requesterToken: string): Promise<SchemaSet[]> => {
-      return this.mockDatastore.schemas
-    }
+  getSchema = async (): Promise<LKSchema> => {
+    return this.mockDatastore.schema
   }
 
   readonly auth = {
@@ -298,7 +296,7 @@ export class MockApi implements GenericAPI {
         totalMemory: 59195392,
         freeMemory: 25636256,
         systemAllocated: 33559136,
-        memUsagePercent: 6.69,
+        memUsagePercent: 6.69
       },
       features: {
         authentication: {

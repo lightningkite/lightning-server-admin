@@ -13,7 +13,7 @@ import React, {FC, ReactNode, useContext} from "react"
 import {NavLink} from "react-router-dom"
 
 const MainLayout: FC<{children: ReactNode}> = ({children}) => {
-  const {schemaSets, logout} = useContext(AuthContext)
+  const {lkSchema, logout} = useContext(AuthContext)
 
   return (
     <Stack direction="row" minHeight="100vh">
@@ -63,23 +63,24 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
         <Divider sx={{my: 2}} />
 
         <Stack spacing={1}>
-          {schemaSets.map((schemaSet) => (
-            <Button
-              key={schemaSet.jsonSchema.endpointName}
-              component={NavLink}
-              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              to={`/models/${schemaSet.jsonSchema.endpointName}`}
-              sx={{
-                justifyContent: "start",
-                "&.active": {
-                  bgcolor: "primary.main",
-                  color: "white"
-                }
-              }}
-            >
-              {schemaSet.jsonSchema.title}
-            </Button>
-          ))}
+          {Object.entries(lkSchema.models).map(
+            ([endpointName, modelSchema]) => (
+              <Button
+                key={endpointName}
+                component={NavLink}
+                to={`/models/${endpointName}`}
+                sx={{
+                  justifyContent: "start",
+                  "&.active": {
+                    bgcolor: "primary.main",
+                    color: "white"
+                  }
+                }}
+              >
+                {modelSchema.title}
+              </Button>
+            )
+          )}
         </Stack>
       </Box>
       <Box bgcolor="background.default" width="100%" pt={3} pb={7}>

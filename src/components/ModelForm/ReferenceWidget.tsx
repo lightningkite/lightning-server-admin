@@ -1,6 +1,5 @@
 import {HasId} from "@lightningkite/lightning-server-simplified"
 import {RestAutocompleteInput} from "@lightningkite/mui-lightning-components"
-import {Box, Typography} from "@mui/material"
 import {WidgetProps} from "@rjsf/utils"
 import {AuthContext} from "App"
 import React, {ReactElement, useContext, useEffect, useState} from "react"
@@ -10,12 +9,10 @@ export function ReferenceWidget<T extends HasId = HasId>(
   props: WidgetProps
 ): ReactElement {
   const {uiSchema} = props
-  const {session, schemaSets: schemas} = useContext(AuthContext)
+  const {session, lkSchema} = useContext(AuthContext)
 
-  const endpointName = (uiSchema?.["ui:options"]?.reference as string) ?? ""
-  const schemaSet = schemas.find(
-    (s) => s.jsonSchema.endpointName === endpointName
-  )
+  const endpointName = ""
+  const modelSchema = lkSchema.models[endpointName]
   const endpoint = session.getRestEndpoint<T>(endpointName)
 
   const [item, setItem] = useState<T | null>()
@@ -48,10 +45,6 @@ export function ReferenceWidget<T extends HasId = HasId>(
     return <p>Loading...</p>
   }
 
-  if (schemaSet === undefined) {
-    return <ErrorAlert>Unable to find item schema</ErrorAlert>
-  }
-
   return (
     <RestAutocompleteInput
       label={props.label}
@@ -59,11 +52,9 @@ export function ReferenceWidget<T extends HasId = HasId>(
       onChange={setItem}
       restEndpoint={endpoint}
       getOptionLabel={(item) =>
-        schemaSet.jsonSchema.titleFields
-          .map((field) => item[field as keyof T])
-          .join(" ")
+        modelSchema.titleFields.map((field) => item[field as keyof T]).join(" ")
       }
-      searchProperties={schemaSet.jsonSchema.titleFields as Array<keyof T>}
+      searchProperties={modelSchema.titleFields as Array<keyof T>}
     />
   )
 }

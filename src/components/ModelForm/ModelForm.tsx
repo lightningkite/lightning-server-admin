@@ -2,22 +2,23 @@ import {areValuesSame} from "@lightningkite/lightning-server-simplified"
 import {FormProps} from "@rjsf/core"
 import {Form} from "@rjsf/mui"
 import validator from "@rjsf/validator-ajv8"
-import {SchemaSet} from "api/genericSdk"
+import {AuthContext} from "App"
 import {CustomFileWidget} from "components/ModelForm/CustomFileWidget"
 import {ReferenceWidget} from "components/ModelForm/ReferenceWidget"
-import React, {ReactElement, useState} from "react"
+import React, {ReactElement, useContext, useState} from "react"
 import {v4 as uuidv4} from "uuid"
 import {CustomArrayFieldTemplate} from "./CustomArrayFieldTemplate"
 
 export interface ModelFormProps<T> {
-  schemaSet: SchemaSet
+  endpointName: string
   initialValues?: Partial<T>
   onSubmit: (data: T) => void
   type: "create" | "save"
 }
 
 export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
-  const {schemaSet, onSubmit, initialValues, type} = props
+  const {endpointName, onSubmit, initialValues, type} = props
+  const {lkSchema} = useContext(AuthContext)
 
   const customWidgets: FormProps["widgets"] = {
     FileWidget: CustomFileWidget,
@@ -34,7 +35,7 @@ export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
 
   return (
     <Form
-      schema={schemaSet.jsonSchema}
+      schema={lkSchema.models[endpointName]}
       formData={{
         _id: uuidv4(),
         createdAt: new Date().toISOString(),
@@ -56,8 +57,8 @@ export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
               initialValues && areValuesSame(initialValues, currentValues)
           },
           submitText: type === "create" ? "Create" : "Save"
-        },
-        ...schemaSet.uiSchema
+        }
+        // ...schemaSet.uiSchema
       }}
     />
   )

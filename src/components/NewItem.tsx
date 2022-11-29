@@ -2,7 +2,9 @@ import {HasId} from "@lightningkite/lightning-server-simplified"
 import {Add} from "@mui/icons-material"
 import {Button, Dialog, DialogContent, DialogTitle} from "@mui/material"
 import React, {ReactElement, useState} from "react"
+import {useParams} from "react-router-dom"
 import {useCurrentSchema} from "utils/hooks/useCurrentSchema"
+import ErrorAlert from "./ErrorAlert"
 import {ModelForm} from "./ModelForm"
 
 export interface NewItemProps {
@@ -11,9 +13,16 @@ export interface NewItemProps {
 
 export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
   const {onCreate} = props
-  const {endpoint, schemaSet} = useCurrentSchema<T>()
+  const {endpointName} = useParams()
+  const {endpoint, modelSchema} = useCurrentSchema<T>()
 
   const [showDialog, setShowDialog] = useState(false)
+
+  if (!endpointName) {
+    return (
+      <ErrorAlert>No endpoint name found in the current URL path</ErrorAlert>
+    )
+  }
 
   const handleClose = () => {
     setShowDialog(false)
@@ -34,15 +43,15 @@ export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
   return (
     <>
       <Button onClick={handleOpen} startIcon={<Add />}>
-        Add {schemaSet.jsonSchema.title}
+        Add {modelSchema.title}
       </Button>
 
       <Dialog open={showDialog} onClose={handleClose}>
-        <DialogTitle>Create New {schemaSet.jsonSchema.title}</DialogTitle>
+        <DialogTitle>Create New {modelSchema.title}</DialogTitle>
 
         <DialogContent>
           <ModelForm
-            schemaSet={schemaSet}
+            endpointName={endpointName}
             onSubmit={handleSubmit}
             type="create"
           />

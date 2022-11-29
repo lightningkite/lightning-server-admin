@@ -36,7 +36,7 @@ const EnterEmail: FC<EnterEmailProps> = (props) => {
   const throttledBackendURL = useThrottle(backendURL, 100)
 
   useEffect(() => {
-    changeBackendURL("https://" + throttledBackendURL)
+    changeBackendURL(throttledBackendURL)
   }, [throttledBackendURL])
 
   useEffect(() => {
@@ -107,12 +107,6 @@ const EnterEmail: FC<EnterEmailProps> = (props) => {
               label="Server URL"
               type="url"
               placeholder="api.example.com"
-              InputProps={{
-                ...params.InputProps,
-                startAdornment: (
-                  <InputAdornment position="start">https://</InputAdornment>
-                )
-              }}
             />
           )}
         />
