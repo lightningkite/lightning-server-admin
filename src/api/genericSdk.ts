@@ -27,11 +27,12 @@ export interface LKModelSchema<T> extends RJSFSchema {
   tableColumns: Array<keyof T>
   titleFields: Array<keyof T>
   properties: Record<string, RJSFSchema>
+  url: string
 }
 
 export interface EndpointSchema {
-  group: string
-  method: HTTPVerb
+  group?: string
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH"
   path: string
   routes: Record<string, RJSFSchema>
   input: RJSFSchema
@@ -46,14 +47,6 @@ export interface PermissionsSchema {
   updateRestrictions: null
   delete: null
   maxQueryTimeMs: null
-}
-
-export enum HTTPVerb {
-  GET = "GET",
-  POST = "POST",
-  PUT = "PUT",
-  DELETE = "DELETE",
-  PATCH = "PATCH"
 }
 
 export interface User extends HasId {
@@ -108,7 +101,7 @@ export interface GenericAPI {
   getServerHealth(userToken: string): Promise<ServerHealth>
 
   getRestEndpoint<T extends HasId>(
-    endpointName: string,
+    endpointURL: string,
     userToken: string
   ): SessionRestEndpoint<T>
 }
@@ -140,12 +133,12 @@ export class GenericRequesterSession {
   }
 
   getRestEndpoint<T extends HasId>(
-    endpointName: string
+    endpointURL: string
   ): SessionRestEndpoint<T> {
     const api = this.api
     const userToken = this.userToken
 
-    return api.getRestEndpoint<T>(endpointName, userToken)
+    return api.getRestEndpoint<T>(endpointURL, userToken)
   }
 }
 
@@ -186,7 +179,7 @@ export class GenericLiveApi implements GenericAPI {
   }
 
   getSchema(userToken: string): Promise<LKSchema> {
-    return apiCall(`${this.httpUrl}/admin-editor/models-schema`, undefined, {
+    return apiCall(`${this.httpUrl}/meta/schema`, undefined, {
       method: "GET",
       headers: {
         ...this.extraHeaders,
@@ -205,7 +198,7 @@ export class GenericLiveApi implements GenericAPI {
   }
 
   getRestEndpoint<T extends HasId>(
-    endpointName: string,
+    endpointURL: string,
     userToken: string
   ): SessionRestEndpoint<T> {
     const httpUrl = this.httpUrl
@@ -213,7 +206,7 @@ export class GenericLiveApi implements GenericAPI {
 
     return {
       query<T>(input: Query<T>): Promise<Array<T>> {
-        return apiCall(`${httpUrl}/${endpointName}/rest/query`, input, {
+        return apiCall(`${endpointURL}/query`, input, {
           method: "POST",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
@@ -221,7 +214,7 @@ export class GenericLiveApi implements GenericAPI {
         }).then((x) => x.json())
       },
       detail(id: string): Promise<T> {
-        return apiCall(`${httpUrl}/${endpointName}/rest/${id}`, undefined, {
+        return apiCall(`${endpointURL}/${id}`, undefined, {
           method: "GET",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
@@ -229,7 +222,7 @@ export class GenericLiveApi implements GenericAPI {
         }).then((x) => x.json())
       },
       insertBulk(input: Array<T>): Promise<Array<T>> {
-        return apiCall(`${httpUrl}/${endpointName}/rest/bulk`, input, {
+        return apiCall(`${endpointURL}/bulk`, input, {
           method: "POST",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
@@ -237,7 +230,7 @@ export class GenericLiveApi implements GenericAPI {
         }).then((x) => x.json())
       },
       insert(input: T): Promise<T> {
-        return apiCall(`${httpUrl}/${endpointName}/rest`, input, {
+        return apiCall(`${endpointURL}`, input, {
           method: "POST",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
@@ -245,7 +238,7 @@ export class GenericLiveApi implements GenericAPI {
         }).then((x) => x.json())
       },
       upsert(id: string, input: T): Promise<T> {
-        return apiCall(`${httpUrl}/${endpointName}/rest/${id}`, input, {
+        return apiCall(`${endpointURL}/${id}`, input, {
           method: "POST",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
@@ -253,7 +246,7 @@ export class GenericLiveApi implements GenericAPI {
         }).then((x) => x.json())
       },
       bulkReplace(input: Array<T>): Promise<Array<T>> {
-        return apiCall(`${httpUrl}/${endpointName}/rest`, input, {
+        return apiCall(`${endpointURL}`, input, {
           method: "PUT",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
@@ -261,7 +254,7 @@ export class GenericLiveApi implements GenericAPI {
         }).then((x) => x.json())
       },
       replace(id: string, input: T): Promise<T> {
-        return apiCall(`${httpUrl}/${endpointName}/rest/${id}`, input, {
+        return apiCall(`${endpointURL}/${id}`, input, {
           method: "PUT",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
@@ -269,7 +262,7 @@ export class GenericLiveApi implements GenericAPI {
         }).then((x) => x.json())
       },
       bulkModify(input: MassModification<T>): Promise<number> {
-        return apiCall(`${httpUrl}/${endpointName}/rest/bulk`, input, {
+        return apiCall(`${endpointURL}/bulk`, input, {
           method: "PATCH",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
@@ -280,7 +273,7 @@ export class GenericLiveApi implements GenericAPI {
         id: string,
         input: Modification<T>
       ): Promise<EntryChange<T>> {
-        return apiCall(`${httpUrl}/${endpointName}/rest/${id}/delta`, input, {
+        return apiCall(`${endpointURL}/${id}/delta`, input, {
           method: "PATCH",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
@@ -288,7 +281,7 @@ export class GenericLiveApi implements GenericAPI {
         }).then((x) => x.json())
       },
       modify(id: string, input: Modification<T>): Promise<T> {
-        return apiCall(`${httpUrl}/${endpointName}/rest/${id}`, input, {
+        return apiCall(`${endpointURL}/${id}`, input, {
           method: "PATCH",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
@@ -296,7 +289,7 @@ export class GenericLiveApi implements GenericAPI {
         }).then((x) => x.json())
       },
       bulkDelete(input: Condition<T>): Promise<number> {
-        return apiCall(`${httpUrl}/${endpointName}/rest/bulk-delete`, input, {
+        return apiCall(`${endpointURL}/bulk-delete`, input, {
           method: "POST",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
@@ -304,7 +297,7 @@ export class GenericLiveApi implements GenericAPI {
         }).then((x) => x.json())
       },
       delete(id: string): Promise<void> {
-        return apiCall(`${httpUrl}/${endpointName}/rest/${id}`, undefined, {
+        return apiCall(`${endpointURL}/${id}`, undefined, {
           method: "DELETE",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
@@ -312,7 +305,7 @@ export class GenericLiveApi implements GenericAPI {
         }).then((x) => undefined)
       },
       count<T>(input: Condition<T>): Promise<number> {
-        return apiCall(`${httpUrl}/${endpointName}/rest/count`, input, {
+        return apiCall(`${endpointURL}/count`, input, {
           method: "POST",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
@@ -320,7 +313,7 @@ export class GenericLiveApi implements GenericAPI {
         }).then((x) => x.json())
       },
       groupCount(input: GroupCountQuery<T>): Promise<Record<string, number>> {
-        return apiCall(`${httpUrl}/${endpointName}/rest/group-count`, input, {
+        return apiCall(`${endpointURL}/group-count`, input, {
           method: "POST",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
@@ -328,7 +321,7 @@ export class GenericLiveApi implements GenericAPI {
         }).then((x) => x.json())
       },
       aggregate(input: AggregateQuery<T>): Promise<number | null | undefined> {
-        return apiCall(`${httpUrl}/${endpointName}/rest/aggregate`, input, {
+        return apiCall(`${endpointURL}/aggregate`, input, {
           method: "POST",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
@@ -338,16 +331,12 @@ export class GenericLiveApi implements GenericAPI {
       groupAggregate(
         input: GroupAggregateQuery<T>
       ): Promise<Record<string, number | null | undefined>> {
-        return apiCall(
-          `${httpUrl}/${endpointName}/rest/group-aggregate`,
-          input,
-          {
-            method: "POST",
-            headers: userToken
-              ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
-              : extraHeaders
-          }
-        ).then((x) => x.json())
+        return apiCall(`${endpointURL}/group-aggregate`, input, {
+          method: "POST",
+          headers: userToken
+            ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
+            : extraHeaders
+        }).then((x) => x.json())
       }
     }
   }

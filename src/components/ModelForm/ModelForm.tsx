@@ -37,15 +37,15 @@ export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
     <Form
       schema={lkSchema.models[endpointName]}
       formData={{
-        _id: uuidv4(),
-        createdAt: new Date().toISOString(),
-        modifiedAt: new Date().toISOString(),
+        // _id: uuidv4(),
+        // createdAt: new Date().toISOString(),
+        // modifiedAt: new Date().toISOString(),
         ...currentValues
       }}
       validator={validator}
       onSubmit={(e) => onSubmit(e.formData)}
       onChange={(e) => setCurrentValues(e.formData)}
-      widgets={customWidgets}
+      // widgets={customWidgets}
       templates={customTemplates}
       uiSchema={{
         // _id: {"ui:disabled": true},

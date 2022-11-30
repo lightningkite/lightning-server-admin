@@ -1,12 +1,14 @@
 import {Button, ThemeProvider} from "@mui/material"
 import {LocalizationProvider} from "@mui/x-date-pickers"
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs"
+import {RJSFSchema} from "@rjsf/utils"
 import {
   GenericAPI,
   GenericRequesterSession,
-  SchemaSet,
+  LKSchema,
   User
 } from "api/genericSdk"
+import {generateLKSchema} from "api/mocks/schemas"
 import {useSessionManager} from "api/useSessionManager"
 import ErrorAlert from "components/ErrorAlert"
 import Loading from "components/Loading"
@@ -28,7 +30,7 @@ export const AuthContext = createContext({
   refreshCurrentUser: (): Promise<void> => {
     throw new Error("Used refreshCurrentUser outside of AuthContext")
   },
-  schemaSets: [] as SchemaSet[]
+  lkSchema: {} as LKSchema
 })
 
 // UnauthContext is available when the user is not authenticated (login screen)
@@ -47,7 +49,7 @@ const App: FC = () => {
     useSessionManager()
 
   const [currentUser, setCurrentUser] = useState<User | null>()
-  const [schemas, setSchemas] = useState<SchemaSet[] | null>()
+  const [lkSchema, setLKSchema] = useState<LKSchema | null>()
 
   const isLoggedIn = !!session
 
@@ -84,13 +86,26 @@ const App: FC = () => {
       )
     }
 
-    session.adminEditor
-      .getModelSchema()
-      .then(setSchemas)
-      .catch(() => setSchemas(null))
+    session
+      .getSchema()
+      .then((schema) => {
+        // Copy definitions onto models
+        Object.keys(schema.models).forEach((modelName) => {
+          schema.models[modelName].definitions = schema.definitions
+          schema.models[modelName] = {
+            ...schema.models[modelName],
+            ...(schema.definitions as RJSFSchema)[
+              (schema.models[modelName].$ref as string).slice(14)
+            ]
+          }
+        })
+        console.log({...schema})
+        setLKSchema(schema)
+      })
+      .catch(() => setLKSchema(null))
   }, [isLoggedIn])
 
-  if (isLoggedIn && (currentUser === undefined || schemas === undefined)) {
+  if (isLoggedIn && (currentUser === undefined || lkSchema === undefined)) {
     return <Loading />
   }
 
@@ -108,19 +123,19 @@ const App: FC = () => {
     )
   }
 
-  if (schemas === null) {
-    return (
-      <ErrorAlert
-        action={
-          <Button color="inherit" size="small" onClick={logout}>
-            Log Out
-          </Button>
-        }
-      >
-        Error loading model schemas
-      </ErrorAlert>
-    )
-  }
+  // if (schemas === null) {
+  //   return (
+  //     <ErrorAlert
+  //       action={
+  //         <Button color="inherit" size="small" onClick={logout}>
+  //           Log Out
+  //         </Button>
+  //       }
+  //     >
+  //       Error loading model schemas
+  //     </ErrorAlert>
+  //   )
+  // }
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -133,7 +148,7 @@ const App: FC = () => {
                 logout,
                 currentUser: currentUser as User,
                 refreshCurrentUser,
-                schemaSets: schemas as SchemaSet[]
+                lkSchema: lkSchema ?? generateLKSchema()
               }}
             >
               <MainLayout>

@@ -117,24 +117,24 @@ export class MockApi implements GenericAPI {
   }
 
   getRestEndpoint<T extends HasId>(
-    endpointName: string,
+    endpointURL: string,
     requesterToken: string
   ): SessionRestEndpoint<T> {
     return {
       query: <T extends HasId>(input: Query<T>): Promise<Array<T>> => {
         return this.adaptEndpoint<T>(
-          endpointName,
+          endpointURL,
           "query",
           input,
           requesterToken
         )
       },
       detail: <T extends HasId>(id: string): Promise<T> => {
-        return this.adaptEndpoint<T>(endpointName, "detail", id, requesterToken)
+        return this.adaptEndpoint<T>(endpointURL, "detail", id, requesterToken)
       },
       insertBulk: <T extends HasId>(input: Array<T>): Promise<Array<T>> => {
         return this.adaptEndpoint<T>(
-          endpointName,
+          endpointURL,
           "insertBulk",
           input,
           requesterToken
@@ -142,7 +142,7 @@ export class MockApi implements GenericAPI {
       },
       insert: <T extends HasId>(input: T): Promise<T> => {
         return this.adaptEndpoint<T>(
-          endpointName,
+          endpointURL,
           "insert",
           input,
           requesterToken
@@ -150,7 +150,7 @@ export class MockApi implements GenericAPI {
       },
       upsert: <T extends HasId>(id: string, input: T): Promise<T> => {
         return this.adaptEndpoint<T>(
-          endpointName,
+          endpointURL,
           "upsert",
           id,
           input,
@@ -159,7 +159,7 @@ export class MockApi implements GenericAPI {
       },
       bulkReplace: <T extends HasId>(input: Array<T>): Promise<Array<T>> => {
         return this.adaptEndpoint<T>(
-          endpointName,
+          endpointURL,
           "bulkReplace",
           input,
           requesterToken
@@ -167,7 +167,7 @@ export class MockApi implements GenericAPI {
       },
       replace: <T extends HasId>(id: string, input: T): Promise<T> => {
         return this.adaptEndpoint<T>(
-          endpointName,
+          endpointURL,
           "replace",
           id,
           input,
@@ -178,7 +178,7 @@ export class MockApi implements GenericAPI {
         input: MassModification<T>
       ): Promise<number> => {
         return this.adaptEndpoint<T>(
-          endpointName,
+          endpointURL,
           "bulkModify",
           input,
           requesterToken
@@ -189,7 +189,7 @@ export class MockApi implements GenericAPI {
         input: Modification<T>
       ): Promise<EntryChange<T>> => {
         return this.adaptEndpoint<T>(
-          endpointName,
+          endpointURL,
           "modifyWithDiff",
           id,
           input,
@@ -201,7 +201,7 @@ export class MockApi implements GenericAPI {
         input: Modification<T>
       ): Promise<T> => {
         return this.adaptEndpoint<T>(
-          endpointName,
+          endpointURL,
           "modify",
           id,
           input,
@@ -210,18 +210,18 @@ export class MockApi implements GenericAPI {
       },
       bulkDelete: <T extends HasId>(input: Condition<T>): Promise<number> => {
         return this.adaptEndpoint<T>(
-          endpointName,
+          endpointURL,
           "bulkDelete",
           input,
           requesterToken
         )
       },
       delete: <T extends HasId>(id: string): Promise<void> => {
-        return this.adaptEndpoint<T>(endpointName, "delete", id, requesterToken)
+        return this.adaptEndpoint<T>(endpointURL, "delete", id, requesterToken)
       },
       count: <T extends HasId>(input: Condition<T>): Promise<number> => {
         return this.adaptEndpoint<T>(
-          endpointName,
+          endpointURL,
           "count",
           input,
           requesterToken
@@ -231,7 +231,7 @@ export class MockApi implements GenericAPI {
         input: GroupCountQuery<T>
       ): Promise<Record<string, number>> => {
         return this.adaptEndpoint<T>(
-          endpointName,
+          endpointURL,
           "groupCount",
           input,
           requesterToken
@@ -241,7 +241,7 @@ export class MockApi implements GenericAPI {
         input: AggregateQuery<T>
       ): Promise<number> => {
         return this.adaptEndpoint<T>(
-          endpointName,
+          endpointURL,
           "aggregate",
           input,
           requesterToken
@@ -251,7 +251,7 @@ export class MockApi implements GenericAPI {
         input: GroupAggregateQuery<T>
       ): Promise<Record<string, number>> => {
         return this.adaptEndpoint<T>(
-          endpointName,
+          endpointURL,
           "groupAggregate",
           input,
           requesterToken

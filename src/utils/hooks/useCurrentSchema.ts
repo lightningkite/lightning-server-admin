@@ -1,5 +1,5 @@
 import {HasId} from "@lightningkite/lightning-server-simplified"
-import { LKModelSchema } from "api/genericSdk"
+import {LKModelSchema} from "api/genericSdk"
 import {AuthContext} from "App"
 import {useContext} from "react"
 import {useParams} from "react-router-dom"
@@ -20,9 +20,8 @@ export const useCurrentSchema = <T extends HasId>() => {
     )
   }
 
-  const endpoint = session.getRestEndpoint<T>(endpointName)
-
   const modelSchema: LKModelSchema<T> = lkSchema.models[endpointName]
+  const endpoint = session.getRestEndpoint<T>(modelSchema.url)
 
   if (!modelSchema) {
     throw new Error(`No schema found for endpoint ${endpointName}`)

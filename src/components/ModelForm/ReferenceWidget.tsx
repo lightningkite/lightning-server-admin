@@ -13,7 +13,7 @@ export function ReferenceWidget<T extends HasId = HasId>(
 
   const endpointName = ""
   const modelSchema = lkSchema.models[endpointName]
-  const endpoint = session.getRestEndpoint<T>(endpointName)
+  const endpoint = session.getRestEndpoint<T>(modelSchema.url)
 
   const [item, setItem] = useState<T | null>()
   const [error, setError] = useState(false)
