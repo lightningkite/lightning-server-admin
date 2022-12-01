@@ -6,8 +6,8 @@ import {AuthContext} from "App"
 import {CustomFileWidget} from "components/ModelForm/CustomFileWidget"
 import {ReferenceWidget} from "components/ModelForm/ReferenceWidget"
 import React, {ReactElement, useContext, useState} from "react"
-import {v4 as uuidv4} from "uuid"
 import {CustomArrayFieldTemplate} from "./CustomArrayFieldTemplate"
+import {CustomFieldTemplate} from "./CustomFieldTemplate"
 
 export interface ModelFormProps<T> {
   endpointName: string
@@ -26,7 +26,8 @@ export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
   }
 
   const customTemplates: FormProps["templates"] = {
-    ArrayFieldTemplate: CustomArrayFieldTemplate
+    ArrayFieldTemplate: CustomArrayFieldTemplate,
+    FieldTemplate: CustomFieldTemplate
   }
 
   const [currentValues, setCurrentValues] = useState<Partial<T>>(

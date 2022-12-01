@@ -37,11 +37,15 @@ export async function uploadFile(
       "Content-type": file.type,
       "x-ms-blob-type": "BlockBlob"
     }
-  }).then((res) => {
-    if (!res.ok) {
-      throw new Error("Error uploading file")
-    }
   })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Not OK response when uploading file")
+      }
+    })
+    .catch(() => {
+      throw new Error("Error uploading file to storage")
+    })
 
   return futureCallToken
 }
