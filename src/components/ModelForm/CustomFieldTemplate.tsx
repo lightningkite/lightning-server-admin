@@ -5,14 +5,12 @@ import FileField from "./CustomFormatFields/FileField"
 import {ReferenceField} from "./CustomFormatFields/ReferenceField"
 
 export function CustomFieldTemplate(props: FieldTemplateProps): ReactElement {
-
-
-  console.log({
-    label: props.label,
-    format: props.schema.format,
-    references: props.schema.references,
-    props
-  })
+  // console.log({
+  //   label: props.label,
+  //   format: props.schema.format,
+  //   references: props.schema.references,
+  //   props
+  // })
 
   if (props.schema.format === "file") {
     return <FileField {...props} />

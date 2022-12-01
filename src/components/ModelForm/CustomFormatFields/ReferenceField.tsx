@@ -60,6 +60,7 @@ export function ReferenceField<T extends HasId>(
         modelSchema.titleFields.map((field) => item[field]).join(" ")
       }
       searchProperties={modelSchema.titleFields}
+      additionalQueryConditions={[{Always: true}]}
     />
   )
 }
