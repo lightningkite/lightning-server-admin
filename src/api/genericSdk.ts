@@ -68,11 +68,11 @@ export interface ServerHealth {
 }
 
 export interface Memory {
-  maxMem: number
-  totalMemory: number
-  freeMemory: number
+  max: number
+  total: number
+  free: number
   systemAllocated: number
-  memUsagePercent: number
+  usage: number
 }
 
 export enum Level {

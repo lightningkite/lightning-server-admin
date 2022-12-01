@@ -133,19 +133,19 @@ export const ServerHealthDisplay: FC = () => {
               <ListItem>
                 <ListItemText
                   primary="Max"
-                  secondary={formatBytes(serverHealth.memory.maxMem)}
+                  secondary={formatBytes(serverHealth.memory.max)}
                 />
               </ListItem>
               <ListItem>
                 <ListItemText
                   primary="Total"
-                  secondary={formatBytes(serverHealth.memory.totalMemory)}
+                  secondary={formatBytes(serverHealth.memory.total)}
                 />
               </ListItem>
               <ListItem>
                 <ListItemText
                   primary="Free"
-                  secondary={formatBytes(serverHealth.memory.freeMemory)}
+                  secondary={formatBytes(serverHealth.memory.free)}
                 />
               </ListItem>
               <ListItem>
@@ -157,7 +157,7 @@ export const ServerHealthDisplay: FC = () => {
               <ListItem>
                 <ListItemText
                   primary="Usage"
-                  secondary={`${serverHealth.memory.memUsagePercent}%`}
+                  secondary={`${serverHealth.memory.usage}%`}
                 />
               </ListItem>
             </List>

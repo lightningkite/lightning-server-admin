@@ -292,11 +292,11 @@ export class MockApi implements GenericAPI {
       version: "0.0.0",
       loadAverageCpu: 80,
       memory: {
-        maxMem: 883884032,
-        totalMemory: 59195392,
-        freeMemory: 25636256,
+        max: 883884032,
+        total: 59195392,
+        free: 25636256,
         systemAllocated: 33559136,
-        memUsagePercent: 6.69
+        usage: 6.69
       },
       features: {
         authentication: {

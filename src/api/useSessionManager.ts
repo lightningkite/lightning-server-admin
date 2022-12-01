@@ -8,6 +8,13 @@ export const backendURLOptions: string[] =
     localStorage.getItem(LocalStorageKey.BACKEND_URL_OPTIONS) ?? "[]"
   ) ?? []
 
+// Fetch the injected information
+const injectedInfoText = document.getElementById("injectedBackendInformation")?.innerText
+const injectedInformation: {
+  url: string,
+  jwt?: string
+} | undefined = injectedInfoText ? JSON.parse(injectedInfoText) : undefined
+
 export const useSessionManager = (): {
   api: GenericAPI | null
   changeBackendURL: (backendURL: string) => void
@@ -21,7 +28,7 @@ export const useSessionManager = (): {
     )
 
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    const initialBackendURL = localStorageBackendURL
+    const initialBackendURL = injectedInformation?.url ?? localStorageBackendURL
 
     if (initialBackendURL && localStorageBackendURL !== initialBackendURL) {
       localStorage.setItem(LocalStorageKey.BACKEND_URL, initialBackendURL)
@@ -38,6 +45,10 @@ export const useSessionManager = (): {
 
   // Null if not logged in, a session if logged in
   const [session, setSession] = useState<GenericRequesterSession | null>(() => {
+    const injectedToken = injectedInformation?.jwt
+    if (injectedToken) {
+      localStorage.setItem(LocalStorageKey.USER_TOKEN, injectedToken)
+    }
     const token = localStorage.getItem(LocalStorageKey.USER_TOKEN)
 
     if (token && api) {
