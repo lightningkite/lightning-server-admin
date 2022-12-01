@@ -201,7 +201,6 @@ export class GenericLiveApi implements GenericAPI {
     endpointURL: string,
     userToken: string
   ): SessionRestEndpoint<T> {
-    const httpUrl = this.httpUrl
     const extraHeaders = this.extraHeaders
 
     return {

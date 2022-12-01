@@ -71,6 +71,9 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
         ]}
         title={itemTitle}
       >
+        <Button color="info" component="a" target="_blank" href={modelSchema.url + "/" + modelId}>
+          Open Direct
+        </Button>
         <Button color="error" onClick={handleDelete}>
           Delete
         </Button>

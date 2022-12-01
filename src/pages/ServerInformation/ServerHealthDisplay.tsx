@@ -157,7 +157,7 @@ export const ServerHealthDisplay: FC = () => {
               <ListItem>
                 <ListItemText
                   primary="Usage"
-                  secondary={`${serverHealth.memory.usage}%`}
+                  secondary={`${serverHealth.memory.usage.toString()}%`}
                 />
               </ListItem>
             </List>

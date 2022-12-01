@@ -19,6 +19,7 @@ import {BrowserRouter} from "react-router-dom"
 import {AuthRoutes, UnauthRoutes} from "routers"
 import {LocalStorageKey} from "utils/constants"
 import {theme} from "./theme"
+import {injectedInformation} from "./injectedInfo";
 
 // AuthContext is available when the user is authenticated
 export const AuthContext = createContext({
@@ -139,7 +140,7 @@ const App: FC = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <BrowserRouter>
+      <BrowserRouter basename={injectedInformation?.basePage}>
         <ThemeProvider theme={theme}>
           {session && api ? (
             <AuthContext.Provider

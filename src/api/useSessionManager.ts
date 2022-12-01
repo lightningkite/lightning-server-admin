@@ -2,18 +2,12 @@ import {useState} from "react"
 import {LocalStorageKey} from "utils/constants"
 import {GenericAPI, GenericLiveApi, GenericRequesterSession} from "./genericSdk"
 import {MockApi} from "./mockApi"
+import {injectedInformation} from "../injectedInfo";
 
 export const backendURLOptions: string[] =
   JSON.parse(
     localStorage.getItem(LocalStorageKey.BACKEND_URL_OPTIONS) ?? "[]"
   ) ?? []
-
-// Fetch the injected information
-const injectedInfoText = document.getElementById("injectedBackendInformation")?.innerText
-const injectedInformation: {
-  url: string,
-  jwt?: string
-} | undefined = injectedInfoText ? JSON.parse(injectedInfoText) : undefined
 
 export const useSessionManager = (): {
   api: GenericAPI | null

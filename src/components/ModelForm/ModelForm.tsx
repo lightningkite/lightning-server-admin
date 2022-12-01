@@ -3,7 +3,7 @@ import {FormProps} from "@rjsf/core"
 import {Form} from "@rjsf/mui"
 import validator from "@rjsf/validator-ajv8"
 import {AuthContext} from "App"
-import React, {ReactElement, useContext, useState} from "react"
+import React, {ReactElement, useContext, useEffect, useState} from "react"
 import {CustomArrayFieldTemplate} from "./CustomArrayFieldTemplate"
 import {CustomFieldTemplate} from "./CustomFieldTemplate"
 
@@ -26,6 +26,20 @@ export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
   const [currentValues, setCurrentValues] = useState<Partial<T>>(
     initialValues ?? {}
   )
+
+  const [needsUnmount, setNeedsUnmount] = useState(true)
+
+  useEffect(()=> {
+    setCurrentValues(initialValues??{})
+    setNeedsUnmount(true)
+  }, [initialValues])
+
+  if(needsUnmount) {
+      setNeedsUnmount(false)
+    // window.setTimeout(()=> {
+    // }, 1000)
+    return (<p>REEEEEEE</p>)
+  }
 
   return (
     <Form

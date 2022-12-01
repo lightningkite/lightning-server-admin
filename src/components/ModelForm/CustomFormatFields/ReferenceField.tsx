@@ -1,11 +1,14 @@
 import {HasId} from "@lightningkite/lightning-server-simplified"
 import {RestAutocompleteInput} from "@lightningkite/mui-lightning-components"
+import {Link as LinkIcon} from "@mui/icons-material"
+import {Box, IconButton, Stack} from "@mui/material"
 import {getDefaultRegistry} from "@rjsf/core"
 import {FieldTemplateProps} from "@rjsf/utils"
 import {LKModelSchema} from "api/genericSdk"
 import {AuthContext} from "App"
 import ErrorAlert from "components/ErrorAlert"
 import React, {ReactElement, useContext, useEffect, useState} from "react"
+import {Link} from "react-router-dom"
 
 export function ReferenceField<T extends HasId>(
   props: FieldTemplateProps
@@ -51,16 +54,23 @@ export function ReferenceField<T extends HasId>(
   }
 
   return (
-    <RestAutocompleteInput
-      label={props.label}
-      value={item}
-      onChange={setItem}
-      restEndpoint={endpoint}
-      getOptionLabel={(item) =>
-        modelSchema.titleFields.map((field) => item[field]).join(" ")
-      }
-      searchProperties={modelSchema.titleFields}
-      additionalQueryConditions={[{Always: true}]}
-    />
+    <Stack direction="row" spacing={1}>
+      <Box sx={{width:'100%'}}>
+        <RestAutocompleteInput
+            label={props.label}
+            value={item}
+            onChange={setItem}
+            restEndpoint={endpoint}
+            getOptionLabel={(item) =>
+                modelSchema.titleFields.map((field) => item[field]).join(" ")
+            }
+            searchProperties={modelSchema.titleFields}
+            additionalQueryConditions={[{Always: true}]}
+        />
+      </Box>
+      <IconButton component={Link} to={`/models/${endpointName}/${item?._id ?? ""}`} disabled={item === null}>
+        <LinkIcon />
+      </IconButton>
+    </Stack>
   )
 }
