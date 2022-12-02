@@ -1,8 +1,8 @@
 import {useState} from "react"
 import {LocalStorageKey} from "utils/constants"
+import {injectedInformation} from "../injectedInfo"
 import {GenericAPI, GenericLiveApi, GenericRequesterSession} from "./genericSdk"
 import {MockApi} from "./mockApi"
-import {injectedInformation} from "../injectedInfo";
 
 export const backendURLOptions: string[] =
   JSON.parse(

@@ -18,8 +18,8 @@ import React, {createContext, FC, useEffect, useState} from "react"
 import {BrowserRouter} from "react-router-dom"
 import {AuthRoutes, UnauthRoutes} from "routers"
 import {LocalStorageKey} from "utils/constants"
+import {injectedInformation} from "./injectedInfo"
 import {theme} from "./theme"
-import {injectedInformation} from "./injectedInfo";
 
 // AuthContext is available when the user is authenticated
 export const AuthContext = createContext({

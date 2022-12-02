@@ -36,7 +36,12 @@ const PageHeader: FC<PropsWithChildren<PageHeaderProps>> = (props) => {
         </Breadcrumbs>
       )}
 
-      <Stack direction="row" alignItems="center" justifyContent="start">
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="start"
+        spacing={1}
+      >
         <Typography variant="h1" sx={{mr: "auto"}}>
           {title}
         </Typography>

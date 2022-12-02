@@ -29,16 +29,13 @@ export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
 
   const [needsUnmount, setNeedsUnmount] = useState(true)
 
-  useEffect(()=> {
-    setCurrentValues(initialValues??{})
+  useEffect(() => {
+    setCurrentValues(initialValues ?? {})
     setNeedsUnmount(true)
   }, [initialValues])
 
-  if(needsUnmount) {
-      setNeedsUnmount(false)
-    // window.setTimeout(()=> {
-    // }, 1000)
-    return (<p>REEEEEEE</p>)
+  if (needsUnmount) {
+    setNeedsUnmount(false)
   }
 
   return (
