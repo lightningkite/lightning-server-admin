@@ -29,7 +29,6 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
       </PageHeader>
 
       <RestDataTable<T>
-        additionalQueryConditions={[{Always: true}]}
         restEndpoint={endpoint}
         onRowClick={(model) => navigate(`/models/${endpointName}/${model._id}`)}
         searchFields={modelSchema.searchFields}
