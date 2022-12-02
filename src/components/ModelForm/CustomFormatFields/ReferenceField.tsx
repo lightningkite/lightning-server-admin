@@ -1,7 +1,7 @@
 import {HasId} from "@lightningkite/lightning-server-simplified"
 import {RestAutocompleteInput} from "@lightningkite/mui-lightning-components"
 import {Link as LinkIcon} from "@mui/icons-material"
-import {Box, IconButton, Stack} from "@mui/material"
+import {Alert, Box, IconButton, Stack} from "@mui/material"
 import {FieldTemplateProps} from "@rjsf/utils"
 import {LKModelSchema} from "api/genericSdk"
 import {AuthContext} from "App"
@@ -14,11 +14,16 @@ export function ReferenceField<T extends HasId>(
 ): ReactElement {
   const {session, lkSchema} = useContext(AuthContext)
 
-  const [endpointName, modelSchema] = Object.entries(lkSchema.models).find(
-    ([key, value]) => value.$ref?.includes(props.schema.references)
-  ) as [string, LKModelSchema<T>]
+  const [endpointName, modelSchema] = Object.entries(
+    lkSchema.models as Record<string, LKModelSchema<T>>
+  ).find(([_key, value]) => value.$ref?.includes(props.schema.references)) ?? [
+    undefined,
+    undefined
+  ]
 
-  const endpoint = session.getRestEndpoint<T>(modelSchema.url)
+  const endpoint = modelSchema
+    ? session.getRestEndpoint<T>(modelSchema.url)
+    : undefined
 
   const [item, setItem] = useState<T | null>()
   const [error, setError] = useState(false)
@@ -26,6 +31,10 @@ export function ReferenceField<T extends HasId>(
   const value = props.formData
 
   useEffect(() => {
+    if (!endpoint) {
+      return
+    }
+
     if (value === undefined || value === null) {
       setItem(null)
       return
@@ -48,16 +57,21 @@ export function ReferenceField<T extends HasId>(
     return <ErrorAlert>Failed to get item</ErrorAlert>
   }
 
-  if (item === undefined) {
-    return <p>Loading...</p>
+  if (!modelSchema || !endpointName || !endpoint) {
+    return (
+      <Alert severity="error">
+        Model schema not found - {props.schema.references}
+      </Alert>
+    )
   }
 
   return (
     <Stack direction="row" spacing={1} alignItems="center">
       <Box sx={{width: "100%"}}>
         <RestAutocompleteInput
+          loading={item === undefined}
           label={props.label}
-          value={item}
+          value={item ?? null}
           onChange={setItem}
           restEndpoint={endpoint}
           getOptionLabel={(item) =>
