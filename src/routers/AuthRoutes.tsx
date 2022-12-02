@@ -1,3 +1,4 @@
+import { EndpointDetail } from "pages/EndpointDetail"
 import {ModelDetail} from "pages/ModelDetail"
 import {ModelIndex} from "pages/ModelIndex"
 import {ServerInformation} from "pages/ServerInformation"
@@ -15,6 +16,8 @@ const AuthRoutes: FC = () => {
           path="/models/:endpointName/:modelId"
           element={<ModelDetail />}
         />
+        <Route path="/endpoints/detail/:endpointIndex" element={<EndpointDetail />} />
+        <Route path="/endpoints/group/:endpointGroup" element={<EndpointDetail />} />
 
         {/* If page doesn't exist, redirect to home */}
         <Route path="*" element={<Navigate to="/" replace />} />

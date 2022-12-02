@@ -1,19 +1,76 @@
 import {HoverHelp} from "@lightningkite/mui-lightning-components"
-import {Logout} from "@mui/icons-material"
+import {
+  ExpandLess,
+  ExpandMore,
+  Folder,
+  Info,
+  Lan,
+  Logout,
+  Storage
+} from "@mui/icons-material"
 import {
   Box,
-  Button,
+  Collapse,
   Divider,
   IconButton,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
   Stack,
   Typography
 } from "@mui/material"
+import {EndpointSchema} from "api/genericSdk"
 import {AuthContext} from "App"
-import React, {FC, ReactNode, useContext} from "react"
+import React, {FC, ReactElement, ReactNode, useContext, useState} from "react"
 import {NavLink} from "react-router-dom"
+
+const NavButton: FC<{
+  to: string
+  label: string
+  inset?: boolean
+  icon?: ReactElement
+}> = (props) => (
+  <ListItemButton
+    component={NavLink}
+    to={props.to}
+    sx={{
+      pl: props.inset ? 4 : undefined,
+      "&.active": {
+        bgcolor: "grey.200"
+      }
+    }}
+  >
+    {props.icon && <ListItemIcon>{props.icon}</ListItemIcon>}
+    <ListItemText primary={props.label} />
+  </ListItemButton>
+)
 
 const MainLayout: FC<{children: ReactNode}> = ({children}) => {
   const {lkSchema, logout} = useContext(AuthContext)
+
+  const [modelsOpen, setModelsOpen] = useState(true)
+  const [endpointsOpen, setEndpointsOpen] = useState(false)
+
+  const [endpointGrouping] = useState(() => {
+    interface IndexEndpointSchema extends EndpointSchema {
+      index: number
+    }
+    const result = {
+      individual: [] as IndexEndpointSchema[],
+      groupNames: new Set<string>()
+    }
+
+    lkSchema.endpoints.forEach((endpoint, index) => {
+      if (endpoint.group) {
+        result.groupNames.add(endpoint.group)
+      } else {
+        result.individual.push({...endpoint, index})
+      }
+    })
+
+    return result
+  })
 
   return (
     <Stack direction="row" minHeight="100vh">
@@ -45,43 +102,58 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
 
         <Divider sx={{my: 2}} />
 
-        <Button
-          component={NavLink}
-          fullWidth
-          to={"/"}
-          sx={{
-            justifyContent: "start",
-            "&.active": {
-              bgcolor: "primary.main",
-              color: "white"
-            }
-          }}
-        >
-          Server Information
-        </Button>
+        <NavButton to="/" label="Server Information" icon={<Info />} />
 
-        <Divider sx={{my: 2}} />
+        <ListItemButton onClick={() => setEndpointsOpen(!endpointsOpen)}>
+          <ListItemIcon>
+            <Lan />
+          </ListItemIcon>
+          <ListItemText primary="Endpoints" />
+          {endpointsOpen ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={endpointsOpen} timeout="auto">
+          <List component="div" disablePadding>
+            {[...endpointGrouping.groupNames].map((groupName) => (
+              <NavButton
+                inset
+                key={groupName}
+                to={`/endpoints/group/${groupName}`}
+                label={groupName}
+                icon={<Folder />}
+              />
+            ))}
+            {endpointGrouping.individual.map((endpointSchema) => (
+              <NavButton
+                inset
+                key={endpointSchema.index}
+                to={`/endpoints/detail/${endpointSchema.index}`}
+                label={endpointSchema.path}
+              />
+            ))}
+          </List>
+        </Collapse>
 
-        <Stack spacing={1}>
-          {Object.entries(lkSchema.models).map(
-            ([endpointName, modelSchema]) => (
-              <Button
-                key={endpointName}
-                component={NavLink}
-                to={`/models/${endpointName}`}
-                sx={{
-                  justifyContent: "start",
-                  "&.active": {
-                    bgcolor: "primary.main",
-                    color: "white"
-                  }
-                }}
-              >
-                {modelSchema.title}
-              </Button>
-            )
-          )}
-        </Stack>
+        <ListItemButton onClick={() => setModelsOpen(!modelsOpen)}>
+          <ListItemIcon>
+            <Storage />
+          </ListItemIcon>
+          <ListItemText primary="Models" />
+          {modelsOpen ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={modelsOpen} timeout="auto">
+          <List component="div" disablePadding>
+            {Object.entries(lkSchema.models).map(
+              ([endpointName, modelSchema]) => (
+                <NavButton
+                  inset
+                  key={endpointName}
+                  to={`/models/${endpointName}`}
+                  label={modelSchema.title}
+                />
+              )
+            )}
+          </List>
+        </Collapse>
       </Box>
       <Box bgcolor="background.default" width="100%" pt={3} pb={7}>
         {children}
