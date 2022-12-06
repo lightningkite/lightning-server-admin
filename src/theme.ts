@@ -10,8 +10,9 @@ export const theme = createTheme({
       fontWeight: 400
     },
     h2: {
-      fontSize: 26,
-      lineHeight: 1.2
+      fontSize: 22,
+      lineHeight: 1.2,
+      fontWeight: 700
     }
   },
 

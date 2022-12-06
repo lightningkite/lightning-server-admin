@@ -100,6 +100,12 @@ const App: FC = () => {
             ]
           }
         })
+
+        // Copy definitions onto endpoints
+        schema.endpoints.forEach((endpoint) => {
+          endpoint.input.definitions = schema.definitions
+          endpoint.output.definitions = schema.definitions
+        })
         console.log({...schema})
         setLKSchema(schema)
       })
