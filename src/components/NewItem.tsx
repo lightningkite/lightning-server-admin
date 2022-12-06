@@ -43,7 +43,7 @@ export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
   return (
     <>
       <Button onClick={handleOpen} startIcon={<Add />}>
-        Add {modelSchema.title}
+        Add
       </Button>
 
       <Dialog open={showDialog} onClose={handleClose}>
