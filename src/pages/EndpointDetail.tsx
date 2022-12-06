@@ -13,6 +13,10 @@ import React, {ReactElement, useContext, useMemo, useState} from "react"
 import {useParams} from "react-router-dom"
 import {LocalStorageKey} from "utils/constants"
 import {keyOfEndpointSchema} from "../utils/helpers/miscHelpers";
+import {MyOneOfField} from "../components/ModelForm/MyOneOfField";
+import {customTemplates, dummyValidator} from "../utils/helpers/dummyValidator";
+import {Form} from "@rjsf/mui";
+import {DataViewer} from "../components/DataViewer";
 
 export function EndpointDetail(): ReactElement {
     const {endpointIndex} = useParams()
@@ -65,7 +69,10 @@ function EndpointContent(props: { endpoint: EndpointSchema }): ReactElement {
         const data = await response.json()
 
         setResponseJSON(data)
+        setTabValue("response")
     }
+
+    const submit = useMemo(() => (inputValue: any) => callEndpoint(endpoint, JSON.stringify(inputValue)), [endpoint])
 
     return (
         <>
@@ -77,23 +84,25 @@ function EndpointContent(props: { endpoint: EndpointSchema }): ReactElement {
                     >
                         <Tab label="Parameters" value="parameters"/>
                         <Tab label="Request Body" value="request-body"/>
+                        <Tab label="Response" value="response"/>
                     </TabList>
                 </Box>
                 <TabPanel value="parameters">TODO!</TabPanel>
                 <TabPanel value="request-body">
                     <EndpointForm
-                        onSubmit={(inputValue) =>
-                            callEndpoint(endpoint, JSON.stringify(inputValue))
-                        }
+                        onSubmit={submit}
                         schema={endpoint.input}
                         submitLabel={endpoint.method.toUpperCase()}
                     />
                 </TabPanel>
-            </TabContext>
+                <TabPanel value="response">
+                    {responseJSON ? <DataViewer
+                      value={responseJSON}
+                      type={endpoint.output}
+                    /> : <p>You have not made a request yet.</p>}
 
-            <Box mt={3}>
-                {responseJSON && <pre>{JSON.stringify(responseJSON, null, 2)}</pre>}
-            </Box>
+                </TabPanel>
+            </TabContext>
         </>
     )
 }

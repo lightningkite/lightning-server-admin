@@ -45,7 +45,7 @@ export function EndpointForm<T>(props: EndpointFormProps<T>): ReactElement {
       onSubmit={(e) => {
         onSubmit(e.formData)
       }}
-      // onChange={(e) => setCurrentValues(e.formData)}
+      onChange={(e) => setCurrentValues(e.formData)}
       templates={customTemplates}
       uiSchema={{
         "ui:submitButtonOptions": {
