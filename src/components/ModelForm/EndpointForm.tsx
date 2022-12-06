@@ -1,10 +1,11 @@
 import {FormProps} from "@rjsf/core"
 import {Form} from "@rjsf/mui"
 import {RJSFSchema} from "@rjsf/utils"
-import validator from "@rjsf/validator-ajv8"
 import React, {ReactElement, useEffect, useState} from "react"
 import {CustomArrayFieldTemplate} from "./CustomArrayFieldTemplate"
 import {CustomFieldTemplate} from "./CustomFieldTemplate"
+import {MyOneOfField} from "./MyOneOfField";
+import {dummyValidator} from "../../utils/helpers/dummyValidator";
 
 export interface EndpointFormProps<T> {
   onSubmit: (data: T) => Promise<void>
@@ -37,11 +38,14 @@ export function EndpointForm<T>(props: EndpointFormProps<T>): ReactElement {
     <Form
       schema={schema}
       formData={currentValues}
-      validator={validator}
+      fields={{
+        OneOfField: MyOneOfField
+      }}
+      validator={dummyValidator}
       onSubmit={(e) => {
         onSubmit(e.formData)
       }}
-      onChange={(e) => setCurrentValues(e.formData)}
+      // onChange={(e) => setCurrentValues(e.formData)}
       templates={customTemplates}
       uiSchema={{
         "ui:submitButtonOptions": {

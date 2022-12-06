@@ -17,7 +17,6 @@ const AuthRoutes: FC = () => {
           element={<ModelDetail />}
         />
         <Route path="/endpoints/detail/:endpointIndex" element={<EndpointDetail />} />
-        <Route path="/endpoints/group/:endpointGroup" element={<EndpointDetail />} />
 
         {/* If page doesn't exist, redirect to home */}
         <Route path="*" element={<Navigate to="/" replace />} />

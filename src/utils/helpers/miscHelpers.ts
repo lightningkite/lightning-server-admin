@@ -1,3 +1,5 @@
+import {EndpointSchema} from "../../api/genericSdk";
+
 export const camelCaseToTitle = (str: string) => {
   return str
     .replace(/([A-Z])/g, " $1")
@@ -13,4 +15,12 @@ export const filterEntries = <T extends Record<keyof T, T[keyof T]>>(
       predicate({key: key as keyof T, value: value as T[keyof T]})
     )
   ) as Partial<T>
+}
+
+export function stringOfEndpointSchema(e: EndpointSchema): string {
+  return e.method + " " + e.path
+}
+
+export function keyOfEndpointSchema(e: EndpointSchema): string {
+  return e.method + "-" + e.path.replaceAll('{', '').replaceAll('}', '').replaceAll('...', 'anything').replaceAll('/', '-')
 }
