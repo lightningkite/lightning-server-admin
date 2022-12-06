@@ -222,7 +222,7 @@ export class MyOneOfField<
             for (const option of optionsToDiscard) {
                 if (option.properties) {
                     for (const key in option.properties) {
-                        if (key in newFormData) {
+                        if (typeof newFormData === "object" && newFormData && key in newFormData) {
                             unset(newFormData, key);
                         }
                     }

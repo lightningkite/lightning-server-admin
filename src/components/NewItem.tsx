@@ -17,6 +17,7 @@ export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
   const {endpoint, modelSchema} = useCurrentSchema<T>()
 
   const [showDialog, setShowDialog] = useState(false)
+  const [initialValues, setInitialValues] = useState<Partial<T> | null>(null)
 
   if (!endpointName) {
     return (
@@ -28,7 +29,16 @@ export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
     setShowDialog(false)
   }
 
-  const handleOpen = () => setShowDialog(true)
+  const handleOpen = () => {
+    if(initialValues !== null) {
+      setShowDialog(true)
+    } else {
+      endpoint.default().then(x => {
+        setInitialValues(x)
+        setShowDialog(true)
+      })
+    }
+  }
 
   const handleSubmit = (data: T) => {
     endpoint
@@ -52,6 +62,7 @@ export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
         <DialogContent>
           <ModelForm
             endpointName={endpointName}
+            initialValues={initialValues ?? {}}
             onSubmit={handleSubmit}
             type="create"
           />

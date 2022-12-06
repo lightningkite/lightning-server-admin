@@ -7,7 +7,7 @@
     "@emotion/styled": "^11.10.5",
     "@faker-js/faker": "^7.6.0",
     "@fontsource/roboto": "^4.5.8",
-    "@lightningkite/lightning-server-simplified": "^0.3.2",
+    "@lightningkite/lightning-server-simplified": "^0.3.4",
     "@lightningkite/mui-lightning-components": "^0.3.3",
     "@mui/icons-material": "^5.10.16",
     "@mui/lab": "^5.0.0-alpha.110",

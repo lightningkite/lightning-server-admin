@@ -204,6 +204,14 @@ export class GenericLiveApi implements GenericAPI {
     const extraHeaders = this.extraHeaders
 
     return {
+      default(): Promise<T> {
+        return apiCall(`${endpointURL}/_default_`, undefined, {
+          method: "GET",
+          headers: userToken
+              ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
+              : extraHeaders
+        }).then((x) => x.json())
+      },
       query<T>(input: Query<T>): Promise<Array<T>> {
         return apiCall(`${endpointURL}/query`, input, {
           method: "POST",

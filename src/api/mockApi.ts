@@ -121,6 +121,14 @@ export class MockApi implements GenericAPI {
     requesterToken: string
   ): SessionRestEndpoint<T> {
     return {
+      default: <T extends HasId>(): Promise<T> => {
+        return this.adaptEndpoint<T>(
+          endpointURL,
+          "default",
+          undefined,
+          requesterToken
+        )
+      },
       query: <T extends HasId>(input: Query<T>): Promise<Array<T>> => {
         return this.adaptEndpoint<T>(
           endpointURL,
