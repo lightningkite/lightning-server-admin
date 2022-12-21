@@ -53,7 +53,10 @@ const GroupButton: FC<{
 }> = props => {
     const [open, setOpen] = useState(false)
     return (<>
-        <ListItemButton onClick={() => setOpen(!open)}>
+        <ListItemButton
+            onClick={() => setOpen(!open)}
+            style={{ paddingLeft: "24px" }}
+        >
             <ListItemIcon>
                 <Folder/>
             </ListItemIcon>
