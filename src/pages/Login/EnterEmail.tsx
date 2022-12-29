@@ -18,7 +18,7 @@ export interface EnterEmailProps {
 
 const EnterEmail: FC<EnterEmailProps> = (props) => {
   const {email, setEmail, sendEmail} = props
-  const {changeBackendURL} = useContext(UnauthContext)
+  const {api, authenticate, changeBackendURL} = useContext(UnauthContext)
 
   const [error, setError] = useState("")
   const [submitting, setSubmitting] = useState(false)
@@ -32,19 +32,30 @@ const EnterEmail: FC<EnterEmailProps> = (props) => {
     changeBackendURL(throttledBackendURL)
   }, [throttledBackendURL])
 
-  useEffect(() => {
-    // Remove whitespace and convert to lowercase
-    if (/\s/.test(email) || /[A-Z]/.test(email)) {
-      setEmail(email.replace(/\s/g, "").toLowerCase())
-    }
-  }, [email])
-
   const onSubmit = () => {
     setError("")
 
     if (email.length === 0) {
       setError("Please enter an email address")
       return
+    }
+
+    if(email.includes(".") && !email.includes("@")) {
+      console.log("Maybe a JWT?")
+      const header = email.substring(0, email.indexOf("."))
+      console.log("Header check:", header)
+      try {
+        const parsed = JSON.parse(atob(header))
+        console.log("Parsed is ", parsed)
+        if(typeof parsed.typ === "string") {
+          api?.getServerHealth(email).then(() => {
+            authenticate(email)
+          }).catch(e => setError("Failed to get health"))
+          return
+        }
+      } catch (e) {
+        // Squish, just means it wasn't a jwt.
+      }
     }
 
     if (

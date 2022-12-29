@@ -61,7 +61,10 @@ const App: FC = () => {
     await session?.auth
       .getSelf()
       .then(setCurrentUser)
-      .catch(() => setCurrentUser(null))
+      .catch(() => setCurrentUser({
+        _id: "???",
+        email: "unknown"
+      }))
   }
 
   useEffect(() => {
