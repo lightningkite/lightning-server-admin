@@ -40,7 +40,7 @@ export function AdvancedFilter<T extends HasId>(props: AdvancedFilterProps<T>): 
 
   const modelRef = lkSchema.models[endpointName].$ref
   const rawModelName = modelRef?.substring(14)
-  const conditionRef = rawModelName && lkSchema.definitions && `com.lightningkite.lightningdb.Condition<${rawModelName}>`
+  const conditionRef = rawModelName && lkSchema.definitions && `com.lightningkite.lightningdb.Condition_${rawModelName}`
   if(!conditionRef) return <> </>
 
   return (
