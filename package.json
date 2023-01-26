@@ -34,7 +34,7 @@
     "prettier": "npx prettier src --check",
     "prettier:fix": "npm run prettier --write",
     "format": "npm run prettier:fix && npm run lint:fix",
-    "deploy": "export AWS_PROFILE=lk || set AWS_PROFILE=lk && npm run build && terraform -chdir=terraform/lightningkite init && terraform -chdir=terraform/lightningkite apply -auto-approve"
+    "deploy": "./deploy.sh"
   },
   "eslintConfig": {
     "extends": [
