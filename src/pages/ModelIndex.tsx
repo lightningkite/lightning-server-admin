@@ -35,7 +35,7 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
       return
     }
 
-    await fetch(`${backendURL}${endpointName}/rest/query`, {
+    await fetch(`${backendURL}/${endpointName}/rest/query`, {
       headers: {
         Accept: "text/csv",
         Authorization: `Bearer ${token}`,
