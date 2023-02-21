@@ -146,7 +146,7 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
         </ListItemButton>
         <Collapse in={endpointsOpen} timeout="auto">
           <List component="div" disablePadding>
-            {Object.keys(endpointGrouping).map((groupName) => {
+            {Object.keys(endpointGrouping).sort().map((groupName) => {
               const inside = endpointGrouping[groupName].map(
                 (endpointSchema) => (
                   <NavButton
@@ -178,7 +178,7 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
         </ListItemButton>
         <Collapse in={modelsOpen} timeout="auto">
           <List component="div" disablePadding>
-            {Object.entries(lkSchema.models).map(
+            {Object.entries(lkSchema.models).sort((a, b) => a[0].localeCompare(b[0])).map(
               ([endpointName, modelSchema]) => (
                 <NavButton
                   inset
