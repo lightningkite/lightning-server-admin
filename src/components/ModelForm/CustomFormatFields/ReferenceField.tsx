@@ -16,7 +16,7 @@ export function ReferenceField<T extends HasId>(
 
   const [endpointName, modelSchema] = Object.entries(
     lkSchema.models as Record<string, LKModelSchema<T>>
-  ).find(([_key, value]) => value.$ref?.includes(props.schema.references)) ?? [
+  ).find(([_key, value]) => value?.$ref === `#/definitions/${props.schema.references as string}`) ?? [
     undefined,
     undefined
   ]
@@ -53,9 +53,6 @@ export function ReferenceField<T extends HasId>(
     item && props.onChange(item._id)
   }, [item])
 
-  if (error) {
-    return <ErrorAlert>Failed to get item</ErrorAlert>
-  }
 
   if (!modelSchema || !endpointName || !endpoint) {
     return (
@@ -67,7 +64,7 @@ export function ReferenceField<T extends HasId>(
 
   return (
     <Stack direction="row" spacing={1} alignItems="center">
-      <Box sx={{width: "100%"}}>
+      <Box sx={{width: "100%", minWidth: 200}}>
         <RestAutocompleteInput
           loading={item === undefined}
           label={props.label}
@@ -87,6 +84,7 @@ export function ReferenceField<T extends HasId>(
       >
         <LinkIcon />
       </IconButton>
+      { error && <ErrorAlert>Load Error</ErrorAlert>}
     </Stack>
   )
 }
