@@ -184,7 +184,7 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
                   inset
                   key={endpointName}
                   to={`/models/${endpointName}`}
-                  label={modelSchema.title}
+                  label={modelSchema.collectionName ?? modelSchema.title}
                 />
               )
             )}

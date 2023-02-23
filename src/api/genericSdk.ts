@@ -21,6 +21,7 @@ export interface LKSchema {
 }
 
 export interface LKModelSchema<T> extends RJSFSchema {
+  collectionName?: string
   title: string
   permissions: null
   searchFields: Array<keyof T>

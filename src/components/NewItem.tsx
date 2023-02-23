@@ -57,7 +57,7 @@ export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
       </Button>
 
       <Dialog open={showDialog} onClose={handleClose}>
-        <DialogTitle>Create New {modelSchema.title}</DialogTitle>
+        <DialogTitle>Create New {modelSchema.collectionName ?? modelSchema.title}</DialogTitle>
 
         <DialogContent>
           <ModelForm

@@ -63,7 +63,7 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
 
   return (
     <Container maxWidth="md">
-      <PageHeader title={`${modelSchema.title} List`}>
+      <PageHeader title={`${modelSchema.collectionName ?? modelSchema.title} List`}>
         <Button
           color="info"
           component="a"
