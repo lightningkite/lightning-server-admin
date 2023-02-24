@@ -170,8 +170,11 @@ export class MyOneOfField<
         //     return option;
         // }
 
+
+
         let filteredOptions = options
-            .filter(x => typeof formData === x.type )
+            .filter(x => (formData === undefined || formData === null) ? x.type === "null" : typeof formData === x.type )
+
 
         if(typeof formData === "object" && formData) {
             filteredOptions = filteredOptions
@@ -182,7 +185,6 @@ export class MyOneOfField<
 
         if (filteredOptions.length == 1) {
             const index = options.indexOf(filteredOptions[0])
-            console.log("Option ", options[0], " matched ", index)
             return index
         }
 
@@ -208,7 +210,7 @@ export class MyOneOfField<
 
         // If the new option is of type object and the current data is an object,
         // discard properties added using the old option.
-        let newFormData: T | undefined = undefined;
+        let newFormData: any | undefined = undefined;
         if (
             guessType(formData) === "object" &&
             (newOption.type === "object" || newOption.properties)
@@ -229,6 +231,31 @@ export class MyOneOfField<
                 }
             }
         }
+
+        if(newFormData === undefined) {
+            switch (newOption.type) {
+                case "object":
+                    newFormData = {}
+                    break
+                case "string":
+                    newFormData = ""
+                    break
+                case "integer":
+                case "number":
+                    newFormData = 0
+                    break
+                case "boolean":
+                    newFormData = false
+                    break
+                case "null":
+                    newFormData = null
+                    break
+                case "array":
+                    newFormData = []
+                    break
+            }
+        }
+
         // Call getDefaultFormState to make sure defaults are populated on change.
         onChange(
             schemaUtils.getDefaultFormState(
@@ -297,8 +324,6 @@ export class MyOneOfField<
             value: index,
         }));
 
-        console.log("Rendering option ", selectedOption)
-
         const w = (<Widget
             id={this.getFieldId()}
             schema={{ type: "number", default: 0 } as S}
@@ -333,7 +358,6 @@ export class MyOneOfField<
         />)
 
         const end = Date.now()
-        console.log("Rendering ", name, " took ", end-start)
 
         return (
             <div className="panel panel-default panel-body">
