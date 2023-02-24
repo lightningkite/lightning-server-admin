@@ -21,12 +21,39 @@ export function EndpointForm<T>(props: EndpointFormProps<T>): ReactElement {
     FieldTemplate: CustomFieldTemplate
   }
 
-  const [currentValues, setCurrentValues] = useState<Partial<T>>({})
+  function resetValue(): any {
+    let start: any
+    switch (schema.type) {
+      case "object":
+        start = {}
+        break
+      case "string":
+        start = ""
+        break
+      case "integer":
+      case "number":
+        start = 0
+        break
+      case "boolean":
+        start = false
+        break
+      case "null":
+        start = null
+        break
+      case "array":
+        start = []
+        break
+    }
+    return start
+  }
+
+  const [currentValues, setCurrentValues] = useState<any>(resetValue)
+  console.log(currentValues)
 
   const [needsUnmount, setNeedsUnmount] = useState(true)
 
   useEffect(() => {
-    setCurrentValues({})
+    setCurrentValues(resetValue())
     setNeedsUnmount(true)
   }, [schema])
 
@@ -45,7 +72,9 @@ export function EndpointForm<T>(props: EndpointFormProps<T>): ReactElement {
       onSubmit={(e) => {
         onSubmit(e.formData)
       }}
-      onChange={(e) => setCurrentValues(e.formData)}
+      onChange={(e) => {
+        setCurrentValues(e.formData)
+      }}
       templates={customTemplates}
       uiSchema={{
         "ui:submitButtonOptions": {

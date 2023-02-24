@@ -79,6 +79,7 @@ const FileField: FC<FieldTemplateProps> = (props) => {
           )
         }
 
+        console.log(url)
         return (
           <Stack spacing={1} direction="row" sx={{maxHeight: "100px"}}>
             <Button onClick={() => setShowSelector(true)}>Change</Button>
