@@ -87,8 +87,6 @@ function EndpointContent(props: { endpoint: EndpointSchema }): ReactElement {
         setTabValue("response")
     }
 
-    const submit = useMemo(() => (inputValue: any) => callEndpoint(endpoint, JSON.stringify(inputValue)), [endpoint])
-
     return (
         <>
             <p>{finalPath}</p>
@@ -108,7 +106,7 @@ function EndpointContent(props: { endpoint: EndpointSchema }): ReactElement {
             }
 
             <EndpointForm
-                onSubmit={submit}
+                onSubmit={inputValue => callEndpoint(endpoint, JSON.stringify(inputValue))}
                 schema={endpoint.input}
                 submitLabel={endpoint.method.toUpperCase()}
             />
