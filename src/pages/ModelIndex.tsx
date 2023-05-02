@@ -96,7 +96,7 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
           headerName: camelCaseToTitle(key.toString()),
           flex: 1
         }))}
-        dependencies={[refreshTrigger]}
+        dependencies={[refreshTrigger, modelSchema]}
         multiselectActions={[
           {
             label: "Delete",

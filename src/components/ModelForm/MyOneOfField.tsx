@@ -120,7 +120,7 @@ export class MyOneOfField<
 
         this.state = {
             // selectedOption: 0
-            selectedOption: this.getMatchingOption(0, formData, options),
+            selectedOption: this.getMatchingOption(0, formData as T, options),
         };
     }
 
@@ -142,7 +142,7 @@ export class MyOneOfField<
         ) {
             const matchingOption = this.getMatchingOption(
                 selectedOption,
-                formData,
+                formData as T,
                 options
             );
 
@@ -163,30 +163,32 @@ export class MyOneOfField<
      * @return - The index of the `option` that best matches the `formData`
      */
     getMatchingOption(selectedOption: number, formData: T, options: S[]) {
+        console.log("selectedOption", selectedOption, "data", formData, "options", options)
         const { schemaUtils } = this.props.registry;
 
-        // const option = schemaUtils.getMatchingOption(formData, options);
-        // if (option !== 0) {
-        //     return option;
+        const option = schemaUtils.getFirstMatchingOption(formData, options);
+        if (option !== 0) {
+            return option;
+        }
+
+
+
+        // let filteredOptions = options
+        //     .filter(x => (formData === undefined || formData === null) ? x.type === "null" : typeof formData === x.type )
+        //
+        //
+        // if(typeof formData === "object" && formData) {
+        //     filteredOptions = filteredOptions
+        //         .filter(x =>
+        //             Object.keys(x.properties ?? {}).every(y => y in formData)
+        //         )
         // }
-
-
-
-        let filteredOptions = options
-            .filter(x => (formData === undefined || formData === null) ? x.type === "null" : typeof formData === x.type )
-
-
-        if(typeof formData === "object" && formData) {
-            filteredOptions = filteredOptions
-                .filter(x =>
-                    Object.keys(x.properties ?? {}).every(y => y in formData)
-                )
-        }
-
-        if (filteredOptions.length == 1) {
-            const index = options.indexOf(filteredOptions[0])
-            return index
-        }
+        //
+        // if (filteredOptions.length == 1) {
+        //     const index = options.indexOf(filteredOptions[0])
+        //     console.log("Overriding option to ", index)
+        //     return index
+        // }
 
         // If the form data matches none of the options, use the currently selected
         // option, assuming it's available; otherwise use the first option
@@ -200,6 +202,7 @@ export class MyOneOfField<
      * @param option -
      */
     onOptionChange = (option: any) => {
+        console.log("onOptionChange ", option)
         const selectedOption = parseInt(option, 10);
         const { formData, onChange, options, registry } = this.props;
         const { schemaUtils } = registry;
@@ -326,6 +329,7 @@ export class MyOneOfField<
 
         const w = (<Widget
             id={this.getFieldId()}
+            name={name + "_type"}
             schema={{ type: "number", default: 0 } as S}
             onChange={this.onOptionChange}
             onBlur={onBlur}

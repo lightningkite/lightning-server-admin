@@ -20,5 +20,6 @@ export function CustomFieldTemplate(props: FieldTemplateProps): ReactElement {
     return <ReferenceField {...props} />
   }
 
-  return <Templates.FieldTemplate {...props} />
+  const F = Templates.FieldTemplate ?? (()=><div/>)
+  return <F {...props} />
 }

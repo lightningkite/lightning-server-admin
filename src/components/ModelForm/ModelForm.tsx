@@ -37,7 +37,7 @@ export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
         ...currentValues
       }}
       fields={{
-        OneOfField: MyOneOfField
+        // OneOfField: MyOneOfField
       }}
       validator={dummyValidator}
       onSubmit={(e) => {

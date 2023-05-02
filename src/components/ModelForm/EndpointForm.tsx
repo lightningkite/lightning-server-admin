@@ -66,7 +66,7 @@ export function EndpointForm<T>(props: EndpointFormProps<T>): ReactElement {
       schema={schema}
       formData={currentValues}
       fields={{
-        OneOfField: MyOneOfField
+        // OneOfField: MyOneOfField
       }}
       validator={dummyValidator}
       onSubmit={(e) => {

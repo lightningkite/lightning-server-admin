@@ -34,7 +34,7 @@ export function DataViewer(props: {
           readonly={true}
           formData={props.value}
           fields={{
-            OneOfField: MyOneOfField
+            // OneOfField: MyOneOfField
           }}
           validator={dummyValidator}
           templates={customTemplates}
