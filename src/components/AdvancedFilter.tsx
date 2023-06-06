@@ -62,7 +62,7 @@ export function AdvancedFilter<T extends HasId>(props: AdvancedFilterProps<T>): 
               }}
               formData={filter}
               fields={{
-                // OneOfField: MyOneOfField
+                OneOfField: MyOneOfField
               }}
               validator={dummyValidator}
               onSubmit={e => handleSubmit(e.formData)}
