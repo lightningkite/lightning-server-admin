@@ -41,7 +41,7 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({condition: filter}),
+      body: JSON.stringify({condition: filter, limit: 10000000}),
       method: "POST"
     })
       .then((response) => {
