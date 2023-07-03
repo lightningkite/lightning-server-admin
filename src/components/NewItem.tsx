@@ -30,14 +30,10 @@ export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
   }
 
   const handleOpen = () => {
-    if(initialValues !== null) {
+    endpoint.default().then(x => {
+      setInitialValues(x)
       setShowDialog(true)
-    } else {
-      endpoint.default().then(x => {
-        setInitialValues(x)
-        setShowDialog(true)
-      })
-    }
+    })
   }
 
   const handleSubmit = (data: T) => {

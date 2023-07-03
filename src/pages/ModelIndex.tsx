@@ -96,7 +96,7 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
           headerName: camelCaseToTitle(key.toString()),
           flex: 1
         }))}
-        dependencies={[refreshTrigger, modelSchema]}
+        dependencies={[refreshTrigger, modelSchema, filter]}
         multiselectActions={[
           {
             label: "Delete",
@@ -105,10 +105,10 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
                 `Are you sure you want to delete ${ids.length} items?`
               )
               result &&
-                endpoint
-                  .bulkDelete({_id: {Inside: ids}})
-                  .then(() => setRefreshTrigger((prev) => prev + 1))
-                  .catch(() => alert("Failed to delete items"))
+              endpoint
+                .bulkDelete({_id: {Inside: ids}})
+                .then(() => setRefreshTrigger((prev) => prev + 1))
+                .catch(() => alert("Failed to delete items"))
             }
           }
         ]}

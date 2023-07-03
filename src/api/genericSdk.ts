@@ -29,6 +29,8 @@ export interface LKModelSchema<T> extends RJSFSchema {
   titleFields: Array<keyof T>
   properties: Record<string, RJSFSchema>
   url: string
+  conditionRef?: string
+  modificationRef?: string
 }
 
 export interface EndpointSchema {

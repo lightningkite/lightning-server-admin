@@ -3,6 +3,7 @@ import {AuthContext} from "App"
 import React, {ReactElement, useContext, useEffect, useState} from "react"
 import {MyOneOfField} from "./MyOneOfField";
 import {customTemplates, dummyValidator} from "../../utils/helpers/dummyValidator";
+import {extractUiSchema} from "../../utils/helpers/extractUi";
 
 export interface ModelFormProps<T> {
   endpointName: string
@@ -46,6 +47,7 @@ export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
       }}
       templates={customTemplates}
       uiSchema={{
+        ...extractUiSchema(lkSchema.models[endpointName]),
         "ui:submitButtonOptions": {
           props: {
           },
