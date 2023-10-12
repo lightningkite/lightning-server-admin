@@ -1,14 +1,14 @@
+import {TabContext, TabList, TabPanel} from "@mui/lab"
+import {Button, Tab, TextField} from "@mui/material"
+import {Box} from "@mui/system"
 import {FormProps} from "@rjsf/core"
 import {Form} from "@rjsf/mui"
 import {RJSFSchema} from "@rjsf/utils"
 import React, {ReactElement, useEffect, useState} from "react"
+import {dummyValidator} from "../../utils/helpers/dummyValidator"
 import {CustomArrayFieldTemplate} from "./CustomArrayFieldTemplate"
 import {CustomFieldTemplate} from "./CustomFieldTemplate"
-import {MyOneOfField} from "./MyOneOfField";
-import {dummyValidator} from "../../utils/helpers/dummyValidator";
-import {Box} from "@mui/system";
-import {TabContext, TabList, TabPanel} from "@mui/lab";
-import {Button, Tab, TextField} from "@mui/material";
+import {MyOneOfField} from "./MyOneOfField"
 
 export interface EndpointFormProps<T> {
   onSubmit: (data: T) => Promise<void>
@@ -52,8 +52,10 @@ export function EndpointForm<T>(props: EndpointFormProps<T>): ReactElement {
 
   const [currentValues, setCurrentValues] = useState<any>(resetValue)
   const [currentValuesJson, setCurrentValuesJson] = useState<string>(() => "")
-  const [currentValuesJsonValid, setCurrentValuesJsonValid] = useState<boolean>(() => false)
-  console.log(currentValues)
+  const [currentValuesJsonValid, setCurrentValuesJsonValid] = useState<boolean>(
+    () => false
+  )
+  // console.log(currentValues)
 
   const [needsUnmount, setNeedsUnmount] = useState(true)
 
@@ -68,58 +70,66 @@ export function EndpointForm<T>(props: EndpointFormProps<T>): ReactElement {
 
   const [tabValue, setTabValue] = useState("form")
 
-  return (<TabContext value={tabValue}>
-    <Box sx={{borderBottom: 1, borderColor: "divider"}}>
-      <TabList
-        onChange={(_e, value) => setTabValue(value)}
-        aria-label="lab API tabs example"
-      >
-        <Tab label="Form" value="form"/>
-        <Tab label="JSON" value="json"/>
-      </TabList>
-    </Box>
-    <TabPanel value="form">
-      <Form
-        schema={schema}
-        formData={currentValues}
-        fields={{
-          OneOfField: MyOneOfField
-        }}
-        validator={dummyValidator}
-        onSubmit={(e) => {
-          onSubmit(e.formData)
-        }}
-        onChange={(e) => {
-          setCurrentValues(e.formData)
-          setCurrentValuesJson(JSON.stringify(e.formData, null, 2))
-          setCurrentValuesJsonValid(true)
-        }}
-        templates={customTemplates}
-        uiSchema={{
-          "ui:submitButtonOptions": {
-            submitText: submitLabel
-          }
-        }}
-      />
-    </TabPanel>
-    <TabPanel value="json">
-      <TextField
-        sx={{width: "100%"}}
-        multiline={true}
-        value={currentValuesJson}
-        onChange={e => {
-          setCurrentValuesJson(e.target.value)
-          try {
-            setCurrentValues(JSON.parse(e.target.value))
+  return (
+    <TabContext value={tabValue}>
+      <Box sx={{borderBottom: 1, borderColor: "divider"}}>
+        <TabList
+          onChange={(_e, value) => setTabValue(value)}
+          aria-label="lab API tabs example"
+        >
+          <Tab label="Form" value="form" />
+          <Tab label="JSON" value="json" />
+        </TabList>
+      </Box>
+      <TabPanel value="form">
+        <Form
+          schema={schema}
+          formData={currentValues}
+          fields={{
+            OneOfField: MyOneOfField
+          }}
+          validator={dummyValidator}
+          onSubmit={(e) => {
+            onSubmit(e.formData)
+          }}
+          onChange={(e) => {
+            setCurrentValues(e.formData)
+            setCurrentValuesJson(JSON.stringify(e.formData, null, 2))
             setCurrentValuesJsonValid(true)
-          } catch(e) {
-            setCurrentValuesJsonValid(false)
-          }
-        }}
-      />
-      <Button variant="contained" disabled={!currentValuesJsonValid} onClick={(e) => {
-        onSubmit(currentValues)
-      }}>Submit</Button>
-    </TabPanel>
-  </TabContext>)
+          }}
+          templates={customTemplates}
+          uiSchema={{
+            "ui:submitButtonOptions": {
+              submitText: submitLabel
+            }
+          }}
+        />
+      </TabPanel>
+      <TabPanel value="json">
+        <TextField
+          sx={{width: "100%"}}
+          multiline={true}
+          value={currentValuesJson}
+          onChange={(e) => {
+            setCurrentValuesJson(e.target.value)
+            try {
+              setCurrentValues(JSON.parse(e.target.value))
+              setCurrentValuesJsonValid(true)
+            } catch (e) {
+              setCurrentValuesJsonValid(false)
+            }
+          }}
+        />
+        <Button
+          variant="contained"
+          disabled={!currentValuesJsonValid}
+          onClick={(e) => {
+            onSubmit(currentValues)
+          }}
+        >
+          Submit
+        </Button>
+      </TabPanel>
+    </TabContext>
+  )
 }
