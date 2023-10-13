@@ -12,7 +12,7 @@ import {
   Typography
 } from "@mui/material"
 import {Level, ServerHealth} from "api/genericSdk"
-import {AuthContext} from "App"
+import {Context} from "App"
 import Loading from "components/Loading"
 import React, {FC, ReactNode, useContext, useEffect, useState} from "react"
 import {camelCaseToTitle} from "utils/helpers/miscHelpers"
@@ -32,7 +32,7 @@ function formatBytes(bytes: number): string {
 }
 
 export const ServerHealthDisplay: FC = () => {
-  const {session} = useContext(AuthContext)
+  const {session} = useContext(Context)
 
   const [serverHealth, setServerHealth] = useState<ServerHealth | null>()
 

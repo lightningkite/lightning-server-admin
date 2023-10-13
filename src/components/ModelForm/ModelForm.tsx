@@ -1,9 +1,12 @@
 import {Form} from "@rjsf/mui"
-import {AuthContext} from "App"
+import {Context} from "App"
 import React, {ReactElement, useContext, useEffect, useState} from "react"
-import {MyOneOfField} from "./MyOneOfField";
-import {customTemplates, dummyValidator} from "../../utils/helpers/dummyValidator";
-import {extractUiSchema} from "../../utils/helpers/extractUi";
+import {
+  customTemplates,
+  dummyValidator
+} from "../../utils/helpers/dummyValidator"
+import {extractUiSchema} from "../../utils/helpers/extractUi"
+import {MyOneOfField} from "./MyOneOfField"
 
 export interface ModelFormProps<T> {
   endpointName: string
@@ -14,7 +17,7 @@ export interface ModelFormProps<T> {
 
 export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
   const {endpointName, onSubmit, initialValues, type} = props
-  const {lkSchema} = useContext(AuthContext)
+  const {lkSchema} = useContext(Context)
 
   const [currentValues, setCurrentValues] = useState<Partial<T>>(
     initialValues ?? {}
@@ -37,20 +40,21 @@ export function ModelForm<T>(props: ModelFormProps<T>): ReactElement {
       formData={{
         ...currentValues
       }}
-      fields={{
-        // OneOfField: MyOneOfField
-      }}
+      fields={
+        {
+          // OneOfField: MyOneOfField
+        }
+      }
       validator={dummyValidator}
       onSubmit={(e) => {
-        console.log("On Submit");
+        console.log("On Submit")
         onSubmit(e.formData)
       }}
       templates={customTemplates}
       uiSchema={{
         ...extractUiSchema(lkSchema.models[endpointName]),
         "ui:submitButtonOptions": {
-          props: {
-          },
+          props: {},
           submitText: type === "create" ? "Create" : "Save"
         }
       }}

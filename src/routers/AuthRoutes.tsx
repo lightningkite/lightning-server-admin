@@ -1,9 +1,10 @@
+import {Context} from "App"
 import {EndpointDetail} from "pages/EndpointDetail"
 import {HomePage} from "pages/Home/HomePage"
 import {ModelDetail} from "pages/ModelDetail"
 import {ModelIndex} from "pages/ModelIndex"
 import {ServerInformation} from "pages/ServerInformation"
-import React, {FC} from "react"
+import React, {FC, useContext} from "react"
 import {Navigate, Route, Routes} from "react-router-dom"
 
 const AuthRoutes: FC = () => {
@@ -14,15 +15,17 @@ const AuthRoutes: FC = () => {
 
         <Route path="ServerInformation" element={<ServerInformation />} />
 
-        <Route path="/models/:endpointName" element={<ModelIndex />} />
-        <Route
-          path="/models/:endpointName/:modelId"
-          element={<ModelDetail />}
-        />
-        <Route
-          path="/endpoints/detail/:endpointIndex"
-          element={<EndpointDetail />}
-        />
+        <>
+          <Route path="/models/:endpointName" element={<ModelIndex />} />
+          <Route
+            path="/models/:endpointName/:modelId"
+            element={<ModelDetail />}
+          />
+          <Route
+            path="/endpoints/detail/:endpointIndex"
+            element={<EndpointDetail />}
+          />
+        </>
 
         {/* If page doesn't exist, redirect to home */}
         <Route path="*" element={<Navigate to="/" replace />} />

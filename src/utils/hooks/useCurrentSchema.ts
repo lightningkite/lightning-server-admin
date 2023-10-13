@@ -1,16 +1,16 @@
 import {HasId} from "@lightningkite/lightning-server-simplified"
 import {LKModelSchema} from "api/genericSdk"
-import {AuthContext} from "App"
+import {Context} from "App"
 import {useContext} from "react"
 import {useParams} from "react-router-dom"
 
 export const useCurrentSchema = <T extends HasId>() => {
   const {endpointName} = useParams()
-  const {session, lkSchema} = useContext(AuthContext)
+  const {session, lkSchema} = useContext(Context)
 
   if (!session || !lkSchema) {
     throw new Error(
-      "The useCurrentSchema hook must be used inside of an AuthContext"
+      "The useCurrentSchema hook must be used inside of an Context"
     )
   }
 

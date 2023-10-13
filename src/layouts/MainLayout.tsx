@@ -22,7 +22,7 @@ import {
   Typography
 } from "@mui/material"
 import {EndpointSchema} from "api/genericSdk"
-import {AuthContext} from "App"
+import {Context} from "App"
 import React, {FC, ReactElement, ReactNode, useContext, useState} from "react"
 import {NavLink} from "react-router-dom"
 import {
@@ -76,7 +76,7 @@ const GroupButton: FC<{
 }
 
 const MainLayout: FC<{children: ReactNode}> = ({children}) => {
-  const {lkSchema, logout} = useContext(AuthContext)
+  const {lkSchema, logout} = useContext(Context)
 
   const [modelsOpen, setModelsOpen] = useState(true)
   const [endpointsOpen, setEndpointsOpen] = useState(false)

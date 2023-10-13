@@ -4,7 +4,7 @@ import {Link as LinkIcon} from "@mui/icons-material"
 import {Alert, Box, IconButton, Stack} from "@mui/material"
 import {FieldTemplateProps} from "@rjsf/utils"
 import {LKModelSchema} from "api/genericSdk"
-import {AuthContext} from "App"
+import {Context} from "App"
 import ErrorAlert from "components/ErrorAlert"
 import React, {ReactElement, useContext, useEffect, useState} from "react"
 import {Link} from "react-router-dom"
@@ -12,14 +12,14 @@ import {Link} from "react-router-dom"
 export function ReferenceField<T extends HasId>(
   props: FieldTemplateProps
 ): ReactElement {
-  const {session, lkSchema} = useContext(AuthContext)
+  const {session, lkSchema} = useContext(Context)
 
   const [endpointName, modelSchema] = Object.entries(
     lkSchema.models as Record<string, LKModelSchema<T>>
-  ).find(([_key, value]) => value?.$ref === `#/definitions/${props.schema.references as string}`) ?? [
-    undefined,
-    undefined
-  ]
+  ).find(
+    ([_key, value]) =>
+      value?.$ref === `#/definitions/${props.schema.references as string}`
+  ) ?? [undefined, undefined]
 
   const endpoint = modelSchema
     ? session.getRestEndpoint<T>(modelSchema.url)
@@ -53,7 +53,6 @@ export function ReferenceField<T extends HasId>(
     item && props.onChange(item._id)
   }, [item])
 
-
   if (!modelSchema || !endpointName || !endpoint) {
     return (
       <Alert severity="error">
@@ -84,7 +83,7 @@ export function ReferenceField<T extends HasId>(
       >
         <LinkIcon />
       </IconButton>
-      { error && <ErrorAlert>Load Error</ErrorAlert>}
+      {error && <ErrorAlert>Load Error</ErrorAlert>}
     </Stack>
   )
 }

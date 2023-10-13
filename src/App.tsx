@@ -4,6 +4,7 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs"
 import {RJSFSchema} from "@rjsf/utils"
 import {
   GenericAPI,
+  GenericLiveApi,
   GenericRequesterSession,
   LKSchema,
   User
@@ -14,6 +15,8 @@ import ErrorAlert from "components/ErrorAlert"
 import Loading from "components/Loading"
 import MainLayout from "layouts/MainLayout"
 import UnauthLayout from "layouts/UnauthLayout"
+import {HomeItems} from "pages/Home/HomeItems"
+import {HomePage} from "pages/Home/HomePage"
 import React, {createContext, FC, useEffect, useState} from "react"
 import {BrowserRouter} from "react-router-dom"
 import {AuthRoutes, UnauthRoutes} from "routers"
@@ -22,7 +25,7 @@ import {injectedInformation} from "./injectedInfo"
 import {theme} from "./theme"
 
 // AuthContext is available when the user is authenticated
-export const AuthContext = createContext({
+export const Context = createContext({
   session: {} as GenericRequesterSession,
   logout: (): void => {
     throw new Error("Used logout outside of AuthContext")
@@ -52,7 +55,7 @@ const App: FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>()
   const [lkSchema, setLKSchema] = useState<LKSchema | null>()
 
-  const isLoggedIn = !!session
+  // const isLoggedIn = !!session
 
   const refreshCurrentUser = async (): Promise<void> => {
     if (!session) {
@@ -61,11 +64,19 @@ const App: FC = () => {
     await session?.auth
       .getSelf()
       .then(setCurrentUser)
-      .catch(() => setCurrentUser({
-        _id: "???",
-        email: "unknown"
-      }))
+      .catch(() =>
+        setCurrentUser({
+          _id: "???",
+          email: "unknown"
+        })
+      )
   }
+
+  const defaultEndpoint = new GenericLiveApi(
+    "https://localhost:8080",
+    "https://localhost:8080",
+    {}
+  )
 
   useEffect(() => {
     refreshCurrentUser()
@@ -113,11 +124,11 @@ const App: FC = () => {
         setLKSchema(schema)
       })
       .catch(() => setLKSchema(null))
-  }, [isLoggedIn])
+  }, [session?.api])
 
-  if (isLoggedIn && (currentUser === undefined || lkSchema === undefined)) {
-    return <Loading />
-  }
+  // if (isLoggedIn && (currentUser === undefined || lkSchema === undefined)) {
+  //   return <Loading />
+  // }
 
   if (currentUser === null) {
     return (
@@ -152,7 +163,7 @@ const App: FC = () => {
       <BrowserRouter basename={injectedInformation?.basePage}>
         <ThemeProvider theme={theme}>
           {session && api ? (
-            <AuthContext.Provider
+            <Context.Provider
               value={{
                 session,
                 logout,
@@ -162,16 +173,16 @@ const App: FC = () => {
               }}
             >
               <MainLayout>
-                <AuthRoutes />
+                <HomePage />
               </MainLayout>
-            </AuthContext.Provider>
+            </Context.Provider>
           ) : (
             <UnauthContext.Provider
               value={{api, changeBackendURL, authenticate}}
             >
-              <UnauthLayout>
-                <UnauthRoutes />
-              </UnauthLayout>
+              <MainLayout>
+                <HomePage />
+              </MainLayout>
             </UnauthContext.Provider>
           )}
         </ThemeProvider>

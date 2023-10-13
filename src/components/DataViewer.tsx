@@ -4,7 +4,7 @@ import {Box} from "@mui/system"
 import {Form} from "@rjsf/mui"
 import {RJSFSchema} from "@rjsf/utils"
 import React, {ReactElement, useContext, useState} from "react"
-import {AuthContext} from "../App"
+import {Context} from "../App"
 import {customTemplates, dummyValidator} from "../utils/helpers/dummyValidator"
 import {MyOneOfField} from "./ModelForm/MyOneOfField"
 
@@ -12,7 +12,7 @@ export function DataViewer(props: {
   type: RJSFSchema
   value: any
 }): ReactElement {
-  const {lkSchema} = useContext(AuthContext)
+  const {lkSchema} = useContext(Context)
   const [tabValue, setTabValue] = useState("form")
   return (
     <TabContext value={tabValue}>

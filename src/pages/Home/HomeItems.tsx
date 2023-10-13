@@ -7,15 +7,17 @@ import {
   Typography
 } from "@mui/material"
 import {GenericLiveApi} from "api/genericSdk"
-import {AuthContext} from "App"
+import {Context} from "App"
 import React, {FC, useContext, useState} from "react"
 
 export const HomeItems: FC = () => {
   const [customToken, setCustomToken] = useState("")
   const [customEndpoint, setCustomEndpoint] = useState("")
-  const {session} = useContext(AuthContext)
+  const {session} = useContext(Context)
 
   console.log(customEndpoint, session.api)
+
+  // if customToken !== "" &&
 
   return (
     <>

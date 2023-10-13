@@ -1,11 +1,11 @@
 import {Button, Stack, Typography} from "@mui/material"
 import {FieldTemplateProps} from "@rjsf/utils"
-import {AuthContext} from "App"
+import {Context} from "App"
 import React, {FC, useContext, useEffect, useState} from "react"
 import {uploadFile} from "utils/helpers/uploads"
 
 const FileField: FC<FieldTemplateProps> = (props) => {
-  const {lkSchema} = useContext(AuthContext)
+  const {lkSchema} = useContext(Context)
 
   const [showSelector, setShowSelector] = useState(!props.formData)
   const [isUploading, setIsUploading] = useState(false)
