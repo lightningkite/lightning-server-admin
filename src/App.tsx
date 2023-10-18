@@ -4,6 +4,7 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs"
 import {RJSFSchema} from "@rjsf/utils"
 import {
   GenericAPI,
+  GenericLiveApi,
   GenericRequesterSession,
   LKSchema,
   User
@@ -61,11 +62,19 @@ const App: FC = () => {
     await session?.auth
       .getSelf()
       .then(setCurrentUser)
-      .catch(() => setCurrentUser({
-        _id: "???",
-        email: "unknown"
-      }))
+      .catch(() =>
+        setCurrentUser({
+          _id: "???",
+          email: "unknown"
+        })
+      )
   }
+
+  const defaultEndpoint = new GenericLiveApi(
+    "https://localhost:8080",
+    "https://localhost:8080",
+    {}
+  )
 
   useEffect(() => {
     refreshCurrentUser()
@@ -113,7 +122,7 @@ const App: FC = () => {
         setLKSchema(schema)
       })
       .catch(() => setLKSchema(null))
-  }, [isLoggedIn])
+  }, [session?.api])
 
   if (isLoggedIn && (currentUser === undefined || lkSchema === undefined)) {
     return <Loading />

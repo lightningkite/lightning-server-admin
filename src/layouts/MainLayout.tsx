@@ -3,6 +3,7 @@ import {
   ExpandLess,
   ExpandMore,
   Folder,
+  Home,
   Info,
   Lan,
   Logout,
@@ -135,7 +136,13 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
 
         <Divider sx={{my: 2}} />
 
-        <NavButton to="/" label="Server Information" icon={<Info />} />
+        <NavButton to="/" label="Home" icon={<Home />} />
+
+        <NavButton
+          to="/serverInformation"
+          label="Server Information"
+          icon={<Info />}
+        />
 
         <ListItemButton onClick={() => setEndpointsOpen(!endpointsOpen)}>
           <ListItemIcon>
@@ -146,26 +153,28 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
         </ListItemButton>
         <Collapse in={endpointsOpen} timeout="auto">
           <List component="div" disablePadding>
-            {Object.keys(endpointGrouping).sort().map((groupName) => {
-              const inside = endpointGrouping[groupName].map(
-                (endpointSchema) => (
-                  <NavButton
-                    inset
-                    key={stringOfEndpointSchema(endpointSchema)}
-                    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                    to={`/endpoints/detail/${keyOfEndpointSchema(
-                      endpointSchema
-                    )}`}
-                    label={stringOfEndpointSchema(endpointSchema)}
-                  />
+            {Object.keys(endpointGrouping)
+              .sort()
+              .map((groupName) => {
+                const inside = endpointGrouping[groupName].map(
+                  (endpointSchema) => (
+                    <NavButton
+                      inset
+                      key={stringOfEndpointSchema(endpointSchema)}
+                      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                      to={`/endpoints/detail/${keyOfEndpointSchema(
+                        endpointSchema
+                      )}`}
+                      label={stringOfEndpointSchema(endpointSchema)}
+                    />
+                  )
                 )
-              )
-              return (
-                <GroupButton name={groupName} key={groupName}>
-                  {inside}
-                </GroupButton>
-              )
-            })}
+                return (
+                  <GroupButton name={groupName} key={groupName}>
+                    {inside}
+                  </GroupButton>
+                )
+              })}
           </List>
         </Collapse>
 
@@ -178,16 +187,16 @@ const MainLayout: FC<{children: ReactNode}> = ({children}) => {
         </ListItemButton>
         <Collapse in={modelsOpen} timeout="auto">
           <List component="div" disablePadding>
-            {Object.entries(lkSchema.models).sort((a, b) => a[0].localeCompare(b[0])).map(
-              ([endpointName, modelSchema]) => (
+            {Object.entries(lkSchema.models)
+              .sort((a, b) => a[0].localeCompare(b[0]))
+              .map(([endpointName, modelSchema]) => (
                 <NavButton
                   inset
                   key={endpointName}
                   to={`/models/${endpointName}`}
                   label={modelSchema.collectionName ?? modelSchema.title}
                 />
-              )
-            )}
+              ))}
           </List>
         </Collapse>
       </Box>
