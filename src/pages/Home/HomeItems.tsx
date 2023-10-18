@@ -9,13 +9,16 @@ import {
 import {GenericLiveApi} from "api/genericSdk"
 import {Context} from "App"
 import React, {FC, useContext, useState} from "react"
+import {LocalStorageKey} from "utils/constants"
 
 export const HomeItems: FC = () => {
   const [customToken, setCustomToken] = useState("")
-  const [customEndpoint, setCustomEndpoint] = useState("")
+  const [customEndpoint, setCustomEndpoint] = useState("https://localhost:8080")
   const {session} = useContext(Context)
 
   console.log(customEndpoint, session.api)
+
+  console.log(customEndpoint)
 
   // if customToken !== "" &&
 
