@@ -70,12 +70,6 @@ const App: FC = () => {
       )
   }
 
-  const defaultEndpoint = new GenericLiveApi(
-    "https://localhost:8080",
-    "https://localhost:8080",
-    {}
-  )
-
   useEffect(() => {
     refreshCurrentUser()
 

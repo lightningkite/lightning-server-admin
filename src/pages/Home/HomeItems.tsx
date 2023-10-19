@@ -11,7 +11,7 @@ import {
 } from "@mui/material"
 import {GenericLiveApi} from "api/genericSdk"
 import {AuthContext} from "App"
-import React, {FC, useContext, useState} from "react"
+import React, {FC, useContext, useEffect, useState} from "react"
 import {LocalStorageKey} from "utils/constants"
 import {useCurrentSchema} from "utils/hooks/useCurrentSchema"
 
@@ -29,13 +29,17 @@ export const HomeItems: FC = () => {
 
   const tempRef = () => lkSchema.models[customEndpoint]
 
+  // useEffect(() => {
+  //   window.location.reload()
+  // }, [customEndpoint])
+
   console.log(
     customEndpoint,
     (session.api as GenericLiveApi).httpUrl,
     session.getRestEndpoint
   )
 
-  console.log(customToken, session.userToken, lkSchema.models[customEndpoint])
+  console.log(customToken, session.userToken)
 
   return (
     <>
@@ -104,6 +108,7 @@ export const HomeItems: FC = () => {
                 setSnackbarMessage("Server Url")
                 setSnackbarOpen(true)
                 tempRef()
+                window.location.reload()
               }}
             >
               Submit
