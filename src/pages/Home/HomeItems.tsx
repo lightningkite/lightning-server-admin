@@ -13,9 +13,10 @@ import {GenericLiveApi} from "api/genericSdk"
 import {AuthContext} from "App"
 import React, {FC, useContext, useState} from "react"
 import {LocalStorageKey} from "utils/constants"
+import {useCurrentSchema} from "utils/hooks/useCurrentSchema"
 
 export const HomeItems: FC = () => {
-  const {session} = useContext(AuthContext)
+  const {session, lkSchema} = useContext(AuthContext)
 
   const [snackbarMessage, setSnackbarMessage] = useState("")
   const [snackbarOpen, setSnackbarOpen] = useState(false)
@@ -26,9 +27,15 @@ export const HomeItems: FC = () => {
 
   const handleClose = () => setSnackbarOpen(false)
 
-  console.log(customEndpoint, (session.api as GenericLiveApi).httpUrl)
+  const tempRef = () => lkSchema.models[customEndpoint]
 
-  console.log(customToken, session.userToken)
+  console.log(
+    customEndpoint,
+    (session.api as GenericLiveApi).httpUrl,
+    session.getRestEndpoint
+  )
+
+  console.log(customToken, session.userToken, lkSchema.models[customEndpoint])
 
   return (
     <>
@@ -96,6 +103,7 @@ export const HomeItems: FC = () => {
                 )
                 setSnackbarMessage("Server Url")
                 setSnackbarOpen(true)
+                tempRef()
               }}
             >
               Submit
