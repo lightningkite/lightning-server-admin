@@ -1,7 +1,10 @@
 import {
+  Alert,
   Button,
   Card,
   CardContent,
+  colors,
+  Snackbar,
   Stack,
   TextField,
   Typography
@@ -12,11 +15,18 @@ import React, {FC, useContext, useState} from "react"
 import {LocalStorageKey} from "utils/constants"
 
 export const HomeItems: FC = () => {
-  const [customToken, setCustomToken] = useState("")
-  const [customEndpoint, setCustomEndpoint] = useState("https://localhost:8080")
   const {session} = useContext(AuthContext)
 
-  console.log(customEndpoint, session.api)
+  const [snackbarMessage, setSnackbarMessage] = useState("")
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [customToken, setCustomToken] = useState("")
+  const [customEndpoint, setCustomEndpoint] = useState(
+    (session.api as GenericLiveApi).httpUrl
+  )
+
+  const handleClose = () => setSnackbarOpen(false)
+
+  console.log(customEndpoint, (session.api as GenericLiveApi).httpUrl)
 
   console.log(customToken, session.userToken)
 
@@ -24,6 +34,13 @@ export const HomeItems: FC = () => {
     <>
       <Card sx={{mb: 2}}>
         <CardContent>
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={4500}
+            onClose={handleClose}
+          >
+            <Alert severity="success">{`${snackbarMessage} has been changed`}</Alert>
+          </Snackbar>
           <Typography
             variant="h6"
             fontWeight="bold"
@@ -43,6 +60,8 @@ export const HomeItems: FC = () => {
             variant="contained"
             onClick={() => {
               session.userToken = customToken
+              setSnackbarMessage("Token")
+              setSnackbarOpen(true)
             }}
           >
             Submit
@@ -75,6 +94,8 @@ export const HomeItems: FC = () => {
                   customEndpoint,
                   {}
                 )
+                setSnackbarMessage("Server Url")
+                setSnackbarOpen(true)
               }}
             >
               Submit
