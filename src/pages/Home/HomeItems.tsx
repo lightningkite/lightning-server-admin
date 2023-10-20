@@ -33,7 +33,7 @@ export const HomeItems: FC = () => {
 
   // )
 
-  console.log(customEndpoint, session.api)
+  // console.log(customEndpoint, session.api)
 
   // console.log(customToken, session.userToken)
 
