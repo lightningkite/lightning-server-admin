@@ -11,6 +11,7 @@ import {
 import {GenericLiveApi} from "api/genericSdk"
 import {AuthContext} from "App"
 import React, {FC, useContext, useState} from "react"
+import {LocalStorageKey} from "utils/constants"
 
 export const HomeItems: FC = () => {
   const {session, lkSchema} = useContext(AuthContext)
@@ -26,13 +27,15 @@ export const HomeItems: FC = () => {
 
   const tempRef = () => lkSchema.models[customEndpoint]
 
-  console.log(
-    customEndpoint,
-    (session.api as GenericLiveApi).httpUrl,
-    session.getRestEndpoint
-  )
+  // console.log(
+  //   customEndpoint,
+  //   (session.api as GenericLiveApi).httpUrl,
 
-  console.log(customToken, session.userToken)
+  // )
+
+  console.log(customEndpoint, session.api)
+
+  // console.log(customToken, session.userToken)
 
   return (
     <>
