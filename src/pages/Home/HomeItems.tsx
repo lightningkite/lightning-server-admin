@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   CardContent,
-  colors,
   Snackbar,
   Stack,
   TextField,
@@ -11,9 +10,7 @@ import {
 } from "@mui/material"
 import {GenericLiveApi} from "api/genericSdk"
 import {AuthContext} from "App"
-import React, {FC, useContext, useEffect, useState} from "react"
-import {LocalStorageKey} from "utils/constants"
-import {useCurrentSchema} from "utils/hooks/useCurrentSchema"
+import React, {FC, useContext, useState} from "react"
 
 export const HomeItems: FC = () => {
   const {session, lkSchema} = useContext(AuthContext)
@@ -28,10 +25,6 @@ export const HomeItems: FC = () => {
   const handleClose = () => setSnackbarOpen(false)
 
   const tempRef = () => lkSchema.models[customEndpoint]
-
-  // useEffect(() => {
-  //   window.location.reload()
-  // }, [customEndpoint])
 
   console.log(
     customEndpoint,
