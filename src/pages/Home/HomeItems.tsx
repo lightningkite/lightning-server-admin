@@ -27,6 +27,22 @@ export const HomeItems: FC = () => {
 
   const tempRef = () => lkSchema.models[customEndpoint]
 
+  const changeToken = () => {
+    session.userToken = customToken
+    localStorage.setItem(LocalStorageKey.USER_TOKEN, customToken)
+    setSnackbarMessage("Token")
+    setSnackbarOpen(true)
+  }
+
+  const changeEndpoint = () => {
+    session.api = new GenericLiveApi(customEndpoint, customEndpoint, {})
+    localStorage.setItem(LocalStorageKey.BACKEND_URL, customEndpoint)
+    setSnackbarMessage("Server Url")
+    setSnackbarOpen(true)
+    tempRef()
+    window.location.reload()
+  }
+
   return (
     <>
       <Card sx={{mb: 2}}>
@@ -56,10 +72,7 @@ export const HomeItems: FC = () => {
           <Button
             variant="contained"
             onClick={() => {
-              session.userToken = customToken
-              localStorage.setItem(LocalStorageKey.USER_TOKEN, customToken)
-              setSnackbarMessage("Token")
-              setSnackbarOpen(true)
+              changeToken()
             }}
           >
             Submit
@@ -87,19 +100,7 @@ export const HomeItems: FC = () => {
             <Button
               variant="contained"
               onClick={() => {
-                session.api = new GenericLiveApi(
-                  customEndpoint,
-                  customEndpoint,
-                  {}
-                )
-                localStorage.setItem(
-                  LocalStorageKey.BACKEND_URL,
-                  customEndpoint
-                )
-                setSnackbarMessage("Server Url")
-                setSnackbarOpen(true)
-                tempRef()
-                window.location.reload()
+                changeEndpoint()
               }}
             >
               Submit
