@@ -20,22 +20,12 @@ export const HomeItems: FC = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [customToken, setCustomToken] = useState("")
   const [customEndpoint, setCustomEndpoint] = useState(
-    (session.api as GenericLiveApi).httpUrl
+    localStorage.getItem(LocalStorageKey.BACKEND_URL) ?? ""
   )
 
   const handleClose = () => setSnackbarOpen(false)
 
   const tempRef = () => lkSchema.models[customEndpoint]
-
-  // console.log(
-  //   customEndpoint,
-  //   (session.api as GenericLiveApi).httpUrl,
-
-  // )
-
-  // console.log(customEndpoint, session.api)
-
-  // console.log(customToken, session.userToken)
 
   return (
     <>
@@ -67,6 +57,7 @@ export const HomeItems: FC = () => {
             variant="contained"
             onClick={() => {
               session.userToken = customToken
+              localStorage.setItem(LocalStorageKey.USER_TOKEN, customToken)
               setSnackbarMessage("Token")
               setSnackbarOpen(true)
             }}
@@ -100,6 +91,10 @@ export const HomeItems: FC = () => {
                   customEndpoint,
                   customEndpoint,
                   {}
+                )
+                localStorage.setItem(
+                  LocalStorageKey.BACKEND_URL,
+                  customEndpoint
                 )
                 setSnackbarMessage("Server Url")
                 setSnackbarOpen(true)
