@@ -79,47 +79,49 @@ export function EndpointForm<T>(props: EndpointFormProps<T>): ReactElement {
       </TabList>
     </Box>
     <TabPanel value="form">
-      <Form
-        schema={schema}
-        formData={currentValues}
-        fields={{
-          OneOfField: MyOneOfField
-        }}
-        validator={dummyValidator}
-        onSubmit={(e) => {
-          onSubmit(e.formData)
-        }}
-        onChange={(e) => {
-          setCurrentValues(e.formData)
-          setCurrentValuesJson(JSON.stringify(e.formData, null, 2))
-          setCurrentValuesJsonValid(true)
-        }}
-        templates={customTemplates}
-        uiSchema={{
-          "ui:submitButtonOptions": {
-            submitText: submitLabel
-          }
-        }}
-      />
+      {tabValue === "form" && <Form
+          schema={schema}
+          formData={currentValues}
+          fields={{
+            OneOfField: MyOneOfField
+          }}
+          validator={dummyValidator}
+          onSubmit={(e) => {
+            onSubmit(e.formData)
+          }}
+          onChange={(e) => {
+            setCurrentValues(e.formData)
+            setCurrentValuesJson(JSON.stringify(e.formData, null, 2))
+            setCurrentValuesJsonValid(true)
+          }}
+          templates={customTemplates}
+          uiSchema={{
+            "ui:submitButtonOptions": {
+              submitText: submitLabel
+            }
+          }}
+      />}
     </TabPanel>
     <TabPanel value="json">
-      <TextField
-        sx={{width: "100%"}}
-        multiline={true}
-        value={currentValuesJson}
-        onChange={e => {
-          setCurrentValuesJson(e.target.value)
-          try {
-            setCurrentValues(JSON.parse(e.target.value))
-            setCurrentValuesJsonValid(true)
-          } catch(e) {
-            setCurrentValuesJsonValid(false)
-          }
-        }}
-      />
-      <Button variant="contained" disabled={!currentValuesJsonValid} onClick={(e) => {
-        onSubmit(currentValues)
-      }}>Submit</Button>
+      {tabValue === "json" && <>
+        <TextField
+          sx={{width: "100%"}}
+          multiline={true}
+          value={currentValuesJson}
+          onChange={e => {
+            setCurrentValuesJson(e.target.value)
+            try {
+              setCurrentValues(JSON.parse(e.target.value))
+              setCurrentValuesJsonValid(true)
+            } catch (e) {
+              setCurrentValuesJsonValid(false)
+            }
+          }}
+        />
+        <Button variant="contained" disabled={!currentValuesJsonValid} onClick={(e) => {
+          onSubmit(currentValues)
+        }}>Submit</Button>
+      </>}
     </TabPanel>
   </TabContext>)
 }
