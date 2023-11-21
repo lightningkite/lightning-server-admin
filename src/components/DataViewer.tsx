@@ -1,5 +1,5 @@
 import {TabContext, TabList, TabPanel} from "@mui/lab"
-import {Tab, TextField} from "@mui/material"
+import {Stack, Tab, TextField, Typography} from "@mui/material"
 import {Box} from "@mui/system"
 import {Form} from "@rjsf/mui"
 import {RJSFSchema} from "@rjsf/utils"
@@ -13,7 +13,7 @@ export function DataViewer(props: {
   value: any
 }): ReactElement {
   const {lkSchema} = useContext(AuthContext)
-  const [tabValue, setTabValue] = useState("form")
+  const [tabValue, setTabValue] = useState("raw")
   return (
     <TabContext value={tabValue}>
       <Box sx={{borderBottom: 1, borderColor: "divider"}}>
@@ -21,10 +21,14 @@ export function DataViewer(props: {
           onChange={(_e, value) => setTabValue(value)}
           aria-label="lab API tabs example"
         >
+          <Tab label="Raw" value="raw"/>
           <Tab label="Form" value="form"/>
           <Tab label="JSON" value="json"/>
         </TabList>
       </Box>
+      <TabPanel value="raw">
+        {tabValue === "raw" && <div style={{overflow: "scroll"}}><ViewJsonNode item={props.value} horizontal={false}/></div>}
+      </TabPanel>
       <TabPanel value="form">
 
         {tabValue === "form" && <Form
@@ -58,4 +62,38 @@ export function DataViewer(props: {
       </TabPanel>
     </TabContext>
   )
+}
+
+export function ViewJsonNode(props: {
+  item: any,
+  horizontal: boolean
+}): ReactElement {
+  switch(typeof props.item) {
+    // case "boolean":
+    //   return props.item ?
+    case "undefined":
+      return <Typography>N/A</Typography>
+    case "object":
+      if(props.item === null) return <Typography>N/A</Typography>
+      else if (Array.isArray(props.item)) {
+        return <Stack sx={{padding: 1}} direction={props.horizontal ? "row" : "column"}>
+          {
+            props.item.map((x, index) => <ViewJsonNode key={index} item={x} horizontal={!props.horizontal}/>)
+          }
+        </Stack>
+      } else {
+        return <Stack sx={{padding: 1}} direction={props.horizontal ? "row" : "column"}>
+          {
+            Object.keys(props.item).map(key => <Stack sx={{padding: 1}} key={key} direction={!props.horizontal ? "row" : "column"}>
+              <Typography variant={"subtitle2"}>{key}</Typography>
+              <ViewJsonNode item={props.item[key]} horizontal={props.horizontal}/>
+            </Stack>)
+          }
+        </Stack>
+      }
+    case "function":
+      return <Typography>Function?</Typography>
+    default:
+      return <Typography>{props.item.toString()}</Typography>
+  }
 }

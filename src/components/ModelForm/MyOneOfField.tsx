@@ -57,8 +57,33 @@ export function MyOneOfField<
     function resetSelectedOption(value: number) {
         setSelectedOption(value)
         const fullOptionInfo: JSONSchema7Definition | undefined = schema.oneOf ? schema.oneOf[value] : undefined
-        if(typeof fullOptionInfo === "object" && fullOptionInfo.type === "null") {
-            onChange(null as T)
+
+        if(typeof fullOptionInfo === "object") {
+            switch (fullOptionInfo.type) {
+                case 'string':
+                    onChange("" as T)
+                    break
+                case 'number':
+                    onChange(0 as T)
+                    break
+                case 'integer':
+                    onChange(0 as T)
+                    break
+                case 'boolean':
+                    onChange(false as T)
+                    break
+                case 'object':
+                    onChange({} as T)
+                    break
+                case 'array':
+                    onChange([] as T)
+                    break
+                case 'null':
+                    onChange(null as T)
+                    break
+                default:
+                    onChange(null as T)
+            }
         } else {
             onChange({} as T)
         }
