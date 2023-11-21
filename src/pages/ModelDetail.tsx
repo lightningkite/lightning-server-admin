@@ -66,7 +66,10 @@ export function ModelDetail<T extends HasId = HasId>(): ReactElement {
     <Container maxWidth="md">
       <PageHeader
         breadcrumbs={[
-          [modelSchema.collectionName ?? modelSchema.title, `/models/${endpointName}`],
+          [
+            modelSchema.collectionName ?? modelSchema.title,
+            `/models/${endpointName}`
+          ],
           [itemTitle, ""]
         ]}
         title={itemTitle}
