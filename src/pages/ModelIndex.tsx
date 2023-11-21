@@ -1,13 +1,17 @@
-import {Condition, HasId} from "@lightningkite/lightning-server-simplified"
+import {
+  Condition,
+  HasId,
+  SessionRestEndpoint
+} from "@lightningkite/lightning-server-simplified"
 import {RestDataTable} from "@lightningkite/mui-lightning-components"
 import {Download, OpenInNew} from "@mui/icons-material"
-import {Button, Container} from "@mui/material"
+import {Button, Container, Typography} from "@mui/material"
 import {AutoLoadingButton} from "components/AutoLoadingButton"
 import ErrorAlert from "components/ErrorAlert"
 import {NewItem} from "components/NewItem"
 import PageHeader from "components/PageHeader"
-import React, {ReactElement, useState} from "react"
-import {useNavigate, useParams} from "react-router-dom"
+import React, {ReactElement, useEffect, useState} from "react"
+import {Link, useNavigate, useParams} from "react-router-dom"
 import {LocalStorageKey} from "utils/constants"
 import {camelCaseToTitle} from "utils/helpers/miscHelpers"
 import {useCurrentSchema} from "utils/hooks/useCurrentSchema"
@@ -61,9 +65,17 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
       })
   }
 
+  useEffect(() => {
+    if (!("Always" in filter)) {
+      setFilter({Always: true})
+    }
+  }, [modelSchema])
+
   return (
     <Container maxWidth="md">
-      <PageHeader title={`${modelSchema.collectionName ?? modelSchema.title} List`}>
+      <PageHeader
+        title={`${modelSchema.collectionName ?? modelSchema.title} List`}
+      >
         <Button
           color="info"
           component="a"
@@ -88,8 +100,16 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
 
       <RestDataTable<T>
         additionalQueryConditions={[filter]}
-        restEndpoint={endpoint}
-        onRowClick={(model) => navigate(`/models/${endpointName}/${model._id}`)}
+        restEndpoint={
+          endpoint as Pick<SessionRestEndpoint<T>, "query" | "count">
+        }
+        onRowClick={(model, e) => {
+          if (e.ctrlKey || e.metaKey) {
+            window.open(`/models/${endpointName}/${model._id}`)
+            return
+          }
+          navigate(`/models/${endpointName}/${model._id}`, {replace: true})
+        }}
         searchFields={modelSchema.searchFields}
         columns={modelSchema.tableColumns.map((key) => ({
           field: key.toString(),
@@ -105,10 +125,10 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
                 `Are you sure you want to delete ${ids.length} items?`
               )
               result &&
-              endpoint
-                .bulkDelete({_id: {Inside: ids}})
-                .then(() => setRefreshTrigger((prev) => prev + 1))
-                .catch(() => alert("Failed to delete items"))
+                endpoint
+                  .bulkDelete({_id: {Inside: ids}})
+                  .then(() => setRefreshTrigger((prev) => prev + 1))
+                  .catch(() => alert("Failed to delete items"))
             }
           }
         ]}

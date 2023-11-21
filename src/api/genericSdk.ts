@@ -2,6 +2,7 @@ import {
   AggregateQuery,
   apiCall,
   Condition,
+  DeepPartial,
   EntryChange,
   GroupAggregateQuery,
   GroupCountQuery,
@@ -9,6 +10,7 @@ import {
   MassModification,
   Modification,
   Query,
+  QueryPartial,
   SessionRestEndpoint
 } from "@lightningkite/lightning-server-simplified"
 import {RJSFSchema} from "@rjsf/utils"
@@ -217,6 +219,14 @@ export class GenericLiveApi implements GenericAPI {
       },
       query<T>(input: Query<T>): Promise<Array<T>> {
         return apiCall(`${endpointURL}/query`, input, {
+          method: "POST",
+          headers: userToken
+            ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
+            : extraHeaders
+        }).then((x) => x.json())
+      },
+      queryPartial<T>(input: QueryPartial<T>): Promise<Array<DeepPartial<T>>> {
+        return apiCall(`${endpointURL}/query-partial`, input, {
           method: "POST",
           headers: userToken
             ? {...extraHeaders, Authorization: `Bearer ${userToken}`}

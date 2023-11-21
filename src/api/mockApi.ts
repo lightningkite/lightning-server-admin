@@ -2,6 +2,7 @@ import {faker} from "@faker-js/faker"
 import {
   AggregateQuery,
   Condition,
+  DeepPartial,
   EntryChange,
   GroupAggregateQuery,
   GroupCountQuery,
@@ -133,6 +134,16 @@ export class MockApi implements GenericAPI {
         return this.adaptEndpoint<T>(
           endpointURL,
           "query",
+          input,
+          requesterToken
+        )
+      },
+      queryPartial: <T extends HasId>(
+        input: Query<T>
+      ): Promise<Array<DeepPartial<T>>> => {
+        return this.adaptEndpoint<T>(
+          endpointURL,
+          "queryPartial",
           input,
           requesterToken
         )

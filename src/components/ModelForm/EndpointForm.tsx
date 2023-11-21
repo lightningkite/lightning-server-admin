@@ -53,7 +53,6 @@ export function EndpointForm<T>(props: EndpointFormProps<T>): ReactElement {
   const [currentValues, setCurrentValues] = useState<any>(resetValue)
   const [currentValuesJson, setCurrentValuesJson] = useState<string>(() => "")
   const [currentValuesJsonValid, setCurrentValuesJsonValid] = useState<boolean>(() => false)
-  console.log(currentValues)
 
   const [needsUnmount, setNeedsUnmount] = useState(true)
 
