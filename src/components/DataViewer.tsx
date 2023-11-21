@@ -21,38 +21,40 @@ export function DataViewer(props: {
           onChange={(_e, value) => setTabValue(value)}
           aria-label="lab API tabs example"
         >
-          <Tab label="Form" value="form" />
-          <Tab label="JSON" value="json" />
+          <Tab label="Form" value="form"/>
+          <Tab label="JSON" value="json"/>
         </TabList>
       </Box>
       <TabPanel value="form">
-        <Form
-          schema={{
-            ...props.type,
-            definitions: lkSchema.definitions
-          }}
-          readonly={true}
-          formData={props.value}
-          fields={{
-            // OneOfField: MyOneOfField
-          }}
-          validator={dummyValidator}
-          templates={customTemplates}
-          uiSchema={{
-            "ui:submitButtonOptions": {
-              props: {},
-              submitText: "Filter"
-            }
-          }}
-        />
+
+        {tabValue === "form" && <Form
+            schema={{
+              ...props.type,
+              definitions: lkSchema.definitions
+            }}
+            readonly={true}
+            formData={props.value}
+            fields={{
+              // OneOfField: MyOneOfField
+            }}
+            validator={dummyValidator}
+            templates={customTemplates}
+            uiSchema={{
+              "ui:submitButtonOptions": {
+                props: {},
+                submitText: "Filter"
+              }
+            }}
+        />}
       </TabPanel>
       <TabPanel value="json">
-        <TextField
-          fullWidth
-          multiline
-          minRows={50}
-          value={JSON.stringify(props.value, null, 2)}
-        />
+
+        {tabValue === "json" && <TextField
+            fullWidth
+            multiline
+            minRows={50}
+            value={JSON.stringify(props.value, null, 2)}
+        />}
       </TabPanel>
     </TabContext>
   )

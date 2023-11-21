@@ -3,6 +3,7 @@ import {FieldTemplateProps} from "@rjsf/utils"
 import React, {ReactElement} from "react"
 import FileField from "./CustomFormatFields/FileField"
 import {ReferenceField} from "./CustomFormatFields/ReferenceField"
+import {ReferenceReadOnlyField} from "./CustomFormatFields/ReferenceReadOnlyField";
 
 export function CustomFieldTemplate(props: FieldTemplateProps): ReactElement {
   // console.log({
@@ -17,7 +18,10 @@ export function CustomFieldTemplate(props: FieldTemplateProps): ReactElement {
   }
 
   if (props.schema.references) {
-    return <ReferenceField {...props} />
+    if(props.readonly)
+      return <ReferenceReadOnlyField {...props} />
+    else
+      return <ReferenceField {...props} />
   }
 
   const F = Templates.FieldTemplate ?? (()=><div/>)

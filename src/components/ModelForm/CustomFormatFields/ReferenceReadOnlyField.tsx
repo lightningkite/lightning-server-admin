@@ -1,7 +1,7 @@
 import {HasId, SessionRestEndpoint} from "@lightningkite/lightning-server-simplified"
 import {RestAutocompleteInput} from "@lightningkite/mui-lightning-components"
 import {Link as LinkIcon} from "@mui/icons-material"
-import {Alert, Box, IconButton, Stack} from "@mui/material"
+import {Alert, Box, IconButton, Stack, Typography} from "@mui/material"
 import {FieldTemplateProps} from "@rjsf/utils"
 import {LKModelSchema} from "api/genericSdk"
 import {AuthContext} from "App"
@@ -10,7 +10,7 @@ import React, {ReactElement, useContext, useEffect, useState} from "react"
 import {Link} from "react-router-dom"
 import {enqueueDetail} from "../../../api/enqueue";
 
-export function ReferenceField<T extends HasId>(
+export function ReferenceReadOnlyField<T extends HasId>(
   props: FieldTemplateProps
 ): ReactElement {
   const {session, lkSchema} = useContext(AuthContext)
@@ -65,17 +65,9 @@ export function ReferenceField<T extends HasId>(
   return (
     <Stack direction="row" spacing={1} alignItems="center">
       <Box sx={{width: "100%", minWidth: 200}}>
-        <RestAutocompleteInput
-          loading={item === undefined}
-          label={props.label}
-          value={item ?? null}
-          onChange={setItem}
-          restEndpoint={endpoint}
-          getOptionLabel={(item) =>
-            modelSchema.titleFields.map((field) => item[field]).join(" ")
-          }
-          searchProperties={modelSchema.titleFields}
-        />
+        <Typography>
+          { item ? modelSchema.titleFields.map(k => item[k]).join(" ") : "N/A" }
+        </Typography>
       </Box>
       <IconButton
         component={Link}
