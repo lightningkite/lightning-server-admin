@@ -1,5 +1,5 @@
 import {faker} from "@faker-js/faker"
-import {Tag} from "api/mockApi"
+import { Tag } from "api/mockApi"
 
 export function generateTags(total: number): Tag[] {
   return Array.from({length: total}, () => ({

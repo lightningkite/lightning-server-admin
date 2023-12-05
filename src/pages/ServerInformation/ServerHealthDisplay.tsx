@@ -14,7 +14,7 @@ import {
 import {Level, ServerHealth} from "api/genericSdk"
 import {AuthContext} from "App"
 import Loading from "components/Loading"
-import React, {FC, ReactNode, useContext, useEffect, useState} from "react"
+import {FC, ReactNode, useContext, useEffect, useState} from "react"
 import {camelCaseToTitle} from "utils/helpers/miscHelpers"
 
 const StatusLevelIcons: Record<Level, ReactNode> = {

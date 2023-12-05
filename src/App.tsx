@@ -12,14 +12,14 @@ import {generateLKSchema} from "api/mocks/schemas"
 import {useSessionManager} from "api/useSessionManager"
 import ErrorAlert from "components/ErrorAlert"
 import Loading from "components/Loading"
+import {injectedInformation} from "injectedInfo"
 import MainLayout from "layouts/MainLayout"
 import UnauthLayout from "layouts/UnauthLayout"
-import React, {createContext, FC, useEffect, useState} from "react"
+import {FC, createContext, useEffect, useState} from "react"
 import {BrowserRouter} from "react-router-dom"
 import {AuthRoutes, UnauthRoutes} from "routers"
-import {LocalStorageKey} from "utils/constants"
-import {injectedInformation} from "./injectedInfo"
-import {theme} from "./theme"
+import {theme} from "theme"
+import {LocalStorageKey} from "./utils/constants"
 
 // AuthContext is available when the user is authenticated
 export const AuthContext = createContext({
@@ -61,10 +61,12 @@ const App: FC = () => {
     await session?.auth
       .getSelf()
       .then(setCurrentUser)
-      .catch(() => setCurrentUser({
-        _id: "???",
-        email: "unknown"
-      }))
+      .catch(() =>
+        setCurrentUser({
+          _id: "???",
+          email: "unknown"
+        })
+      )
   }
 
   useEffect(() => {

@@ -1,13 +1,13 @@
 {
   "env": {
-    "browser": true,
-    "es2021": true
+    "browser": true
   },
-  "extends": [
-    "plugin:react/recommended",
-    "standard-with-typescript",
-    "prettier"
-  ],
+  "extends": ["plugin:react/recommended", "prettier"],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "overrides": [],
   "parserOptions": {
     "project": ["./tsconfig.json"],
@@ -26,6 +26,6 @@
     "no-extra-boolean-cast": "off",
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/array-type": "off",
-    " @typescript-eslint/restrict-template-expressions": "off"
+    "@typescript-eslint/restrict-template-expressions": "off"
   }
 }

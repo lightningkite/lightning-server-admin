@@ -1,9 +1,10 @@
-import {useThrottle} from "@lightningkite/mui-lightning-components"
+import {} from "@lightningkite/mui-lightning-components"
 import {LoadingButton} from "@mui/lab"
 import {Alert, Autocomplete, Stack, TextField, Typography} from "@mui/material"
 import {UnauthContext} from "App"
 import React, {FC, useContext, useEffect, useState} from "react"
 import {LocalStorageKey} from "utils/constants"
+import useThrottle from "utils/hooks/useThrottle"
 
 const backendOptions: string[] =
   JSON.parse(
@@ -40,17 +41,20 @@ const EnterEmail: FC<EnterEmailProps> = (props) => {
       return
     }
 
-    if(email.includes(".") && !email.includes("@")) {
+    if (email.includes(".") && !email.includes("@")) {
       console.log("Maybe a JWT?")
       const header = email.substring(0, email.indexOf("."))
       console.log("Header check:", header)
       try {
         const parsed = JSON.parse(atob(header))
         console.log("Parsed is ", parsed)
-        if(typeof parsed.typ === "string") {
-          api?.getServerHealth(email).then(() => {
-            authenticate(email)
-          }).catch(e => setError("Failed to get health"))
+        if (typeof parsed.typ === "string") {
+          api
+            ?.getServerHealth(email)
+            .then(() => {
+              authenticate(email)
+            })
+            .catch((e) => setError("Failed to get health"))
           return
         }
       } catch (e) {

@@ -63,7 +63,9 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
 
   return (
     <Container maxWidth="md">
-      <PageHeader title={`${modelSchema.collectionName ?? modelSchema.title} List`}>
+      <PageHeader
+        title={`${modelSchema.collectionName ?? modelSchema.title} List`}
+      >
         <Button
           color="info"
           component="a"
@@ -89,7 +91,12 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
       <RestDataTable<T>
         additionalQueryConditions={[filter]}
         restEndpoint={endpoint}
-        onRowClick={(model) => navigate(`/models/${endpointName}/${model._id}`)}
+        onRowClick={(model, e) => {
+          if (e.ctrlKey || e.shiftKey) {
+            window.open(`/models/${endpointName}/${model._id}`, "_blank")
+          }
+          navigate(`/models/${endpointName}/${model._id}`)
+        }}
         searchFields={modelSchema.searchFields}
         columns={modelSchema.tableColumns.map((key) => ({
           field: key.toString(),
@@ -105,10 +112,10 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
                 `Are you sure you want to delete ${ids.length} items?`
               )
               result &&
-              endpoint
-                .bulkDelete({_id: {Inside: ids}})
-                .then(() => setRefreshTrigger((prev) => prev + 1))
-                .catch(() => alert("Failed to delete items"))
+                endpoint
+                  .bulkDelete({_id: {Inside: ids}})
+                  .then(() => setRefreshTrigger((prev) => prev + 1))
+                  .catch(() => alert("Failed to delete items"))
             }
           }
         ]}

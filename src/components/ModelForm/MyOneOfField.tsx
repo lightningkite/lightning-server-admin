@@ -9,7 +9,6 @@ import utils, {
     StrictRJSFSchema
 } from "@rjsf/utils";
 import React, {Component, useState} from "react";
-import unset from "lodash/unset";
 import {JSONSchema7, JSONSchema7Definition} from "json-schema";
 
 export function MyOneOfField<

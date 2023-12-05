@@ -1,6 +1,8 @@
 // @ts-nocheck
+import { LKSchema } from "api/genericSdk";
 
-import {LKSchema} from "api/genericSdk"
+
+
 
 export function generateLKSchema(): LKSchema {
   return {

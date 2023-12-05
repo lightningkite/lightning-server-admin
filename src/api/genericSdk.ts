@@ -223,6 +223,14 @@ export class GenericLiveApi implements GenericAPI {
             : extraHeaders
         }).then((x) => x.json())
       },
+      queryPartial<T>(input: Query<T>): Promise<Array<T>> {
+        return apiCall(`${endpointURL}/query`, input, {
+          method: "POST",
+          headers: userToken
+            ? {...extraHeaders, Authorization: `Bearer ${userToken}`}
+            : extraHeaders
+        }).then((x) => x.json())
+      },
       detail(id: string): Promise<T> {
         return apiCall(`${endpointURL}/${id}`, undefined, {
           method: "GET",
