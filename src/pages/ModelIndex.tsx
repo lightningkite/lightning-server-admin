@@ -6,7 +6,7 @@ import {AutoLoadingButton} from "components/AutoLoadingButton"
 import ErrorAlert from "components/ErrorAlert"
 import {NewItem} from "components/NewItem"
 import PageHeader from "components/PageHeader"
-import React, {ReactElement, useState} from "react"
+import React, {ReactElement, useEffect, useState} from "react"
 import {useNavigate, useParams} from "react-router-dom"
 import {LocalStorageKey} from "utils/constants"
 import {camelCaseToTitle} from "utils/helpers/miscHelpers"
@@ -61,6 +61,10 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
       })
   }
 
+  useEffect(() => {
+    setFilter({Always: true})
+  }, [endpointName])
+
   return (
     <Container maxWidth="md">
       <PageHeader
@@ -93,7 +97,7 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
         restEndpoint={endpoint}
         onRowClick={(model, e) => {
           if (e.ctrlKey || e.shiftKey) {
-            window.open(`/models/${endpointName}/${model._id}`, "_blank")
+            return window.open(`/models/${endpointName}/${model._id}`, "_blank")
           }
           navigate(`/models/${endpointName}/${model._id}`)
         }}
