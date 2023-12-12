@@ -61,10 +61,12 @@ const App: FC = () => {
     await session?.auth
       .getSelf()
       .then(setCurrentUser)
-      .catch(() => setCurrentUser({
-        _id: "???",
-        email: "unknown"
-      }))
+      .catch(() =>
+        setCurrentUser({
+          _id: "???",
+          email: "unknown"
+        })
+      )
   }
 
   useEffect(() => {
@@ -113,7 +115,7 @@ const App: FC = () => {
         setLKSchema(schema)
       })
       .catch(() => setLKSchema(null))
-  }, [isLoggedIn])
+  }, [session?.api])
 
   if (isLoggedIn && (currentUser === undefined || lkSchema === undefined)) {
     return <Loading />
