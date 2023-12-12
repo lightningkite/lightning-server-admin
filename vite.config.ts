@@ -8,5 +8,6 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths(), checker({typescript: true})],
   server: {
     port: 3000
-  }
+  },
+  base: "/static/"
 })
