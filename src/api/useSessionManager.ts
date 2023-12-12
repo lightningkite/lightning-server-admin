@@ -63,7 +63,7 @@ export const useSessionManager = (): {
 
   const logout = (): void => {
     localStorage.removeItem(LocalStorageKey.USER_TOKEN)
-    window.location.href = "/"
+    window.location.href = injectedInformation?.basePage ?? "/"
   }
 
   const changeBackendURL = (backendURL: string) => {
