@@ -18,20 +18,21 @@ import {
   GenericAPI,
   Level,
   LKSchema,
-  ServerHealth
+  ServerHealth,
+  User
 } from "./genericSdk"
 import {generateMockDatastore} from "./mockDatastore"
 
-export interface User {
-  _id: string
-  name: string
-  email: string
-  phone?: string
-  birthday?: string
-  profilePic?: string
-  createdAt: string
-  modifiedAt: string
-}
+// export interface User {
+//   _id: string
+//   name: string
+//   email: string
+//   phone?: string
+//   birthday?: string
+//   profilePic?: string
+//   createdAt: string
+//   modifiedAt: string
+// }
 
 export interface Product {
   _id: string
@@ -130,6 +131,14 @@ export class MockApi implements GenericAPI {
         )
       },
       query: <T extends HasId>(input: Query<T>): Promise<Array<T>> => {
+        return this.adaptEndpoint<T>(
+          endpointURL,
+          "query",
+          input,
+          requesterToken
+        )
+      },
+      queryPartial: <T extends HasId>(input: Query<T>): Promise<Array<T>> => {
         return this.adaptEndpoint<T>(
           endpointURL,
           "query",

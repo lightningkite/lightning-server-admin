@@ -1,5 +1,5 @@
-import {LKSchema} from "./genericSdk"
-import {Product, Tag, User} from "./mockApi"
+import {LKSchema, User} from "./genericSdk"
+import {Product, Tag} from "./mockApi"
 import {generateProducts} from "./mocks/products"
 import {generateLKSchema} from "./mocks/schemas"
 import {generateTags} from "./mocks/tags"

@@ -1,14 +1,14 @@
-import {HasId, SessionRestEndpoint} from "@lightningkite/lightning-server-simplified"
+import {HasId} from "@lightningkite/lightning-server-simplified"
 import {RestAutocompleteInput} from "@lightningkite/mui-lightning-components"
 import {Link as LinkIcon} from "@mui/icons-material"
 import {Alert, Box, IconButton, Stack, Typography} from "@mui/material"
 import {FieldTemplateProps} from "@rjsf/utils"
+import {enqueueDetail} from "api/enqueue"
 import {LKModelSchema} from "api/genericSdk"
 import {AuthContext} from "App"
 import ErrorAlert from "components/ErrorAlert"
 import React, {ReactElement, useContext, useEffect, useState} from "react"
 import {Link} from "react-router-dom"
-import {enqueueDetail} from "../../../api/enqueue";
 
 export function ReferenceReadOnlyField<T extends HasId>(
   props: FieldTemplateProps
@@ -17,10 +17,10 @@ export function ReferenceReadOnlyField<T extends HasId>(
 
   const [endpointName, modelSchema] = Object.entries(
     lkSchema.models as Record<string, LKModelSchema<T>>
-  ).find(([_key, value]) => value?.$ref === `#/definitions/${props.schema.references as string}`) ?? [
-    undefined,
-    undefined
-  ]
+  ).find(
+    ([_key, value]) =>
+      value?.$ref === `#/definitions/${props.schema.references as string}`
+  ) ?? [undefined, undefined]
 
   const endpoint = modelSchema
     ? session.getRestEndpoint<T>(modelSchema.url)
@@ -53,7 +53,6 @@ export function ReferenceReadOnlyField<T extends HasId>(
     item && props.onChange(item._id)
   }, [item])
 
-
   if (!modelSchema || !endpointName || !endpoint) {
     return (
       <Alert severity="error">
@@ -66,7 +65,7 @@ export function ReferenceReadOnlyField<T extends HasId>(
     <Stack direction="row" spacing={1} alignItems="center">
       <Box sx={{width: "100%", minWidth: 200}}>
         <Typography>
-          { item ? modelSchema.titleFields.map(k => item[k]).join(" ") : "N/A" }
+          {item ? modelSchema.titleFields.map((k) => item[k]).join(" ") : "N/A"}
         </Typography>
       </Box>
       <IconButton
@@ -76,7 +75,7 @@ export function ReferenceReadOnlyField<T extends HasId>(
       >
         <LinkIcon />
       </IconButton>
-      { error && <ErrorAlert>Load Error</ErrorAlert>}
+      {error && <ErrorAlert>Load Error</ErrorAlert>}
     </Stack>
   )
 }

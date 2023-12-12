@@ -1,9 +1,18 @@
-import {useThrottle} from "@lightningkite/mui-lightning-components"
+import {} from "@lightningkite/mui-lightning-components"
 import {LoadingButton} from "@mui/lab"
-import {Alert, Autocomplete, Stack, TextField, Typography} from "@mui/material"
+import {
+  Alert,
+  Autocomplete,
+  Button,
+  Divider,
+  Stack,
+  TextField,
+  Typography
+} from "@mui/material"
 import {UnauthContext} from "App"
 import React, {FC, useContext, useEffect, useState} from "react"
 import {LocalStorageKey} from "utils/constants"
+import useThrottle from "utils/hooks/useThrottle"
 
 const backendOptions: string[] =
   JSON.parse(
@@ -13,11 +22,18 @@ const backendOptions: string[] =
 export interface EnterEmailProps {
   email: string
   setEmail: (email: string) => void
+  jwt?: string
+  setJwt: (jwt: string | undefined) => void
   sendEmail: () => Promise<void>
 }
 
-const EnterEmail: FC<EnterEmailProps> = (props) => {
-  const {email, setEmail, sendEmail} = props
+const EnterEmail: FC<EnterEmailProps> = ({
+  email,
+  setEmail,
+  jwt,
+  setJwt,
+  sendEmail
+}) => {
   const {api, authenticate, changeBackendURL} = useContext(UnauthContext)
 
   const [error, setError] = useState("")
@@ -34,23 +50,25 @@ const EnterEmail: FC<EnterEmailProps> = (props) => {
 
   const onSubmit = () => {
     setError("")
+    if (jwt !== undefined) {
+      sendEmail()
+      return
+    }
 
     if (email.length === 0) {
       setError("Please enter an email address")
       return
     }
 
-    if(email.includes(".") && !email.includes("@")) {
-      console.log("Maybe a JWT?")
+    if (email.includes(".") && !email.includes("@")) {
       const header = email.substring(0, email.indexOf("."))
-      console.log("Header check:", header)
       try {
         const parsed = JSON.parse(atob(header))
-        console.log("Parsed is ", parsed)
-        if(typeof parsed.typ === "string") {
-          api?.getServerHealth(email).then(() => {
-            authenticate(email)
-          }).catch(e => setError("Failed to get health"))
+        if (typeof parsed.typ === "string") {
+          api
+            ?.getServerHealth(email)
+            .then(() => authenticate(email))
+            .catch((e) => setError("Failed to get health"))
           return
         }
       } catch (e) {
@@ -87,16 +105,27 @@ const EnterEmail: FC<EnterEmailProps> = (props) => {
         Admin Editor
       </Typography>
       <Typography variant="subtitle1" lineHeight={1.2} mt={3}>
-        We&apos;ll send you a code to sign in and get started!
+        {jwt === undefined
+          ? "We'll send you a code to sign in and get started!"
+          : "Enter a token for authorization."}
       </Typography>
       <Stack spacing={4} mt={4}>
-        <TextField
-          label="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          type="email"
-          fullWidth
-        />
+        {jwt === undefined ? (
+          <TextField
+            label="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            fullWidth
+          />
+        ) : (
+          <TextField
+            label="Token"
+            value={jwt}
+            onChange={(e) => setJwt(e.target.value)}
+            fullWidth
+          />
+        )}
 
         <Autocomplete
           options={backendOptions}
@@ -124,8 +153,15 @@ const EnterEmail: FC<EnterEmailProps> = (props) => {
           loading={submitting}
           onClick={onSubmit}
         >
-          Send Code
+          {jwt === undefined ? "Send Code" : "Set Token"}
         </LoadingButton>
+        <Divider>or</Divider>
+        <Button
+          sx={{alignSelf: "center"}}
+          onClick={() => setJwt(jwt === undefined ? "" : undefined)}
+        >
+          Enter {jwt === undefined ? "Token" : "Email"}
+        </Button>
       </Stack>
     </>
   )

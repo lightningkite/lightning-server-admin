@@ -1,5 +1,5 @@
 import {faker} from "@faker-js/faker"
-import {User} from "api/mockApi"
+import { User } from "../genericSdk"
 
 export function generateUsers(total: number): User[] {
   return Array.from({length: total}, () => ({
