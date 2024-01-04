@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import {LocalStorageKey} from "utils/constants"
 import {injectedInformation} from "../injectedInfo"
 import {GenericAPI, GenericLiveApi, GenericRequesterSession} from "./genericSdk"
@@ -44,7 +44,17 @@ export const useSessionManager = (): {
       localStorage.setItem(LocalStorageKey.USER_TOKEN, injectedToken)
     }
     const token = localStorage.getItem(LocalStorageKey.USER_TOKEN)
-
+    const url = new URL(window.location.href)
+    if (url.searchParams.get("userToken")){
+      const tokenFromUrl = url.searchParams.get("userToken") as string
+      if (!api) {
+        throw new Error("No API")
+      }
+      localStorage.setItem(LocalStorageKey.USER_TOKEN, tokenFromUrl)
+      url.searchParams.delete("userToken")
+      window.history.replaceState({}, document.title, url.toString())
+      return new GenericRequesterSession(api, tokenFromUrl)
+    }
     if (token && api) {
       return new GenericRequesterSession(api, token)
     }
@@ -56,9 +66,9 @@ export const useSessionManager = (): {
     if (!api) {
       throw new Error("No API")
     }
-
+    
     setSession(new GenericRequesterSession(api, userToken))
-    localStorage.setItem(LocalStorageKey.USER_TOKEN, userToken)
+        localStorage.setItem(LocalStorageKey.USER_TOKEN, userToken)
   }
 
   const logout = (): void => {

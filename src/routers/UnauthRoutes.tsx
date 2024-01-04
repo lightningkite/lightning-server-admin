@@ -10,7 +10,7 @@ const UnauthRoutes: FC = () => {
         {/* Add another route here if you want a sign-up screen, or any other unauthenticated routes */}
 
         {/* Redirect all other routed to the login page */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to={`/login${location.search}`} replace />} />
       </Route>
     </Routes>
   )
