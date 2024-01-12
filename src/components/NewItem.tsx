@@ -1,11 +1,13 @@
 import {HasId} from "@lightningkite/lightning-server-simplified"
-import {Add} from "@mui/icons-material"
+import {Add, Upload} from "@mui/icons-material"
 import {Button, Dialog, DialogContent, DialogTitle} from "@mui/material"
-import React, {ReactElement, useState} from "react"
+import React, {ReactElement, useEffect, useState} from "react"
 import {useParams} from "react-router-dom"
 import {useCurrentSchema} from "utils/hooks/useCurrentSchema"
+import {AutoLoadingButton} from "./AutoLoadingButton"
 import ErrorAlert from "./ErrorAlert"
 import {ModelForm} from "./ModelForm"
+import {UploadCsv} from "./UploadCsv"
 
 export interface NewItemProps {
   onCreate: () => void
@@ -18,6 +20,7 @@ export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
 
   const [showDialog, setShowDialog] = useState(false)
   const [initialValues, setInitialValues] = useState<Partial<T> | null>(null)
+  const [view, setView] = useState<"upload-csv" | "new">("new")
 
   if (!endpointName) {
     return (
@@ -30,7 +33,7 @@ export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
   }
 
   const handleOpen = () => {
-    endpoint.default().then(x => {
+    endpoint.default().then((x) => {
       setInitialValues(x)
       setShowDialog(true)
     })
@@ -46,6 +49,10 @@ export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
       .catch(() => alert("Failed to save"))
   }
 
+  useEffect(() => {
+    setView("new")
+  }, [showDialog])
+
   return (
     <>
       <Button onClick={handleOpen} startIcon={<Add />}>
@@ -53,15 +60,28 @@ export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
       </Button>
 
       <Dialog open={showDialog} onClose={handleClose}>
-        <DialogTitle>Create New {modelSchema.collectionName ?? modelSchema.title}</DialogTitle>
+        <DialogTitle>
+          Create New {modelSchema.collectionName ?? modelSchema.title}
+        </DialogTitle>
 
         <DialogContent>
-          <ModelForm
-            endpointName={endpointName}
-            initialValues={initialValues ?? {}}
-            onSubmit={handleSubmit}
-            type="create"
-          />
+          {view === "upload-csv" && <UploadCsv endpointName={endpointName} />}
+          {view === "new" && (
+            <>
+              <Button
+                onClick={() => setView("upload-csv")}
+                startIcon={<Upload />}
+              >
+                Upload from CSV
+              </Button>
+              <ModelForm
+                endpointName={endpointName}
+                initialValues={initialValues ?? {}}
+                onSubmit={handleSubmit}
+                type="create"
+              />
+            </>
+          )}
         </DialogContent>
       </Dialog>
     </>

@@ -5,8 +5,9 @@ import {RJSFSchema} from "@rjsf/utils"
 import {AuthContext} from "App"
 import {LKModelSchema} from "api/genericSdk"
 import {MyOneOfField} from "components/ModelForm/MyOneOfField"
-import {Key, ReactElement, useState} from "react"
+import {Key, ReactElement, useEffect, useState} from "react"
 import {customTemplates, dummyValidator} from "utils/helpers/dummyValidator"
+import {extractUiSchema} from "utils/helpers/extractUi"
 
 export function SimpleFilter<T extends HasId>({
   filter,
@@ -22,15 +23,15 @@ export function SimpleFilter<T extends HasId>({
       if (!("And" in filter)) return undefined
       if (!Array.isArray(filter.And)) return undefined
       if ("Always" in filter.And) return undefined
-      const keyValues = filter.And.map((cond) => {
-        const entry = Object.entries(cond).at(0)
-        const key = entry?.at(0)
-        if (!("Equal" in entry?.at(1))) return undefined
-
+      return filter.And.reduce<any>((acc, curr) => {
+        const entry = Object.entries(curr).at(0)
+        const key = entry?.at(0) as string
+        if (!("Equal" in entry?.at(1))) return acc
         const value = entry?.at(1).Equal
-        return {[key]: value}
-      })
-      return keyValues
+        if (!value) return acc
+        acc[key] = value
+        return acc
+      }, {})
     })()
   )
 
@@ -44,10 +45,15 @@ export function SimpleFilter<T extends HasId>({
     {} as Record<string, RJSFSchema>
   )
 
+  useEffect(() => {
+    console.log(formData)
+  }, formData)
+
   return (
     <Form
+      // schema={modelSchema}
       schema={{properties: displayableProperties}}
-      formData={formData}
+      formData={{...formData}}
       fields={{
         OneOfField: MyOneOfField
       }}
@@ -56,17 +62,12 @@ export function SimpleFilter<T extends HasId>({
         setFormData(e.formData)
         const conditions: (Condition<T> | undefined)[] = Object.entries(
           e.formData
-        ).map(([key, value]) => {
-          const keySchema = Object.entries(modelSchema.properties).find(
-            ([k]) => k === key
-          )?.[1]
-          if (keySchema) return {[key]: {Equal: value}} as Condition<T>
-          return undefined
-        })
+        ).map(([key, value]) => ({[key]: {Equal: value}} as Condition<T>))
         handleSubmit({And: conditions.filter(Boolean) as Condition<T>[]})
       }}
       templates={customTemplates}
       uiSchema={{
+        // ...extractUiSchema(modelSchema),
         "ui:submitButtonOptions": {
           props: {},
           submitText: "Filter"
