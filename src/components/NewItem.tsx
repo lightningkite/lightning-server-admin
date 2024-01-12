@@ -1,6 +1,6 @@
 import {HasId} from "@lightningkite/lightning-server-simplified"
 import {Add, Upload} from "@mui/icons-material"
-import {Button, Dialog, DialogContent, DialogTitle} from "@mui/material"
+import {Button, Dialog, DialogContent, DialogTitle, Stack} from "@mui/material"
 import React, {ReactElement, useEffect, useState} from "react"
 import {useParams} from "react-router-dom"
 import {useCurrentSchema} from "utils/hooks/useCurrentSchema"
@@ -60,27 +60,43 @@ export function NewItem<T extends HasId>(props: NewItemProps): ReactElement {
       </Button>
 
       <Dialog open={showDialog} onClose={handleClose}>
-        <DialogTitle>
-          Create New {modelSchema.collectionName ?? modelSchema.title}
-        </DialogTitle>
-
-        <DialogContent>
-          {view === "upload-csv" && <UploadCsv endpointName={endpointName} />}
-          {view === "new" && (
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          {view === "upload-csv" ? (
+            <DialogTitle>
+              Bulk Upload {modelSchema.collectionName ?? modelSchema.title}
+            </DialogTitle>
+          ) : (
             <>
+              <DialogTitle>
+                Create New {modelSchema.collectionName ?? modelSchema.title}
+              </DialogTitle>
               <Button
+                variant="contained"
                 onClick={() => setView("upload-csv")}
+                sx={{mr: 2}}
                 startIcon={<Upload />}
               >
-                Upload from CSV
+                Bulk Upload (CSV)
               </Button>
-              <ModelForm
-                endpointName={endpointName}
-                initialValues={initialValues ?? {}}
-                onSubmit={handleSubmit}
-                type="create"
-              />
             </>
+          )}
+        </Stack>
+
+        <DialogContent>
+          {view === "upload-csv" && (
+            <UploadCsv endpointName={endpointName} handleClose={handleClose} />
+          )}
+          {view === "new" && (
+            <ModelForm
+              endpointName={endpointName}
+              initialValues={initialValues ?? {}}
+              onSubmit={handleSubmit}
+              type="create"
+            />
           )}
         </DialogContent>
       </Dialog>

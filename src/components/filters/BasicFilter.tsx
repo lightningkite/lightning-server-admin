@@ -9,7 +9,7 @@ import {Key, ReactElement, useEffect, useState} from "react"
 import {customTemplates, dummyValidator} from "utils/helpers/dummyValidator"
 import {extractUiSchema} from "utils/helpers/extractUi"
 
-export function SimpleFilter<T extends HasId>({
+export function BasicFilter<T extends HasId>({
   filter,
   modelSchema,
   handleSubmit
@@ -20,10 +20,12 @@ export function SimpleFilter<T extends HasId>({
 }): ReactElement {
   const [formData, setFormData] = useState<any>(
     (() => {
+      // Converting Condition<T> to what the form
+      // expects for the initial formData
       if (!("And" in filter)) return undefined
       if (!Array.isArray(filter.And)) return undefined
       if ("Always" in filter.And) return undefined
-      return filter.And.reduce<any>((acc, curr) => {
+      return filter.And.reduce<Record<string, any>>((acc, curr) => {
         const entry = Object.entries(curr).at(0)
         const key = entry?.at(0) as string
         if (!("Equal" in entry?.at(1))) return acc
@@ -45,13 +47,8 @@ export function SimpleFilter<T extends HasId>({
     {} as Record<string, RJSFSchema>
   )
 
-  useEffect(() => {
-    console.log(formData)
-  }, formData)
-
   return (
     <Form
-      // schema={modelSchema}
       schema={{properties: displayableProperties}}
       formData={{...formData}}
       fields={{
@@ -60,14 +57,13 @@ export function SimpleFilter<T extends HasId>({
       validator={dummyValidator}
       onSubmit={(e) => {
         setFormData(e.formData)
-        const conditions: (Condition<T> | undefined)[] = Object.entries(
-          e.formData
-        ).map(([key, value]) => ({[key]: {Equal: value}} as Condition<T>))
-        handleSubmit({And: conditions.filter(Boolean) as Condition<T>[]})
+        const conditions: Condition<T>[] = Object.entries(e.formData).map(
+          ([key, value]) => ({[key]: {Equal: value}} as Condition<T>)
+        )
+        handleSubmit({And: conditions})
       }}
       templates={customTemplates}
       uiSchema={{
-        // ...extractUiSchema(modelSchema),
         "ui:submitButtonOptions": {
           props: {},
           submitText: "Filter"

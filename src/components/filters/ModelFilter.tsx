@@ -14,7 +14,7 @@ import {ReactElement, useContext, useState} from "react"
 import {LocalStorageKey} from "utils/constants"
 import ErrorAlert from "../ErrorAlert"
 import {AdvancedFilter} from "./AdvancedFilter"
-import {SimpleFilter} from "./SimpleFilter"
+import {BasicFilter} from "./BasicFilter"
 
 export interface AdvancedFilterProps<T extends HasId> {
   endpointName: string
@@ -30,7 +30,7 @@ export function ModelFilter<T extends HasId>(
   const {lkSchema} = useContext(AuthContext)
 
   const [filterTypeOpen, setFilterTypeOpen] = useState<
-    "advanced" | "simple" | null
+    "advanced" | "basic" | null
   >(null)
 
   if (!endpointName) {
@@ -45,7 +45,7 @@ export function ModelFilter<T extends HasId>(
 
   const handleOpen = () => {
     const inLocalStorage = localStorage.getItem(LocalStorageKey.FILTER_OPTION)
-    setFilterTypeOpen(inLocalStorage === "advanced" ? "advanced" : "simple")
+    setFilterTypeOpen(inLocalStorage === "advanced" ? "advanced" : "basic")
   }
 
   const handleSubmit = (data: Condition<T>) => {
@@ -79,14 +79,14 @@ export function ModelFilter<T extends HasId>(
               setFilterTypeOpen(value)
             }}
           >
-            <Tab value="simple" label="Simple" />
+            <Tab value="basic" label="Basic" />
             <Tab value="advanced" label="Advanced" />
           </Tabs>
         </Stack>
 
         <DialogContent>
-          {filterTypeOpen === "simple" && (
-            <SimpleFilter
+          {filterTypeOpen === "basic" && (
+            <BasicFilter
               filter={filter}
               handleSubmit={handleSubmit}
               modelSchema={lkSchema.models[endpointName]}
