@@ -11,7 +11,7 @@ import {useNavigate, useParams} from "react-router-dom"
 import {LocalStorageKey} from "utils/constants"
 import {camelCaseToTitle} from "utils/helpers/miscHelpers"
 import {useCurrentSchema} from "utils/hooks/useCurrentSchema"
-import {AdvancedFilter} from "../components/AdvancedFilter"
+import {ModelFilter} from "../components/filters/ModelFilter"
 
 export function ModelIndex<T extends HasId = HasId>(): ReactElement {
   const navigate = useNavigate()
@@ -83,7 +83,8 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
           CSV
         </AutoLoadingButton>
         <NewItem onCreate={() => setRefreshTrigger((prev) => prev + 1)} />
-        <AdvancedFilter
+
+        <ModelFilter
           filter={filter}
           setFilter={setFilter}
           endpointName={endpointName}

@@ -10,20 +10,19 @@ import {
 } from "@mui/material"
 import {GenericLiveApi} from "api/genericSdk"
 import {AuthContext} from "App"
-import React, {FC, useContext, useState} from "react"
+import {FC, useContext, useState} from "react"
 import {LocalStorageKey} from "utils/constants"
 
 export const HomeItems: FC = () => {
   const {session, lkSchema} = useContext(AuthContext)
 
-  const [snackbarMessage, setSnackbarMessage] = useState("")
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState<
+    "Token" | "Server Url"
+  >()
   const [customToken, setCustomToken] = useState("")
   const [customEndpoint, setCustomEndpoint] = useState(
     localStorage.getItem(LocalStorageKey.BACKEND_URL) ?? ""
   )
-
-  const handleClose = () => setSnackbarOpen(false)
 
   const tempRef = () => lkSchema.models[customEndpoint]
 
@@ -31,14 +30,12 @@ export const HomeItems: FC = () => {
     session.userToken = customToken
     localStorage.setItem(LocalStorageKey.USER_TOKEN, customToken)
     setSnackbarMessage("Token")
-    setSnackbarOpen(true)
   }
 
   const changeEndpoint = () => {
     session.api = new GenericLiveApi(customEndpoint, customEndpoint, {})
     localStorage.setItem(LocalStorageKey.BACKEND_URL, customEndpoint)
     setSnackbarMessage("Server Url")
-    setSnackbarOpen(true)
     tempRef()
     window.location.reload()
   }
@@ -47,48 +44,32 @@ export const HomeItems: FC = () => {
     <>
       <Card sx={{mb: 2}}>
         <CardContent>
-          <Snackbar
-            open={snackbarOpen}
-            autoHideDuration={4500}
-            onClose={handleClose}
-          >
-            <Alert severity="success">{`${snackbarMessage} has been changed`}</Alert>
-          </Snackbar>
-          <Typography
-            variant="h6"
-            fontWeight="bold"
-            mb={3}
-            color="primary.main"
-          >
-            Token
-          </Typography>
+          <Stack gap={2}>
+            <Typography variant="h6" fontWeight="bold" color="primary.main">
+              Token
+            </Typography>
 
-          <TextField
-            label="Token"
-            value={customToken}
-            onChange={(e) => setCustomToken(e.target.value)}
-            fullWidth
-          />
-          <Button
-            variant="contained"
-            onClick={() => {
-              changeToken()
-            }}
-          >
-            Submit
-          </Button>
+            <TextField
+              label="Token"
+              value={customToken}
+              onChange={(e) => setCustomToken(e.target.value)}
+              fullWidth
+            />
+            <Button
+              variant="contained"
+              sx={{alignSelf: "flex-end"}}
+              onClick={changeToken}
+            >
+              Save
+            </Button>
+          </Stack>
         </CardContent>
       </Card>
 
-      <Stack direction="column" gap={2} flexWrap={"wrap"}>
-        <Card sx={{flexGrow: 1, minWidth: 200}}>
-          <CardContent>
-            <Typography
-              variant="h6"
-              fontWeight="bold"
-              mb={3}
-              color="primary.main"
-            >
+      <Card>
+        <CardContent>
+          <Stack gap={2}>
+            <Typography variant="h6" fontWeight="bold" color="primary.main">
               Base Server
             </Typography>
             <TextField
@@ -99,15 +80,21 @@ export const HomeItems: FC = () => {
             />
             <Button
               variant="contained"
-              onClick={() => {
-                changeEndpoint()
-              }}
+              onClick={changeEndpoint}
+              sx={{alignSelf: "flex-end"}}
             >
-              Submit
+              Save
             </Button>
-          </CardContent>
-        </Card>
-      </Stack>
+          </Stack>
+        </CardContent>
+      </Card>
+      <Snackbar
+        open={!!snackbarMessage}
+        autoHideDuration={4500}
+        onClose={() => setSnackbarMessage(undefined)}
+      >
+        <Alert severity="success">{`${snackbarMessage} has been changed`}</Alert>
+      </Snackbar>
     </>
   )
 }

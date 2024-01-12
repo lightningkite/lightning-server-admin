@@ -2,6 +2,7 @@
 export enum LocalStorageKey {
   USER_TOKEN = "lightning-admin-userToken",
   BACKEND_URL = "lightning-admin-backendURL",
-  BACKEND_URL_OPTIONS = "lightning-admin-backendURLOptions"
+  BACKEND_URL_OPTIONS = "lightning-admin-backendURLOptions",
+  FILTER_OPTION = "lightning-admin-filter-option"
 }
 
