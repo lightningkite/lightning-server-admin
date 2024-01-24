@@ -98,7 +98,7 @@ export function ModelIndex<T extends HasId = HasId>(): ReactElement {
         restEndpoint={endpoint}
         onRowClick={(model, e) => {
           if (e.ctrlKey || e.shiftKey) {
-            return window.open(`/models/${endpointName}/${model._id}`, "_blank")
+            return window.open(`/meta/admin/models/${endpointName}/${model._id}`, "_blank")
           }
           navigate(`/models/${endpointName}/${model._id}`)
         }}
