@@ -1,13 +1,10 @@
 import {Condition, HasId} from "@lightningkite/lightning-server-simplified"
-import {Button, Stack, Typography} from "@mui/material"
 import {Form} from "@rjsf/mui"
 import {RJSFSchema} from "@rjsf/utils"
-import {AuthContext} from "App"
 import {LKModelSchema} from "api/genericSdk"
 import {MyOneOfField} from "components/ModelForm/MyOneOfField"
-import {Key, ReactElement, useEffect, useState} from "react"
+import {ReactElement, useState} from "react"
 import {customTemplates, dummyValidator} from "utils/helpers/dummyValidator"
-import {extractUiSchema} from "utils/helpers/extractUi"
 
 export function BasicFilter<T extends HasId>({
   filter,
@@ -49,7 +46,7 @@ export function BasicFilter<T extends HasId>({
 
   return (
     <Form
-      schema={{properties: displayableProperties}}
+      schema={{...modelSchema, properties: displayableProperties}}
       formData={{...formData}}
       fields={{
         OneOfField: MyOneOfField
