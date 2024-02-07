@@ -74,7 +74,7 @@ export function ReferenceField<T extends HasId>(
           getOptionLabel={(item) =>
             modelSchema.titleFields.map((field) => item[field]).join(" ")
           }
-          searchProperties={modelSchema.titleFields}
+          searchProperties={modelSchema.searchFields}
         />
       </Box>
       <IconButton
